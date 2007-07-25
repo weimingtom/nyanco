@@ -8,8 +8,11 @@
 namespace nyanco
 {
 
+class Framework;
+
 class Application
 {
+protected:
     // --------------------------------------------------------------------
     /*!
 
@@ -40,7 +43,15 @@ class Application
 
     virtual void onResetDevice() {}
     virtual void onLostDevice() {}
+
+    friend class Framework;
 };
 
 } // namespace nyanco
+
+#define NYA_REGIST_APP(app_)                \
+    nyanco::Application* NyancoCreateApp()  \
+    {                                       \
+        return new app_;                    \
+    }                                       \
 

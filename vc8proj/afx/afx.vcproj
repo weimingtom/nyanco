@@ -40,8 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)\..\include; $(SolutionDir)\..\include\afx"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\afx&quot;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="winmm.lib d3d9.lib"
+				AdditionalDependencies="winmm.lib d3d9.lib dinput8.lib dxguid.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -104,8 +103,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(SolutionDir)\..\include; $(SolutionDir)\..\include\afx"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\afx&quot;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -123,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="winmm.lib d3d9.lib"
+				AdditionalDependencies="winmm.lib d3d9.lib dinput8.lib dxguid.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -146,32 +144,8 @@
 	</References>
 	<Files>
 		<Filter
-			Name="ソース ファイル"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="interface"
 			>
-			<File
-				RelativePath="..\..\src\afx\afx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\Framework.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\GraphicsDevice.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="ヘッダー ファイル"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath="..\..\src\afx\afx.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\src\afx\Framework.h"
 				>
@@ -180,7 +154,39 @@
 				RelativePath="..\..\src\afx\GraphicsDevice.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\include\afx\InputDevice.h"
+				>
+			</File>
 		</Filter>
+		<Filter
+			Name="implement"
+			>
+			<File
+				RelativePath="..\..\src\afx\Framework.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\Framework.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\GraphicsDevice.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\GraphicsDevice.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\InputDevice.cpp"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\..\src\afx\afx.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -5,11 +5,13 @@
     @author dasyprocta
  */
 
-#include "Application.h"
+#include "nyanco.hpp"
 #include <windows.h>
+#include <d3dx9.h>
 
 namespace nyanco
 {
+    class Application;
 
     class Framework
     {
@@ -38,6 +40,8 @@ namespace nyanco
             HWND                            hwnd,
             int                             clientWidth,
             int                             clientHeight);
+
+        void reset();
 
         enum Style
         {

@@ -17,6 +17,12 @@ namespace nyanco { namespace impl
     }
 
     // ------------------------------------------------------------------------
+    void GraphicsDevice::setClearColor(uint32 color)
+    {
+        clearColor_ = color;
+    }
+
+    // ------------------------------------------------------------------------
     bool GraphicsDevice::create(
         HWND                            hwnd,
         int                             width,
@@ -73,8 +79,9 @@ namespace nyanco { namespace impl
             &presentParameters,
             &device);
 
-        d3d_    = d3d;
-        device_ = device;
+        d3d_                            = d3d;
+        device_                         = device;
+        presentParameters_              = presentParameters;
 
         return true;
     }
@@ -82,7 +89,54 @@ namespace nyanco { namespace impl
     // ------------------------------------------------------------------------
     void GraphicsDevice::release()
     {
-        
+        nyanco::safeRelease(device_);
+        nyanco::safeRelease(d3d_);
+    }
+
+    // ------------------------------------------------------------------------
+    void GraphicsDevice::clear()
+    {
+        device_->Clear(
+            0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+            clearColor_, 1.f, 0);
+    }
+
+    // ------------------------------------------------------------------------
+    bool GraphicsDevice::present()
+    {
+        if (FAILED(device_->Present(0, 0, 0, 0)))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // ------------------------------------------------------------------------
+    bool GraphicsDevice::reset()
+    {
+        HRESULT hr = device_->Reset(&presentParameters_);
+        return SUCCEEDED(hr)? true: false;
+    }
+
+    // ------------------------------------------------------------------------
+    bool GraphicsDevice::checkReset()
+    {
+        HRESULT hr = device_->TestCooperativeLevel();
+        if (FAILED(hr))
+        {
+            // 復元不可能
+            if (hr == D3DERR_DEVICELOST)
+            {
+                return false;
+            }
+            // 復元可能
+            if (hr == D3DERR_DEVICENOTRESET)
+            {
+                // UNDONE: ウィンドウモード時のフォーマット指定
+            }
+        }
+
+        return true;
     }
 
     // ------------------------------------------------------------------------

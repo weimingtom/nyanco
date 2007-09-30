@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="$(OutDir)\afx.lib $(OutDir)\graphics.lib"
+				AdditionalDependencies="$(OutDir)\afx.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

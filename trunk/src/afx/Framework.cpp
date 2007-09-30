@@ -5,6 +5,11 @@
 
 #include "Framework.hpp"
 #include "GraphicsDevice.hpp"
+#include "InputDevice.hpp"
+#include "Application.h"
+
+// TEST: GUI の組み込み
+//#include "gui/WindowManager.hpp"
 
 namespace nyanco
 {
@@ -19,8 +24,26 @@ void Framework::initialize()
         640,
         480);
 
-    impl::GraphicsDevice& device = impl::GraphicsDevice::GetImplement();
-    device.create(hwnd_, 640, 480, false);
+    // graphics
+    {
+        impl::GraphicsDevice& device = impl::GraphicsDevice::GetImplement();
+        device.create(hwnd_, 640, 480, false);
+    }
+
+    // input
+    {
+        impl::InputDevice& device = impl::InputDevice::GetImplement();
+        device.create(hinstance_, hwnd_);
+    }
+
+#if 0
+    // TEST:
+    {
+        using namespace gui::impl;
+        WindowManager& wm = WindowManager::GetImplement();
+        wm.initialize(device.getD3dDevice());
+    }
+#endif
 
     appPtr_->onInitialize();
 }
@@ -41,7 +64,7 @@ void Framework::run()
     ::ShowWindow(hwnd_, SW_SHOW);
     ::UpdateWindow(hwnd_);
 
-    GraphicsDevice&     device      = GraphicsDevice::GetInterface();
+    impl::GraphicsDevice& device    = impl::GraphicsDevice::GetImplement();
     LPDIRECT3DDEVICE9   d3dDevice   = device.getD3dDevice();
 
     while (msg.message != WM_QUIT)
@@ -53,22 +76,46 @@ void Framework::run()
         }
         else
         {
+            // デバイスが消失していれば復元
             if (isDeviceLost)
             {
+                if (!device.checkReset())
+                {
+                    // デバイスが復元可能状態ではない
+                    continue;
+                }
+
+                // 復元
+                reset();
                 isDeviceLost = false;
+            }
+
+            // TEST: 入力取得
+            {
+                impl::InputDevice& device = impl::InputDevice::GetImplement();
+                device.acquire();
             }
 
             DWORD time = ::timeGetTime();
 
             appPtr_->onUpdate();
 
-            d3dDevice->Clear(
-                0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-                D3DCOLOR_XRGB(0, 0, 128), 1.f, 0);
+            device.clear();
+            d3dDevice->BeginScene();
 
             appPtr_->onDraw();
 
-            if (FAILED(d3dDevice->Present(0, 0, 0, 0)))
+#if 0
+            // TEST: GUI の描画
+            {
+                using namespace gui::impl;
+                WindowManager& wm = WindowManager::GetImplement();
+                wm.draw();
+            }
+#endif
+
+            d3dDevice->EndScene();
+            if (!device.present())
             {
                 isDeviceLost = true;
             }
@@ -150,6 +197,16 @@ HWND Framework::createWindow(
 }
 
 // ----------------------------------------------------------------------------
+void Framework::reset()
+{
+    impl::GraphicsDevice& device = impl::GraphicsDevice::GetImplement();
+
+    appPtr_->onLostDevice();
+    device.reset();
+    appPtr_->onResetDevice();
+}
+
+// ----------------------------------------------------------------------------
 LRESULT Framework::mapProcedure(
     HWND                                hwnd,
     UINT                                msg,
@@ -175,6 +232,18 @@ LRESULT Framework::messageProcedure(
     {
     case WM_DESTROY:
         ::PostQuitMessage(0);
+        break;
+
+    case WM_SIZE:
+        {
+            impl::GraphicsDevice& device = impl::GraphicsDevice::GetImplement();
+
+            D3DPRESENT_PARAMETERS& pp = device.getPresentParameters();
+            pp.BackBufferWidth          = LOWORD(lparam);
+            pp.BackBufferHeight         = HIWORD(lparam);
+
+            reset();
+        }
         break;
 
     default:

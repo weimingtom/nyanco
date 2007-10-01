@@ -23,9 +23,19 @@ namespace nyanco
     class Mouse
     {
     public:
-        virtual bool onMouseDown() const = 0;
-        virtual bool onMousePush() const = 0;
-        virtual bool onMouseUp() const = 0;
+        struct Button
+        {
+            enum Id
+            {
+                Left                    = 0,
+                Right,
+                Center,
+            };
+        };
+
+        virtual bool onMouseDown(Button::Id button) const = 0;
+        virtual bool onMousePush(Button::Id button) const = 0;
+        virtual bool onMouseUp(Button::Id button) const = 0;
 
         virtual void getPosition(
             int&                        x,

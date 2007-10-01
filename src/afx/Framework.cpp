@@ -9,10 +9,12 @@
 #include "Application.h"
 
 // TEST: GUI ‚Ì‘g‚Ýž‚Ý
-//#include "gui/WindowManager.hpp"
+#include "GuiInterface.h"
 
 namespace nyanco
 {
+
+    GuiInterface::Factory GuiInterface::Factory_ = 0;
 
 // ----------------------------------------------------------------------------
 void Framework::initialize()
@@ -36,14 +38,10 @@ void Framework::initialize()
         device.create(hinstance_, hwnd_);
     }
 
-#if 0
-    // TEST:
+    // TEST: GUI
     {
-        using namespace gui::impl;
-        WindowManager& wm = WindowManager::GetImplement();
-        wm.initialize(device.getD3dDevice());
+        guiPtr_ = GuiInterface::Create();
     }
-#endif
 
     appPtr_->onInitialize();
 }
@@ -98,21 +96,16 @@ void Framework::run()
 
             DWORD time = ::timeGetTime();
 
+            // TEST: GUI ‚ÌXV
+            guiPtr_->onUpdate();
             appPtr_->onUpdate();
 
             device.clear();
             d3dDevice->BeginScene();
 
             appPtr_->onDraw();
-
-#if 0
             // TEST: GUI ‚Ì•`‰æ
-            {
-                using namespace gui::impl;
-                WindowManager& wm = WindowManager::GetImplement();
-                wm.draw();
-            }
-#endif
+            guiPtr_->onDraw();
 
             d3dDevice->EndScene();
             if (!device.present())

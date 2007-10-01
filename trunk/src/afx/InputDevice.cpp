@@ -94,27 +94,33 @@ namespace nyanco { namespace impl
     {
         // keyboard
         {
-            keyboardPtr_->swap();
-
-            // HACK: 複数キーボードのマージ
-            HRESULT hr = keyboards_[0]->Acquire();
-            if (hr == DI_OK || hr == S_FALSE)
+            if (!keyboards_.empty())
             {
-                BYTE key[256];
-                keyboards_[0]->GetDeviceState(sizeof(key), &key);
-                keyboardPtr_->set(key);
+                keyboardPtr_->swap();
+
+                // HACK: 複数キーボードのマージ
+                HRESULT hr = keyboards_[0]->Acquire();
+                if (hr == DI_OK || hr == S_FALSE)
+                {
+                    BYTE key[256];
+                    keyboards_[0]->GetDeviceState(sizeof(key), &key);
+                    keyboardPtr_->set(key);
+                }
             }
         }
 
         // mouse
         {
-            // HACK: 複数マウスのマージ
-            HRESULT hr = mouses_[0]->Acquire();
-            if (hr == DI_OK || hr == S_FALSE)
+            if (!mouses_.empty())
             {
-                DIMOUSESTATE2 mouse = { 0 };
-                mouses_[0]->GetDeviceState(sizeof(mouse), &mouse);
-                mousePtr_->set(mouse);
+                // HACK: 複数マウスのマージ
+                HRESULT hr = mouses_[0]->Acquire();
+                if (hr == DI_OK || hr == S_FALSE)
+                {
+                    DIMOUSESTATE2 mouse = { 0 };
+                    mouses_[0]->GetDeviceState(sizeof(mouse), &mouse);
+                    mousePtr_->set(mouse);
+                }
             }
         }
 
@@ -169,6 +175,14 @@ namespace nyanco { namespace impl
         didevice->SetCooperativeLevel(
             device->hwnd_,
             DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+
+        DIPROPDWORD diprop;
+        diprop.diph.dwSize          = sizeof(diprop);
+        diprop.diph.dwHeaderSize    = sizeof(diprop.diph);
+        diprop.diph.dwObj           = 0;
+        diprop.diph.dwHow           = DIPH_DEVICE;
+        diprop.dwData               = DIPROPAXISMODE_ABS;
+        didevice->SetProperty(DIPROP_AXISMODE, &diprop.diph);
 
         device->mouses_.push_back(didevice);
 

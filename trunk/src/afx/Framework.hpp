@@ -12,6 +12,7 @@
 namespace nyanco
 {
     class Application;
+    class GuiInterface;
 
     class Framework
     {
@@ -56,7 +57,9 @@ namespace nyanco
     private:
         HINSTANCE                           hinstance_;
         HWND                                hwnd_;
-        nyanco::Application*                appPtr_;
+
+        Application*                        appPtr_;
+        GuiInterface*                       guiPtr_;
 
     private:
         Framework();

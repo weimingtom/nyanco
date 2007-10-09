@@ -64,19 +64,19 @@ namespace nyanco { namespace impl
     class Mouse : public nyanco::Mouse
     {
     public:
-        bool onMouseDown(Button::Id button) const
+        bool onButtonDown(Button::Id button) const
         {
             return (buffer_[current_].rgbButtons[button] & 0x80) != 0;
         }
 
-        bool onMousePush(Button::Id button) const
+        bool onButtonPush(Button::Id button) const
         {
             uint32 const prev_ = (current_ == 0? 1: 0);
             return ((buffer_[current_].rgbButtons[button] & 0x80) != 0) &&
                    ((buffer_[prev_].rgbButtons[button] & 0x80) == 0);
         }
 
-        bool onMouseUp(Button::Id button) const
+        bool onButtonUp(Button::Id button) const
         {
             uint32 const prev_ = (current_ == 0? 1: 0);
             return ((buffer_[current_].rgbButtons[button] & 0x80) == 0) &&

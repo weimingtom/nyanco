@@ -33,9 +33,9 @@ namespace nyanco
             };
         };
 
-        virtual bool onMouseDown(Button::Id button) const = 0;
-        virtual bool onMousePush(Button::Id button) const = 0;
-        virtual bool onMouseUp(Button::Id button) const = 0;
+        virtual bool onButtonDown(Button::Id button) const = 0;
+        virtual bool onButtonPush(Button::Id button) const = 0;
+        virtual bool onButtonUp(Button::Id button) const = 0;
 
         virtual void getPosition(
             int&                        x,

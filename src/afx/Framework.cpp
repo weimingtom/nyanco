@@ -13,7 +13,6 @@
 
 namespace nyanco
 {
-
     GuiInterface::Factory GuiInterface::Factory_ = 0;
 
 // ----------------------------------------------------------------------------
@@ -40,7 +39,9 @@ void Framework::initialize()
 
     // TEST: GUI
     {
-        guiPtr_ = GuiInterface::Create();
+        GuiInterface::Implement();
+        guiPtr_ = GuiInterface::Instanciate();
+        guiPtr_->onInitialize();
     }
 
     appPtr_->onInitialize();
@@ -49,6 +50,7 @@ void Framework::initialize()
 // ----------------------------------------------------------------------------
 void Framework::finalize()
 {
+    guiPtr_->onFinalize();
     appPtr_->onFinalize();
 }
 

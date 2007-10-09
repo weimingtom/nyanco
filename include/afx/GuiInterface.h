@@ -14,12 +14,13 @@ namespace nyanco
     public:
         typedef GuiInterface* (*Factory)();
 
-        static void RegistFactory(Factory factory)
+        static bool RegistFactory(Factory factory)
         {
             Factory_ = factory;
+            return true;
         }
 
-        static GuiInterface* Create()
+        static GuiInterface* Instanciate()
         {
             if (Factory_ != 0)
                 return Factory_();
@@ -27,9 +28,12 @@ namespace nyanco
         }
 
     protected:
-        virtual void onUpdate() {}
-        virtual void onDraw() {}
+        virtual void onInitialize() {}
+        virtual void onFinalize()   {}
+        virtual void onUpdate()     {}
+        virtual void onDraw()       {}
 
+        static  void Implement();
         static Factory                  Factory_;
 
         friend Framework;

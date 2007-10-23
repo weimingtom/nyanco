@@ -71,13 +71,19 @@ namespace nyanco { namespace gui { namespace impl
         {
             uint8 code = text[count] - 0x21;
 
-            //v[i].z = v[i+1].z = v[i+2].z = v[i+3].z = 0.5f;
             v[i].rhw = v[i+1].rhw = v[i+2].rhw = v[i+3].rhw = 1.f;
             v[i].color = v[i+1].color = v[i+2].color = v[i+3].color = color;
-            v[i].x    = (point.x * fontInfo_.charaWidth) + (count * fontInfo_.charaWidth);
-            v[i].y    = (point.y * fontInfo_.charaHeight);
+            v[i].x    = (point.x) + (count * fontInfo_.charaWidth);
+            v[i].y    = (point.y);
             v[i].tu   = (float)(code % 16 * fontInfo_.charaWidth + 0.5f) / fontInfo_.texWidth;//(code % 16) * du;
             v[i].tv   = (float)(code / 16 * fontInfo_.charaHeight + 0.5f) / fontInfo_.texHeight;//(code / 16) * dv;
+
+            // スペース入れ忘れのためアドホック
+            if (text[count] == 0x20)
+            {
+                v[i].tu = 1.f - du;
+                v[i].tv = 1.f - dv;
+            }
             v[i+1].x  = v[i].x + fontInfo_.charaWidth;
             v[i+1].y  = v[i].y;
             v[i+1].tu = v[i].tu + du;
@@ -146,6 +152,25 @@ namespace nyanco { namespace gui { namespace impl
         device_.DrawPrimitiveUP(
             D3DPT_TRIANGLEFAN,
             2,
+            v,
+            sizeof(GuiVertex));
+    }
+
+    // ------------------------------------------------------------------------
+    void Graphics::drawLine(
+        Point const&                    p1,
+        Point const&                    p2)
+    {
+        GuiVertex v[2] =
+        {
+            { p1.x,     p1.y,   0.f,    1.f,    color_ },
+            { p2.x,     p2.y,   0.f,    1.f,    color_ },
+        };
+
+        device_.SetFVF(GuiVertex::Fvf);
+        device_.DrawPrimitiveUP(
+            D3DPT_LINELIST,
+            1,
             v,
             sizeof(GuiVertex));
     }

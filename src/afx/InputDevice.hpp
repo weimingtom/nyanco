@@ -87,8 +87,8 @@ namespace nyanco { namespace impl
             int&                        x,
             int&                        y) const
         {
-            x = buffer_[current_].lX;
-            y = buffer_[current_].lY;
+            x = position_[current_].x;
+            y = position_[current_].y;
         }
 
         void getPreviousPosition(
@@ -96,29 +96,33 @@ namespace nyanco { namespace impl
             int&                        y) const
         {
             uint32 const prev_ = (current_ == 0? 1: 0);
-            x = buffer_[prev_].lX;
-            y = buffer_[prev_].lY;
+            x = position_[prev_].x;
+            y = position_[prev_].y;
         }
 
         void swap()
         {
             current_ = (current_ == 0? 1: 0);
             std::memset(&buffer_[current_], 0, sizeof(DIMOUSESTATE2));
+            std::memset(&position_[current_], 0, sizeof(POINT));
         }
 
-        void set(DIMOUSESTATE2 const& buffer)
+        void set(DIMOUSESTATE2 const& buffer, POINT const& position)
         {
             std::memcpy(&buffer_[current_], &buffer, sizeof(DIMOUSESTATE2));
+            std::memcpy(&position_[current_], &position, sizeof(POINT));
         }
 
         Mouse()
         {
             std::memset(buffer_, 0, sizeof(buffer_));
+            std::memset(position_, 0, sizeof(position_));
             current_ = 0;
         }
 
     private:
         DIMOUSESTATE2                   buffer_[2];
+        POINT                           position_[2];
         uint32                          current_; // 0 or 1;
     };
 

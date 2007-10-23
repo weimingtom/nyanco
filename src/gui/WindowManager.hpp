@@ -8,11 +8,18 @@
 #include "gui/WindowManager.h"
 #include "Graphics.hpp"
 #include <d3d9.h>
+#include <vector>
 #include <list>
 
-namespace nyanco { namespace gui
+namespace nyanco
+{
+    class Mouse;
+    class Keyboard;
+
+namespace gui
 {
     class Frame;
+    class Interface;
 
 namespace impl
 {
@@ -25,18 +32,21 @@ namespace impl
             Color                       color);
         
         virtual void attach(
-            nyanco::gui::Frame*         framePtr);
+            nyanco::gui::FramePtr       framePtr);
 
         virtual void detach(
-            Frame*                      framePtr);
+            FramePtr                    framePtr);
 
         virtual void detach(
             std::string const&          name);
 
-        virtual nyanco::gui::Frame* search(
+        virtual FramePtr search(
             std::string const&          name);
 
-        virtual Frame* getActiveWindow() const;
+        virtual void activate(
+            FramePtr                    framePtr);
+
+        virtual FramePtr getActiveWindow() const;
 
         void initialize(
             LPDIRECT3DDEVICE9           devicePtr);
@@ -56,7 +66,39 @@ namespace impl
         void onKeyUp();
 
     private:
-        std::list<Frame*>               frameList_;
+        class InputState
+        {
+        private:
+            Point                       clickPoint_;
+        };
+
+        class Text
+        {
+        public:
+            Text(
+                Point const&            point,
+                std::string const&      text,
+                Color                   color)
+                : point_(point), text_(text), color_(color) {}
+
+            void draw(Graphics& graphics)
+            {
+                graphics.drawText(point_, text_, color_);
+            }
+
+        private:
+            Point                       point_;
+            std::string                 text_;
+            Color                       color_;
+        };
+
+        typedef std::list<FramePtr>     FramePtrList;
+        typedef std::vector<Text>       TextList;
+
+        FramePtrList                    framePtrList_;
+        FramePtrList                    killedFramePtrList_;
+        TextList                        textList_;
+
         Graphics*                       graphics_;
 
         static WindowManager*           myPtr_;

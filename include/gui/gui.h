@@ -6,5 +6,7 @@
  */
 
 #include "WindowManager.h"
-#include "Control.h"
+
 #include "Frame.h"
+#include "Label.h"
+#include "CheckBox.h"

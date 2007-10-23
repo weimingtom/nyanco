@@ -16,19 +16,25 @@ namespace nyanco { namespace gui { namespace impl
     class Graphics : public nyanco::gui::Graphics
     {
     public:
-        void setColor(
+        virtual void setColor(
             Color                       color);
 
-        void drawText(
+        virtual void drawText(
             Point const&                point,
             std::string const&          text,
             Color                       color);
 
-        void drawRect(
+        virtual void drawRect(
             Rect const&                 rect);
 
-        void drawFillRect(
+        virtual void drawFillRect(
             Rect const&                 rect);
+
+        virtual void drawLine(
+            Point const&                p1,
+            Point const&                p2);
+
+        FontInfo const& getFontInfo() const { return fontInfo_; }
 
         Graphics(
             IDirect3DDevice9*           devicePtr);

@@ -9,11 +9,27 @@
 #include "afx/InputDevice.h"
 #include <algorithm>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/foreach.hpp>
+
+#define foreach BOOST_FOREACH
 
 namespace nyanco { namespace gui { namespace impl
 {
 
     WindowManager* WindowManager::myPtr_ = 0;
+
+    class FrameFinder
+    {
+    public:
+        FrameFinder(std::string const& name) : name_(name) {}
+        bool operator()(FramePtr framePtr) const
+        {
+            return framePtr->getName() == name_;
+        }
+    private:
+        std::string name_;
+    };
 
     // ------------------------------------------------------------------------
     void WindowManager::drawText(
@@ -21,55 +37,72 @@ namespace nyanco { namespace gui { namespace impl
         std::string const&              text,
         Color                           color)
     {
-        graphics_->drawText(point, text, color);
+        FontInfo const& fontInfo = graphics_->getFontInfo();
+        textList_.push_back(Text(Point(point.x * fontInfo.charaWidth, point.y * fontInfo.charaHeight), text, color));
     }
 
     // ------------------------------------------------------------------------
     void WindowManager::attach(
-        Frame*                          framePtr)
+        FramePtr                        framePtr)
     {
-        frameList_.push_back(reinterpret_cast<Frame*>(framePtr));
+        framePtrList_.push_front(framePtr);
     }
 
     // ------------------------------------------------------------------------
     void WindowManager::detach(
-        Frame*                          framePtr)
+        FramePtr                        framePtr)
     {
-        // UNDONE:
+        killedFramePtrList_.push_back(framePtr);
     }
 
     // ------------------------------------------------------------------------
     void WindowManager::detach(
         std::string const&              name)
     {
-        // UNDONE:
+        FramePtrList::iterator it = std::find_if(
+            framePtrList_.begin(), framePtrList_.end(), FrameFinder(name));
+        if (it != framePtrList_.end()) killedFramePtrList_.push_back(*it);
     }
 
     // ------------------------------------------------------------------------
-    Frame* WindowManager::search(
+    FramePtr WindowManager::search(
         std::string const&              name)
     {
-        // UNDONE:
-        return 0;
+        FramePtrList::iterator it = std::find_if(
+            framePtrList_.begin(), framePtrList_.end(), FrameFinder(name));
+        return (it != framePtrList_.end())? *it: FramePtr();
     }
 
     // ------------------------------------------------------------------------
-    Frame* WindowManager::getActiveWindow() const
+    void WindowManager::activate(
+        FramePtr                        framePtr)
     {
-        // UNDONE:
-        return 0;
+        framePtrList_.remove(framePtr);
+        framePtrList_.push_front(framePtr);
+    }
+
+    // ------------------------------------------------------------------------
+    FramePtr WindowManager::getActiveWindow() const
+    {
+        return framePtrList_.back();
     }
 
     // ------------------------------------------------------------------------
     void WindowManager::draw()
     {
-#if 0
         using boost::bind;
+        using boost::ref;
 
+        // draw text list
         std::for_each(
-            frameList_.begin(), frameList_.end(),
-            bind(&Frame::draw, _1, *graphics_));
-#endif
+            textList_.begin(), textList_.end(),
+            bind(&Text::draw, _1, ref(*graphics_)));
+        textList_.clear();
+
+        // draw frame list
+        std::for_each(
+            framePtrList_.rbegin(), framePtrList_.rend(),
+            bind(&Frame::draw, _1, ref(*graphics_)));
     }
 
     // ------------------------------------------------------------------------
@@ -82,6 +115,8 @@ namespace nyanco { namespace gui { namespace impl
             onMouseProcess(input.getMouse());
             onKeyboardProcess(input.getKeyboard());
         }
+
+        std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame::update, _1));
     }
 
     // ------------------------------------------------------------------------
@@ -100,9 +135,38 @@ namespace nyanco { namespace gui { namespace impl
     // ------------------------------------------------------------------------
     void WindowManager::onMouseProcess(Mouse const& mouse)
     {
+        using boost::bind;
+
+        int x, y;
+        mouse.getPosition(x, y);
+
+        MouseCommand command;
+        MouseCommand::Create(command, mouse);
+
+        static ComponentPtr prevHitComponent;
+
+        foreach (FramePtr frame, framePtrList_)
+        {
+            ComponentPtr p = frame->checkHit(x, y);
+            if (p.get() != 0)
+            {
+                if (command.onPushLeft) activate(frame);
+
+                p->onMouseProcess(command);
+                break;
+            }
+        }
+
+#if 0
         if (mouse.onButtonPush(Mouse::Button::Left))
         {
             // UNDONE: ヒットコンポーネントのチェック
+            int x, y;
+            mouse.getPosition(x, y);
+
+            std::for_each(
+                framePtrList_.rbegin(), framePtrList_.rend(),
+                bind(&Frame::checkHit, _1, x, y));
         }
         else if (mouse.onButtonUp(Mouse::Button::Left))
         {
@@ -112,6 +176,7 @@ namespace nyanco { namespace gui { namespace impl
         {
             // UNDONE: ドラッグ処理
         }
+#endif
     }
 
     // ------------------------------------------------------------------------

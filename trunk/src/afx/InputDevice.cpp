@@ -113,13 +113,19 @@ namespace nyanco { namespace impl
         {
             if (!mouses_.empty())
             {
+                mousePtr_->swap();
+
                 // HACK: 複数マウスのマージ
                 HRESULT hr = mouses_[0]->Acquire();
                 if (hr == DI_OK || hr == S_FALSE)
                 {
                     DIMOUSESTATE2 mouse = { 0 };
                     mouses_[0]->GetDeviceState(sizeof(mouse), &mouse);
-                    mousePtr_->set(mouse);
+
+                    POINT point;
+                    ::GetCursorPos(&point);
+                    ::ScreenToClient(hwnd_, &point);
+                    mousePtr_->set(mouse, point);
                 }
             }
         }

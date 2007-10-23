@@ -35,6 +35,11 @@ namespace gui
     {
         // “ü—Í‚ÌŽæ“¾
         InputDevice& input = InputDevice::GetInterface();
+        impl::WindowManager&  manager     = impl::WindowManager::GetImplement();
+        manager.onMouseProcess(input.getMouse());
+        manager.onKeyboardProcess(input.getKeyboard());
+
+        manager.update();
     }
 
     void Interface::onDraw()

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="gui"
-	ProjectGUID="{4D73793F-E45F-4828-9192-D236F71A083B}"
-	RootNamespace="gui"
+	Name="graphics"
+	ProjectGUID="{5548C204-94DB-4AF3-A2B4-7A8B7D770555}"
+	RootNamespace="graphics"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\include\afx&quot;;&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\gui&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)\..\include\graphics"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -103,7 +103,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\gui&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)\..\include\graphics"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -148,107 +148,13 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath="..\..\src\gui\CheckBox.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Component.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Container.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\FontTexture.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\FontTexture.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Frame.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Graphics.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Graphics.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Interface.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\Label.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\TitleBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\gui\WindowManager.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="ヘッダー ファイル"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\include\gui\CheckBox.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Component.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Container.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Frame.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Graphics.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Interface.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\Label.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\TitleBar.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\gui\WindowManager.h"
-				>
-			</File>
 		</Filter>
-		<Filter
-			Name="リソース ファイル"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
-		<File
-			RelativePath="..\..\include\gui\gui.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

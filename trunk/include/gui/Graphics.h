@@ -28,6 +28,10 @@ namespace nyanco { namespace gui
 
         virtual void drawFillRect(
             Rect const&                 rect) = 0;
+
+        virtual void drawLine(
+            Point const&                p1,
+            Point const&                p2) = 0;
     };
 
 } } // namespace nyanco::gui

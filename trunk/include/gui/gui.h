@@ -7,6 +7,8 @@
 
 #include "WindowManager.h"
 
+#include "ContextMenu.h"
+
 #include "Frame.h"
 #include "Label.h"
 #include "CheckBox.h"

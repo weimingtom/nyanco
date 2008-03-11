@@ -5,106 +5,119 @@
     @author dasyprocta
  */
 
+#include "gui_impl_base.hpp"
 #include "gui/WindowManager.h"
 #include "Graphics.hpp"
 #include <d3d9.h>
 #include <vector>
 #include <list>
+#include <boost/scoped_ptr.hpp>
 
-namespace nyanco
-{
-    class Mouse;
-    class Keyboard;
+BEGIN_NAMESPACE_NYANCO
 
-namespace gui
-{
-    class Frame;
-    class Interface;
+class Mouse;
+class Keyboard;
 
-namespace impl
+END_NAMESPACE_NYANCO
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class Frame;
+class ContextMenu;
+class Interface;
+
+END_NAMESPACE_NYANCO_GUI
+BEGIN_NAMESPACE_NYANCO_GUI_IMPL
+
+class WindowManager : public nyanco::gui::WindowManager
 {
-    class WindowManager : public nyanco::gui::WindowManager
+    virtual void drawText(
+        Point const&                point,
+        std::string const&          text,
+        Color                       color);
+
+    virtual void attach(
+        nyanco::gui::FramePtr       framePtr);
+
+    virtual void detach(
+        FramePtr                    framePtr);
+
+    virtual void detach(
+        std::string const&          name);
+
+    virtual FramePtr search(
+        std::string const&          name);
+
+    virtual void activate(
+        FramePtr                    framePtr);
+
+    virtual FramePtr getActiveWindow() const;
+
+    virtual ContextMenuPtr getContextMenu() const;
+
+    void initialize(
+        LPDIRECT3DDEVICE9           devicePtr);
+
+    void finalize();
+
+    void update();
+
+    void draw();
+
+    static WindowManager& GetImplement();
+
+    void onMouseProcess(Mouse const& mouse);
+    void onKeyboardProcess(Keyboard const& keyboard);
+
+private:
+    class InputState
     {
-    public:
-        virtual void drawText(
-            Point const&                point,
-            std::string const&          text,
-            Color                       color);
-        
-        virtual void attach(
-            nyanco::gui::FramePtr       framePtr);
-
-        virtual void detach(
-            FramePtr                    framePtr);
-
-        virtual void detach(
-            std::string const&          name);
-
-        virtual FramePtr search(
-            std::string const&          name);
-
-        virtual void activate(
-            FramePtr                    framePtr);
-
-        virtual FramePtr getActiveWindow() const;
-
-        void initialize(
-            LPDIRECT3DDEVICE9           devicePtr);
-
-        void finalize();
-
-        void update();
-
-        void draw();
-
-        static WindowManager& GetImplement();
-
-        void onMouseProcess(Mouse const& mouse);
-        void onKeyboardProcess(Keyboard const& keyboard);
-
-        void onKeyPush();
-        void onKeyUp();
-
     private:
-        class InputState
-        {
-        private:
-            Point                       clickPoint_;
-        };
-
-        class Text
-        {
-        public:
-            Text(
-                Point const&            point,
-                std::string const&      text,
-                Color                   color)
-                : point_(point), text_(text), color_(color) {}
-
-            void draw(Graphics& graphics)
-            {
-                graphics.drawText(point_, text_, color_);
-            }
-
-        private:
-            Point                       point_;
-            std::string                 text_;
-            Color                       color_;
-        };
-
-        typedef std::list<FramePtr>     FramePtrList;
-        typedef std::vector<Text>       TextList;
-
-        FramePtrList                    framePtrList_;
-        FramePtrList                    killedFramePtrList_;
-        TextList                        textList_;
-
-        Graphics*                       graphics_;
-
-        static WindowManager*           myPtr_;
-
-        friend Interface;
-        friend nyanco::gui::WindowManager;
+        Point                       clickPoint_;
     };
 
-} } } // namespace nyanco::gui::impl
+    class Text
+    {
+    public:
+        Text(
+            Point const&            point,
+            std::string const&      text,
+            Color                   color)
+            : point_(point), text_(text), color_(color) {}
+
+        void draw(Graphics& graphics)
+        {
+            graphics.drawText(point_, text_, color_);
+        }
+
+    private:
+        Point                       point_;
+        std::string                 text_;
+        Color                       color_;
+    };
+
+    typedef std::list<FramePtr>     FramePtrList;
+    typedef std::vector<Text>       TextList;
+
+    //! フレームリスト
+    FramePtrList                    framePtrList_;
+    //! テキスト
+    TextList                        textList_;
+    //! メニュー
+    ContextMenuPtr                  contextMenu_;
+
+    ComponentPtr                    m_capturedKeyboard;
+    ComponentPtr                    m_capturedMouse;
+
+    FramePtrList                    killedFramePtrList_;
+
+    Rect                            m_clientRect;
+
+    boost::scoped_ptr<Graphics>     graphics_;
+
+    static WindowManager*           myPtr_;
+
+    friend Interface;
+    friend nyanco::gui::WindowManager;
+};
+
+END_NAMESPACE_NYANCO_GUI_IMPL

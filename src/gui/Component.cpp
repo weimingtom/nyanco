@@ -9,6 +9,11 @@
 namespace nyanco { namespace gui
 {
 
+class ComponentImpl
+{
+
+};
+
     void Component::resize(int parentWidth)
     {
         location_.right = location_.left + parentWidth;
@@ -25,6 +30,16 @@ namespace nyanco { namespace gui
             location_.top  <= point.y && point.y <= location_.bottom)
             return true;
         return false;
+    }
+
+    void Component::focus()
+    {
+        focused_ = true;
+    }
+
+    bool Component::isFocused() const
+    {
+        return focused_;
     }
 
     void Component::setName(std::string const& name)

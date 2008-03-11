@@ -161,6 +161,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\ContextMenu.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\FontTexture.cpp"
 				>
 			</File>
@@ -212,6 +216,14 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\Container.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\ContextMenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\Event.h"
 				>
 			</File>
 			<File

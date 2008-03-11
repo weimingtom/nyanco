@@ -7,51 +7,59 @@
 
 #include "gui_base.h"
 #include <string>
+#include <boost/scoped_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
-namespace nyanco { namespace gui
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class Graphics;
+class Container;
+class Frame;
+class ContextMenu;
+
+typedef std::string                 ComponentId;
+
+namespace impl { class WindowManager; }
+
+class Component : public boost::enable_shared_from_this<Component>
 {
-    class Graphics;
-    class Container;
-    class Frame;
+public:
+    std::string const& getName() const { return name_; }
+    void focus();
+    bool isFocused() const;
 
-    namespace impl { class WindowManager; }
+    virtual int getHeight() const;
 
-    class Component : public boost::enable_shared_from_this<Component>
-    {
-    public:
-        std::string const& getName() const { return name_; }
-        void focus();
-        bool isFocused();
+    void setName(std::string const& name);
+    void setLocation(Rect const& location);
+    //void setPosition(int x, int y);
+    void setX(int x);
+    void setY(int y);
+    void setWidth(int width);
 
-    protected:
-        virtual void draw(Graphics& graphics) = 0;
-        virtual int getHeight() const;
-        virtual void resize(int parentWidth);
-        virtual boost::shared_ptr<Component> checkHit(int x, int y);
-        virtual void update();
-        virtual void move(int x, int y);
+    virtual void draw(Graphics& graphics) = 0;
+    virtual void resize(int parentWidth);
+    virtual boost::shared_ptr<Component> checkHit(int x, int y);
+    virtual void update();
+    virtual void move(int x, int y);
 
-        virtual void onMouseProcess(MouseCommand const& mouse) {}
-        virtual void onKeyboardPtrocess(KeyboardCommand const& keyboard) {}
+    virtual void onMouseProcess(MouseCommand const& mouse) {}
+    virtual void onKeyboardPtrocess(KeyboardCommand const& keyboard) {}
 
-        bool isPointInner(Point const& point);
-        void setName(std::string const& name);
-        void setLocation(Rect const& location);
-        //void setPosition(int x, int y);
-        void setX(int x);
-        void setY(int y);
-        void setWidth(int width);
+    bool isPointInner(Point const& point);
 
-    protected:
-        std::string                     name_;
-        Rect                            location_;
+protected:
+    std::string                     name_;
+    Rect                            location_;
+    bool                            focused_;
 
-        friend Frame;
-        friend Container;
-        friend impl::WindowManager;
-    };
+    Component() : focused_(false) {}
 
-    typedef boost::shared_ptr<Component> ComponentPtr;
+    friend ContextMenu;
+    friend Container;
+    friend impl::WindowManager;
+};
 
-} } // namespace nyanco::gui
+typedef boost::shared_ptr<Component> ComponentPtr;
+
+END_NAMESPACE_NYANCO_GUI

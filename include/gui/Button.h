@@ -7,19 +7,24 @@
 
 #include "Component.h"
 
-namespace nyanco { namespace gui
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class Button : public Component
 {
+public:
+    static boost::shared_ptr<Button> Create(
+        std::string const&              name,
+        std::string const&              text);
 
-    class Button
-    {
-    public:
+private:
+    // override
+    virtual void draw(Graphics& graphics);
+    virtual int getHeight() const;
 
-    private:
-        // override
-        void draw();
+    std::string                     caption_;
+    bool                            pushed_;
+};
 
-        std::string                     caption_;
-        bool                            pushed_;
-    };
+typedef boost::shared_ptr<Button> ButtonPtr;
 
-} } // namespace nyanco::gui
+END_NAMESPACE_NYANCO_GUI

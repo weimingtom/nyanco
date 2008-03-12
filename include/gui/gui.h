@@ -11,4 +11,5 @@
 
 #include "Frame.h"
 #include "Label.h"
+#include "Button.h"
 #include "CheckBox.h"

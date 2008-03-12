@@ -7,28 +7,27 @@
 
 #include "Component.h"
 
-namespace nyanco { namespace gui
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class CheckBox : public Component
 {
+public:
+    static boost::shared_ptr<CheckBox> Create(
+        std::string const&          name,
+        std::string const&          text,
+        bool                        check = false);
 
-    class CheckBox : public Component
-    {
-    public:
-        static boost::shared_ptr<CheckBox> Create(
-            std::string const&          name,
-            std::string const&          text,
-            bool                        check = false);
+    void setCheck(bool check);
+    bool getCheck() const;
 
-        void setCheck(bool check);
-        bool getCheck() const;
+private:
+    virtual void draw(Graphics& graphics);
+    virtual int getHeight() const;
 
-    private:
-        virtual void draw(Graphics& graphics);
-        virtual int getHeight() const;
+    std::string                     text_;
+    bool                            check_;
+};
 
-        std::string                     text_;
-        bool                            check_;
-    };
+typedef boost::shared_ptr<CheckBox> CheckBoxPtr;
 
-    typedef boost::shared_ptr<CheckBox> CheckBoxPtr;
-
-}} // namespace nyanco::gui
+END_NAMESPACE_NYANCO_GUI

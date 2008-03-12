@@ -5,43 +5,43 @@
     @author dasyprocta
  */
 
-#include "base.h"
+#include "gui_base.h"
 #include "Container.h"
 
-namespace nyanco { namespace gui
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class WindowManager;
+class Graphics;
+
+namespace impl { class WindowManager; }
+
+class Frame : public Container
 {
-    class WindowManager;
-    class Graphics;
+public:
+    static boost::shared_ptr<Frame> Create(
+        std::string const&          name,
+        std::string const&          caption,
+        uint32                      width,
+        uint32                      height);
 
-    namespace impl { class WindowManager; }
+    void moveTo(int x, int y);
+    void move(int x, int y);
 
-    class Frame : public Container
-    {
-    public:
-        static boost::shared_ptr<Frame> Create(
-            std::string const&          name,
-            std::string const&          caption,
-            uint32                      width,
-            uint32                      height);
+protected:
+    void draw(Graphics& graphics);
+    void update();
 
-        void moveTo(int x, int y);
-        void move(int x, int y);
+private:
+    void relocateY();
+    ComponentPtr getHitComponent(int x, int y);
 
-    protected:
-        void draw(Graphics& graphics);
-        void update();
+private:
+    ComponentPtr                    focusedComponent_;
+    std::string                     caption_;
 
-    private:
-        void relocateY();
-        ComponentPtr getHitComponent(int x, int y);
+    friend impl::WindowManager;
+};
 
-    private:
-        ComponentPtr                    focusedComponent_;
-        std::string                     caption_;
+typedef boost::shared_ptr<Frame> FramePtr;
 
-        friend impl::WindowManager;
-    };
-
-    typedef boost::shared_ptr<Frame> FramePtr;
-
-} } // namespace nyanco::gui
+END_NAMESPACE_NYANCO_GUI

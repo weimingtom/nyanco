@@ -5,6 +5,7 @@
 
 #include "Button.h"
 #include "Graphics.hpp"
+#include "Frame.h"
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
@@ -31,18 +32,34 @@ void Button::draw(Graphics& graphics)
     box.right   -= 2;
     box.bottom  -= 2;
 
-    graphics.setColor(0xff444444);
-    graphics.drawFillRect(box);
+    if (!pushed_)
+    {
+        graphics.setColor(0xff444444);
+        graphics.drawFillRect(box);
 
-    graphics.setColor(0xff888888);
-    graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-    graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+        graphics.setColor(0xff888888);
+        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
+        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
 
-    graphics.setColor(0xff222222);
-    graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-    graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+        graphics.setColor(0xff222222);
+        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
+        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+    }
+    else
+    {
+        graphics.setColor(0xff444444);
+        graphics.drawFillRect(box);
 
-    size_t textWidth = caption_.size() * 8;
+        graphics.setColor(0xff222222);
+        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
+        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+
+        graphics.setColor(0xff888888);
+        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
+        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+    }
+
+    size_t textWidth = caption_.size() * 6;
     size_t left = (box.getWidth() - textWidth) / 2;
     graphics.drawText(Point(box.left + left, box.top + 2), caption_, 0xffeeeeee);
 }
@@ -51,6 +68,24 @@ void Button::draw(Graphics& graphics)
 int Button::getHeight() const
 {
     return 18;
+}
+
+// ----------------------------------------------------------------------------
+void Button::onMouseProcess(MouseCommand const& command)
+{
+    if (command.onPushLeft)
+    {
+        pushed_ = true;
+    }
+    else if (command.onUpLeft && pushed_)
+    {
+        pushed_ = false;
+        ComponentPtr frame = getTopLevelContainer();
+        if (frame != 0)
+        {
+            (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(name_, PushEvent));
+        }
+    }
 }
 
 END_NAMESPACE_NYANCO_GUI

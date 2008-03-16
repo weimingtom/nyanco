@@ -8,11 +8,6 @@
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
-class ComponentImpl
-{
-
-};
-
 // ----------------------------------------------------------------------------
 void Component::resize(int parentWidth)
 {
@@ -97,6 +92,31 @@ void Component::move(int x, int y)
     location_.right     += x;
     location_.top       += y;
     location_.bottom    += y;
+}
+
+// ----------------------------------------------------------------------------
+void Component::attachParent(ComponentPtr parent)
+{
+    parent_ = parent;
+}
+
+// ----------------------------------------------------------------------------
+void Component::detachParent()
+{
+    parent_ = ComponentPtr();
+}
+
+// ----------------------------------------------------------------------------
+ComponentPtr Component::getTopLevelContainer()
+{
+    if (parent_.get() == 0) return ComponentPtr();
+
+    ComponentPtr p = parent_;
+    while (p->parent_.get() != 0)
+    {
+        p = p->parent_;
+    }
+    return p;
 }
 
 END_NAMESPACE_NYANCO_GUI

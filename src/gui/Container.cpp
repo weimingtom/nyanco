@@ -22,6 +22,7 @@ void Container::attach(
         componentPtr->setX(childLocation.left);
         componentPtr->setWidth(childLocation.right - childLocation.left);
     }
+    componentPtr->attachParent(ComponentPtr(this));
     componentList_.push_back(componentPtr);
 }
 
@@ -29,6 +30,7 @@ void Container::attach(
 void Container::detach(
     ComponentPtr                    componentPtr)
 {
+    componentPtr->detachParent();
     componentList_.remove(componentPtr);
 }
 

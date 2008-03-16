@@ -7,6 +7,7 @@
 
 #include "base.h"
 #include "afx/InputDevice.h"
+#include <string>
 #include <boost/shared_ptr.hpp>
 
 #define BEGIN_NAMESPACE_NYANCO_GUI namespace nyanco { namespace gui {
@@ -15,7 +16,9 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 typedef uint32                      Color;
+typedef std::string                 ComponentId;
 
+// ----------------------------------------------------------------------------
 class Point
 {
 public:
@@ -24,12 +27,14 @@ public:
     Point(sint32 x_, sint32 y_) : x(x_), y(y_) {}
 };
 
+// ----------------------------------------------------------------------------
 class Size
 {
 public:
     int width, height;
 };
 
+// ----------------------------------------------------------------------------
 class Rect
 {
 public:
@@ -44,8 +49,13 @@ public:
     void setHeight(int height) { bottom = top + height; }
     int getWidth() const { return right - left; }
     int getHeight() const { return bottom - top; }
+    bool isInnerPoint(int x, int y)
+    {
+        return (left <= x && x <= right && top  <= y && y <= bottom);
+    }
 };
 
+// ----------------------------------------------------------------------------
 class MouseCommand
 {
 public:

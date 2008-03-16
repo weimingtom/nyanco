@@ -12,10 +12,21 @@
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
-class ContextMenu;
-
 namespace impl { class WindowManager; }
 
+class ContextMenu;
+class MenuItemBase;
+class MenuItem;
+class SubMenuItem;
+class MenuSeparator;
+
+typedef boost::shared_ptr<MenuItemBase>     MenuItemBasePtr;
+typedef boost::shared_ptr<MenuItem>         MenuItemPtr;
+typedef boost::shared_ptr<SubMenuItem>      SubMenuItemPtr;
+typedef boost::shared_ptr<MenuSeparator>    MenuSeparatorPtr;
+typedef boost::shared_ptr<ContextMenu>      ContextMenuPtr;
+
+// ============================================================================
 class MenuItemBase : public Component
 {
 public:
@@ -23,14 +34,18 @@ public:
     virtual void setWidth(int width) = 0;
 };
 
-typedef boost::shared_ptr<MenuItemBase> MenuItemBasePtr;
-
+// ============================================================================
 class MenuItem : public MenuItemBase
 {
 public:
-    static boost::shared_ptr<MenuItem> Create(
+    static MenuItemPtr Create(
         ComponentId const&          componentId,
         std::string const&          text);
+
+    enum Event
+    {
+        Click,
+    };
 
 private:
     virtual void draw(Graphics& graphics);
@@ -41,8 +56,8 @@ private:
 
     friend ContextMenu;
 };
-typedef boost::shared_ptr<MenuItem> MenuItemPtr;
 
+// ============================================================================
 class SubMenuItem : public MenuItemBase
 {
 public:
@@ -61,8 +76,8 @@ private:
 
     friend ContextMenu;
 };
-typedef boost::shared_ptr<SubMenuItem> SubMenuItemPtr;
 
+// ============================================================================
 class MenuSeparator : public MenuItemBase
 {
 public:
@@ -72,8 +87,8 @@ private:
     virtual void draw(Graphics& g);
     virtual void setWidth(int width);
 };
-typedef boost::shared_ptr<MenuSeparator> MenuSeparatorPtr;
 
+// ============================================================================
 class ContextMenu : public Component
 {
 public:
@@ -98,6 +113,5 @@ private:
 
     friend impl::WindowManager;
 };
-typedef boost::shared_ptr<ContextMenu> ContextMenuPtr;
 
 END_NAMESPACE_NYANCO_GUI

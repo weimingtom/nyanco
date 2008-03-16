@@ -32,6 +32,7 @@ protected:
 private:
     std::string                     caption_;
     bool                            onMoving_;
+    bool                            onClosing_;
     FramePtr                        owner_;
 };
 

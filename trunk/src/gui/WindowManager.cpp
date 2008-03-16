@@ -118,7 +118,10 @@ void WindowManager::draw()
 // ------------------------------------------------------------------------
 void WindowManager::update()
 {
-    // “ü—Í‚Ì‰ðÍ
+    // invoke event
+    std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame::invokeEvent, _1));
+    
+    // input
     {
         InputDevice& input = InputDevice::GetInterface();
 
@@ -126,8 +129,16 @@ void WindowManager::update()
         onKeyboardProcess(input.getKeyboard());
     }
 
+    // update
     std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame::update, _1));
     contextMenu_->update();
+
+    // kill frames
+    foreach (FramePtr frame, killedFramePtrList_)
+    {
+        framePtrList_.remove(frame);
+    }
+    killedFramePtrList_.clear();
 }
 
 // ------------------------------------------------------------------------

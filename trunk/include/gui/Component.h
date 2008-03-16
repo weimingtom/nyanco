@@ -12,14 +12,15 @@
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
+class Component;
 class Graphics;
 class Container;
 class Frame;
 class ContextMenu;
 
-typedef std::string                 ComponentId;
-
 namespace impl { class WindowManager; }
+
+typedef boost::shared_ptr<Component> ComponentPtr;
 
 class Component : public boost::enable_shared_from_this<Component>
 {
@@ -49,9 +50,15 @@ public:
     bool isPointInner(Point const& point);
 
 protected:
+    void attachParent(ComponentPtr parent);
+    void detachParent();
+    ComponentPtr getTopLevelContainer();
+
+protected:
     std::string                     name_;
     Rect                            location_;
     bool                            focused_;
+    ComponentPtr                    parent_;
 
     Component() : focused_(false) {}
 
@@ -59,7 +66,5 @@ protected:
     friend Container;
     friend impl::WindowManager;
 };
-
-typedef boost::shared_ptr<Component> ComponentPtr;
 
 END_NAMESPACE_NYANCO_GUI

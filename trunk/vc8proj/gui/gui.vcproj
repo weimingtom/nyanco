@@ -169,6 +169,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\Event.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\FontTexture.cpp"
 				>
 			</File>

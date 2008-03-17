@@ -74,7 +74,7 @@ int Component::getHeight() const
 }
 
 // ----------------------------------------------------------------------------
-int Component::getWidth() cosnt
+int Component::getWidth() const
 {
     return location_.right - location_.left;
 }

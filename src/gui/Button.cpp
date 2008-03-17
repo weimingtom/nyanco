@@ -11,12 +11,12 @@ BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
 ButtonPtr Button::Create(
-    std::string const&                  name,
+    ComponentId                         id,
     std::string const&                  caption)
 {
     Button* button = new Button;
 
-    button->setName(name);
+    button->m_id        = id;
     button->caption_    = caption;
     button->setLocation(Rect(0, 0, 0, 18));
 
@@ -71,7 +71,7 @@ int Button::getHeight() const
 }
 
 // ----------------------------------------------------------------------------
-void Button::onMouseProcess(MouseCommand const& command)
+bool Button::onMouseProcess(MouseCommand const& command)
 {
     if (command.onPushLeft)
     {
@@ -80,12 +80,16 @@ void Button::onMouseProcess(MouseCommand const& command)
     else if (command.onUpLeft && pushed_)
     {
         pushed_ = false;
-        ComponentPtr frame = getTopLevelContainer();
-        if (frame != 0)
+        if (location_.isInnerPoint(command.posX, command.posY))
         {
-            (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(name_, PushEvent));
+            ComponentPtr frame = getTopLevelContainer();
+            if (frame != 0)
+            {
+                (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(m_id, PushEvent));
+            }
         }
     }
+    return pushed_;
 }
 
 END_NAMESPACE_NYANCO_GUI

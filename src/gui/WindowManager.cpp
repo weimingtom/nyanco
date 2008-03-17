@@ -22,13 +22,13 @@ WindowManager* WindowManager::myPtr_ = 0;
 class FrameFinder
 {
 public:
-    FrameFinder(std::string const& name) : name_(name) {}
+    FrameFinder(ComponentId id) : m_id(id) {}
     bool operator()(FramePtr framePtr) const
     {
-        return framePtr->getName() == name_;
+        return framePtr->getId() == m_id;
     }
 private:
-    std::string name_;
+    ComponentId                         m_id;
 };
 
 
@@ -58,19 +58,19 @@ void WindowManager::detach(
 
 // ------------------------------------------------------------------------
 void WindowManager::detach(
-    std::string const&              name)
+    ComponentId                         id)
 {
     FramePtrList::iterator it = std::find_if(
-        framePtrList_.begin(), framePtrList_.end(), FrameFinder(name));
+        framePtrList_.begin(), framePtrList_.end(), FrameFinder(id));
     if (it != framePtrList_.end()) killedFramePtrList_.push_back(*it);
 }
 
 // ------------------------------------------------------------------------
 FramePtr WindowManager::search(
-    std::string const&              name)
+    ComponentId                         id)
 {
     FramePtrList::iterator it = std::find_if(
-        framePtrList_.begin(), framePtrList_.end(), FrameFinder(name));
+        framePtrList_.begin(), framePtrList_.end(), FrameFinder(id));
     return (it != framePtrList_.end())? *it: FramePtr();
 }
 
@@ -158,35 +158,48 @@ void WindowManager::finalize()
 // ------------------------------------------------------------------------
 void WindowManager::onMouseProcess(Mouse const& mouse)
 {
-    using boost::bind;
-
-    int x, y;
-    mouse.getPosition(x, y);
-
     MouseCommand command;
     MouseCommand::Create(command, mouse);
 
-    bool frameHit = false;
-    foreach (FramePtr frame, framePtrList_)
+    // マウスキャプチャコンポーネントが存在
+    if (ComponentPtr p = m_capturedMouse.lock())
     {
-        ComponentPtr p = frame->checkHit(x, y);
-        if (p.get() != 0)
+        if (!p->onMouseProcess(command))
         {
-            frameHit = true;
-
-            if (command.onPushLeft) activate(frame);
-            p->onMouseProcess(command);
-            break;
+            // キャプチャを解除
+            m_capturedMouse.reset();
         }
     }
+    else
+    {
+        bool frameHit = false;
+        foreach (FramePtr frame, framePtrList_)
+        {
+            ComponentPtr p = frame->checkHit(command.posX, command.posY);
+            if (p.get() != 0)
+            {
+                frameHit = true;
+                if (command.onButtonDown)
+                {
+                    activate(frame);
+                    if (p->onMouseProcess(command))
+                    {
+                        // キャプチャを設定
+                        m_capturedMouse = p;
+                    }
+                }
+                break;
+            }
+        }
 
-    if (!frameHit && command.onPushRight)
-    {
-        contextMenu_->visible(x, y);
-    }
-    else if (command.onPushRight || command.onPushLeft)
-    {
-        contextMenu_->invisible();
+        if (!frameHit && command.onPushRight)
+        {
+            contextMenu_->visible(command.posX, command.posY);
+        }
+        else if (command.onPushRight || command.onPushLeft)
+        {
+            contextMenu_->invisible();
+        }
     }
 }
 

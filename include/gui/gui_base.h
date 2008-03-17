@@ -16,7 +16,7 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 typedef uint32                      Color;
-typedef std::string                 ComponentId;
+typedef sint32                      ComponentId;
 
 // ----------------------------------------------------------------------------
 class Point
@@ -73,6 +73,8 @@ public:
     int                             moveX;
     int                             moveY;
 
+    bool                            onButtonDown;
+
     static void Create(MouseCommand& command, Mouse const& mouse)
     {
         command.onPushLeft  = mouse.onButtonPush(Mouse::Button::Left);
@@ -88,6 +90,9 @@ public:
         mouse.getPreviousPosition(x, y);
         command.moveX = command.posX - x;
         command.moveY = command.posY - y;
+
+        command.onButtonDown = command.onPushLeft || command.onPushRight ||
+                               command.onDownLeft || command.onDownRight;
     }
 };
 

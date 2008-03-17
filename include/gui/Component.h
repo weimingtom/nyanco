@@ -7,6 +7,7 @@
 
 #include "gui_base.h"
 #include <string>
+#include <boost/weak_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
@@ -25,13 +26,15 @@ typedef boost::shared_ptr<Component> ComponentPtr;
 class Component : public boost::enable_shared_from_this<Component>
 {
 public:
-    std::string const& getName() const { return name_; }
+    typedef boost::weak_ptr<Component>  WeakPtr;
+
+    ComponentId getId() const { return m_id; }
     void focus();
     bool isFocused() const;
 
     virtual int getHeight() const;
+    virtual int getWidth() const;
 
-    void setName(std::string const& name);
     void setLocation(Rect const& location);
     //void setPosition(int x, int y);
     void setX(int x);
@@ -44,7 +47,7 @@ public:
     virtual void update();
     virtual void move(int x, int y);
 
-    virtual void onMouseProcess(MouseCommand const& mouse) {}
+    virtual bool onMouseProcess(MouseCommand const& mouse) { return false; }
     virtual void onKeyboardPtrocess(KeyboardCommand const& keyboard) {}
 
     bool isPointInner(Point const& point);
@@ -55,7 +58,7 @@ protected:
     ComponentPtr getTopLevelContainer();
 
 protected:
-    std::string                     name_;
+    ComponentId                     m_id;
     Rect                            location_;
     bool                            focused_;
     ComponentPtr                    parent_;

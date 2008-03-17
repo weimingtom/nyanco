@@ -13,7 +13,7 @@ class Button : public Component
 {
 public:
     static boost::shared_ptr<Button> Create(
-        std::string const&              name,
+        ComponentId                     id,
         std::string const&              text);
 
     enum Event
@@ -26,7 +26,7 @@ private:
     virtual void draw(Graphics& graphics);
     virtual int getHeight() const;
 
-    void onMouseProcess(MouseCommand const& command);
+    bool onMouseProcess(MouseCommand const& command);
 
     std::string                     caption_;
     bool                            pushed_;

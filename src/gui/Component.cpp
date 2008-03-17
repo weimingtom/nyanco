@@ -42,12 +42,6 @@ bool Component::isFocused() const
 }
 
 // ----------------------------------------------------------------------------
-void Component::setName(std::string const& name)
-{
-    name_ = name;
-}
-
-// ----------------------------------------------------------------------------
 void Component::setLocation(Rect const& location)
 {
     location_ = location;
@@ -77,6 +71,12 @@ void Component::setWidth(int width)
 int Component::getHeight() const
 {
     return location_.bottom - location_.top;
+}
+
+// ----------------------------------------------------------------------------
+int Component::getWidth() cosnt
+{
+    return location_.right - location_.left;
 }
 
 // ----------------------------------------------------------------------------

@@ -11,13 +11,13 @@ BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
 TitleBarPtr TitleBar::Create(
-    std::string const&              name,
+    ComponentId                     id,
     std::string const&              caption,
     FramePtr                        owner)
 {
     TitleBar* titleBar = new TitleBar;
 
-    titleBar->setName(name);
+    titleBar->m_id      = id;
     titleBar->caption_  = caption;
     titleBar->owner_    = owner;
     titleBar->onMoving_ = false;
@@ -67,8 +67,9 @@ void TitleBar::draw(Graphics& graphics)
     graphics.drawLine(Point(closeRegion.right, closeRegion.top+1), Point(closeRegion.right, closeRegion.bottom));
     graphics.drawLine(Point(closeRegion.left, closeRegion.bottom), Point(closeRegion.right, closeRegion.bottom));
 
-    graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-2, closeRegion.bottom-2));
-    graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-2, closeRegion.top+2));
+    graphics.setColor(0xffeeeeee);
+    graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1));
+    graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-1, closeRegion.top+1));
 }
 
 // ----------------------------------------------------------------------------
@@ -117,7 +118,7 @@ int TitleBar::getHeight() const
 }
 
 // ----------------------------------------------------------------------------
-void TitleBar::onMouseProcess(MouseCommand const& command)
+bool TitleBar::onMouseProcess(MouseCommand const& command)
 {
     if (command.onPushLeft)
     {
@@ -134,6 +135,7 @@ void TitleBar::onMouseProcess(MouseCommand const& command)
         }
         onMoving_ = true;
     }
+    return false;
 }
 
 END_NAMESPACE_NYANCO_GUI

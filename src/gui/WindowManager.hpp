@@ -8,6 +8,7 @@
 #include "gui_impl_base.hpp"
 #include "gui/WindowManager.h"
 #include "Graphics.hpp"
+#include "Component.h"
 #include <d3d9.h>
 #include <vector>
 #include <list>
@@ -42,10 +43,10 @@ class WindowManager : public nyanco::gui::WindowManager
         FramePtr                    framePtr);
 
     virtual void detach(
-        std::string const&          name);
+        ComponentId                 id);
 
     virtual FramePtr search(
-        std::string const&          name);
+        ComponentId                 id);
 
     virtual void activate(
         FramePtr                    framePtr);
@@ -105,8 +106,9 @@ private:
     //! ÉÅÉjÉÖÅ[
     ContextMenuPtr                  contextMenu_;
 
-    ComponentPtr                    m_capturedKeyboard;
-    ComponentPtr                    m_capturedMouse;
+//    ComponentPtr                    m_capturedKeyboard;
+//    ComponentPtr                    m_capturedMouse;
+    Component::WeakPtr              m_capturedMouse;
 
     FramePtrList                    killedFramePtrList_;
 

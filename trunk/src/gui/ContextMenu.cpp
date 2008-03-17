@@ -19,7 +19,7 @@ MenuItemPtr MenuItem::Create(
 {
     MenuItem* item = new MenuItem;
 
-    item->setName(componentId);
+    item->m_id = componentId;
     item->text_ = text;
     item->setLocation(Rect(0, 0, 0, 14));
 
@@ -58,7 +58,7 @@ SubMenuItemPtr SubMenuItem::Create(
 {
     SubMenuItem* item = new SubMenuItem;
 
-    item->setName(componentId);
+    item->m_id = componentId;
     item->text_ = text;
     item->setLocation(Rect(0, 0, 0, 14));
 

@@ -18,12 +18,12 @@ BEGIN_NAMESPACE_NYANCO_GUI
 // ----------------------------------------------------------------------------
 void Frame::create(
     FramePtr                            frame,
-    std::string const&                  name,
+    ComponentId                         id,
     std::string const&                  caption,
     uint32                              width,
     uint32                              height)
 {
-    frame->name_                    = name;
+    frame->m_id                     = id;
     frame->caption_                 = caption;
 
     {
@@ -36,7 +36,7 @@ void Frame::create(
         frame->margin_.left = frame->margin_.right = 3;
         frame->margin_.top  = frame->margin_.bottom = 3;
     }
-    frame->attach(TitleBar::Create("", caption, frame));
+    frame->attach(TitleBar::Create(-1, caption, frame));
     frame->onInitialize();
 }
 

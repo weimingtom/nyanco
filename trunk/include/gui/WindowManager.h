@@ -30,10 +30,10 @@ public:
         FramePtr                    framePtr) = 0;
 
     virtual void detach(
-        std::string const&          name) = 0;
+        ComponentId                 id) = 0;
 
     virtual FramePtr search(
-        std::string const&          name) = 0;
+        ComponentId                 id) = 0;
 
     virtual void activate(
         FramePtr                    framePtr) = 0;

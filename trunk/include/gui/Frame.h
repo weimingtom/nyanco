@@ -33,7 +33,7 @@ public:
 protected:
     void create(
         FramePtr                        frame,
-        std::string const&              name,
+        ComponentId                     id,
         std::string const&              caption,
         uint32                          width,
         uint32                          height);
@@ -60,7 +60,7 @@ class Frame2 : public Frame
 {
 public:
     static boost::shared_ptr<Derived_> Create(
-        std::string const&              name,
+        ComponentId                     id,
         std::string const&              caption,
         uint32                          width,
         uint32                          height);
@@ -80,13 +80,13 @@ private:
 // ----------------------------------------------------------------------------
 template <typename Derived_>
 boost::shared_ptr<Derived_> Frame2<Derived_>::Create(
-    std::string const&              name,
+    ComponentId                     id,
     std::string const&              caption,
     uint32                          width,
     uint32                          height)
 {
     boost::shared_ptr<Derived_> framePtr(new Derived_);
-    framePtr->create(framePtr, name, caption, width, height);
+    framePtr->create(framePtr, id, caption, width, height);
     return framePtr;
 }
 

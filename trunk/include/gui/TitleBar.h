@@ -15,7 +15,7 @@ class TitleBar : public Component
 {
 public:
     static boost::shared_ptr<TitleBar> Create(
-        std::string const&          name,
+        ComponentId                 id,
         std::string const&          caption,
         FramePtr                    owner);
 
@@ -27,7 +27,7 @@ protected:
     virtual void update();
     virtual int getHeight() const;
 
-    virtual void onMouseProcess(MouseCommand const& mouse);
+    virtual bool onMouseProcess(MouseCommand const& mouse);
 
 private:
     std::string                     caption_;

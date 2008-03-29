@@ -5,12 +5,12 @@
 
 #include "Button.h"
 #include "Graphics.hpp"
-#include "Frame.h"
+#include "Event.h"
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
-ButtonPtr Button::Create(
+Button::Ptr Button::Create(
     ComponentId                         id,
     std::string const&                  caption)
 {
@@ -20,7 +20,7 @@ ButtonPtr Button::Create(
     button->caption_    = caption;
     button->setLocation(Rect(0, 0, 0, 18));
 
-    return ButtonPtr(button);
+    return Button::Ptr(button);
 }
 
 // ----------------------------------------------------------------------------
@@ -76,16 +76,24 @@ bool Button::onMouseProcess(MouseCommand const& command)
     if (command.onPushLeft)
     {
         pushed_ = true;
+
+        EventServer* es = getEventServer();
+        if (es != 0)
+        {
+            Event<Button> event(this, DownEvent);
+            es->queueEvent(m_id, event);
+        }
     }
     else if (command.onUpLeft && pushed_)
     {
         pushed_ = false;
         if (location_.isInnerPoint(command.posX, command.posY))
         {
-            ComponentPtr frame = getTopLevelContainer();
-            if (frame != 0)
+            EventServer* es = getEventServer();
+            if (es != 0)
             {
-                (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(m_id, PushEvent));
+                Event<Button> event(this, UpEvent);
+                es->queueEvent(m_id, event);
             }
         }
     }

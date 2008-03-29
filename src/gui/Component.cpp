@@ -5,6 +5,7 @@
 
 #include "Component.h"
 #include "Container.h"
+#include "Event.h"
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
@@ -107,7 +108,7 @@ void Component::detachParent()
 }
 
 // ----------------------------------------------------------------------------
-ComponentPtr Component::getTopLevelContainer()
+ComponentPtr Component::getTopLevelContainer() const
 {
     if (parent_.get() == 0) return ComponentPtr();
 
@@ -117,6 +118,13 @@ ComponentPtr Component::getTopLevelContainer()
         p = p->parent_;
     }
     return p;
+}
+
+// ----------------------------------------------------------------------------
+EventServer* Component::getEventServer() const
+{
+    Component::Ptr ptr = getTopLevelContainer();
+    return dynamic_cast<EventServer*>(ptr.get());
 }
 
 END_NAMESPACE_NYANCO_GUI

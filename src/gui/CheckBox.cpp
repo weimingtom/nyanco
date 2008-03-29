@@ -75,7 +75,7 @@ bool CheckBox::onMouseProcess(MouseCommand const& command)
             ComponentPtr frame = getTopLevelContainer();
             if (frame != 0)
             {
-                (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(m_id, CheckChangedEvent));
+//                (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(m_id, CheckChangedEvent));
             }
             m_checked = !m_checked;
         }

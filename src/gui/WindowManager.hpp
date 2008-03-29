@@ -22,7 +22,7 @@ class Keyboard;
 END_NAMESPACE_NYANCO
 BEGIN_NAMESPACE_NYANCO_GUI
 
-class Frame;
+template <typename Type_> class Frame;
 class ContextMenu;
 class Interface;
 
@@ -37,21 +37,21 @@ class WindowManager : public nyanco::gui::WindowManager
         Color                       color);
 
     virtual void attach(
-        nyanco::gui::FramePtr       framePtr);
+		nyanco::gui::Frame<>::Ptr       framePtr);
 
     virtual void detach(
-        FramePtr                    framePtr);
+        Frame<>::Ptr                framePtr);
 
     virtual void detach(
         ComponentId                 id);
 
-    virtual FramePtr search(
+	virtual Frame<>::Ptr search(
         ComponentId                 id);
 
     virtual void activate(
-        FramePtr                    framePtr);
+        Frame<>::Ptr                framePtr);
 
-    virtual FramePtr getActiveWindow() const;
+    virtual Frame<>::Ptr getActiveWindow() const;
 
     virtual ContextMenuPtr getContextMenu() const;
 
@@ -96,7 +96,7 @@ private:
         Color                       color_;
     };
 
-    typedef std::list<FramePtr>     FramePtrList;
+    typedef std::list<Frame<>::Ptr> FramePtrList;
     typedef std::vector<Text>       TextList;
 
     //! フレームリスト

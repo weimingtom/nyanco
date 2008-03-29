@@ -9,6 +9,9 @@
 
 #define BEGIN_NAMESPACE_NYANCO  namespace nyanco {
 #define END_NAMESPACE_NYANCO    }
+#define BEGIN_NO_NAMESPACE      namespace {
+#define END_NO_NAMESPACE        }
+
 #define USING_NAMESPACE_NYANCO  using namespace nyanco;
 
 BEGIN_NAMESPACE_NYANCO

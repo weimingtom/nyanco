@@ -24,21 +24,21 @@ public:
         Color                       color) = 0;
 
     virtual void attach(
-        FramePtr                    framePtr) = 0;
+        Frame<>::Ptr                framePtr) = 0;
 
     virtual void detach(
-        FramePtr                    framePtr) = 0;
+        Frame<>::Ptr                framePtr) = 0;
 
     virtual void detach(
         ComponentId                 id) = 0;
 
-    virtual FramePtr search(
+	virtual Frame<>::Ptr search(
         ComponentId                 id) = 0;
 
     virtual void activate(
-        FramePtr                    framePtr) = 0;
+        Frame<>::Ptr                framePtr) = 0;
 
-    virtual FramePtr getActiveWindow() const = 0;
+    virtual Frame<>::Ptr getActiveWindow() const = 0;
 
     virtual ContextMenuPtr getContextMenu() const = 0;
 

@@ -6,14 +6,15 @@
 #include "TitleBar.h"
 #include "Graphics.hpp"
 #include "WindowManager.hpp"
+#include "Frame.h"
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
-TitleBarPtr TitleBar::Create(
+TitleBar::Ptr TitleBar::Create(
     ComponentId                     id,
     std::string const&              caption,
-    FramePtr                        owner)
+    Frame<>::Ptr                    owner)
 {
     TitleBar* titleBar = new TitleBar;
 
@@ -25,7 +26,7 @@ TitleBarPtr TitleBar::Create(
 
     titleBar->setLocation(Rect(0, 0, 0, 14));
 
-    return TitleBarPtr(titleBar);
+    return TitleBar::Ptr(titleBar);
 }
 
 // ----------------------------------------------------------------------------
@@ -46,6 +47,12 @@ void TitleBar::draw(Graphics& graphics)
     Rect caption = location_;
     caption.bottom = caption.top + 14;
     graphics.setColor(0xff6666ff);
+
+    WindowManager& wm = WindowManager::GetInterface();
+    if (wm.getActiveWindow() != owner_)
+        graphics.setRectColor(0xff4444aa, 0xff444466, 0xff4444aa, 0xff444466);
+    else
+        graphics.setRectColor(0xff0000aa, 0xff000066, 0xff0000aa, 0xff000066);
     graphics.drawFillRect(caption);
     graphics.drawText(Point(caption.left+1, caption.top+1), caption_, 0xffeeeeee);
 
@@ -56,7 +63,7 @@ void TitleBar::draw(Graphics& graphics)
     closeRegion.top    += 2;
     closeRegion.bottom -= 2;
 
-    graphics.setColor(0xff444444);
+    graphics.setRectColor(0xff444444);
     graphics.drawFillRect(closeRegion);
 
     graphics.setColor(0xff888888);
@@ -70,45 +77,6 @@ void TitleBar::draw(Graphics& graphics)
     graphics.setColor(0xffeeeeee);
     graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1));
     graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-1, closeRegion.top+1));
-}
-
-// ----------------------------------------------------------------------------
-void TitleBar::update()
-{
-    Mouse& mouse = InputDevice::GetInterface().getMouse();
-    MouseCommand command;
-    MouseCommand::Create(command, mouse);
-
-    if (onClosing_)
-    {
-        if (command.onUpLeft)
-        {
-            // in button region
-            Rect closeRegion = location_;
-            closeRegion.right  -= 2;
-            closeRegion.left    = closeRegion.right - 10;
-            closeRegion.top    += 2;
-            closeRegion.bottom -= 2;
-
-            if (closeRegion.isInnerPoint(command.posX, command.posY))
-            {
-                WindowManager& wm = WindowManager::GetInterface();
-                wm.detach(owner_);
-            }
-            onClosing_ = false;
-        }
-    }
-    else if (onMoving_)
-    {
-        if (command.onUpLeft)
-        {
-            onMoving_ = false;
-        }
-        else if (command.onDownLeft)
-        {
-            owner_->move(command.moveX, command.moveY);
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -133,7 +101,40 @@ bool TitleBar::onMouseProcess(MouseCommand const& command)
         {
             onClosing_ = true;
         }
-        onMoving_ = true;
+        else onMoving_ = true;
+        return true;
+    }
+    else if (command.onUpLeft)
+    {
+        if (onClosing_)
+        {
+            // in button region
+            Rect closeRegion = location_;
+            closeRegion.right  -= 2;
+            closeRegion.left    = closeRegion.right - 10;
+            closeRegion.top    += 2;
+            closeRegion.bottom -= 2;
+
+            if (closeRegion.isInnerPoint(command.posX, command.posY))
+            {
+                WindowManager& wm = WindowManager::GetInterface();
+                wm.detach(owner_);
+            }
+            onClosing_ = false;
+        }
+        else if (onMoving_)
+        {
+            onMoving_ = false;
+        }
+        return false;
+    }
+    else if (command.onDownLeft)
+    {
+        if (onMoving_)
+        {
+            owner_->move(command.moveX, command.moveY);
+        }
+        return true;
     }
     return false;
 }

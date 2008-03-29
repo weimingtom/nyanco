@@ -16,8 +16,8 @@ BEGIN_NAMESPACE_NYANCO_GUI
 class Component;
 class Graphics;
 class Container;
-class Frame;
 class ContextMenu;
+class EventServer;
 
 namespace impl { class WindowManager; }
 
@@ -26,7 +26,7 @@ typedef boost::shared_ptr<Component> ComponentPtr;
 class Component : public boost::enable_shared_from_this<Component>
 {
 public:
-    typedef boost::weak_ptr<Component>  WeakPtr;
+    NYANCO_GUI_COMPONENT_TYPEDEF(Component);
 
     ComponentId getId() const { return m_id; }
     void focus();
@@ -55,7 +55,8 @@ public:
 protected:
     void attachParent(ComponentPtr parent);
     void detachParent();
-    ComponentPtr getTopLevelContainer();
+    EventServer* getEventServer() const;
+    ComponentPtr getTopLevelContainer() const;
 
 protected:
     ComponentId                     m_id;

@@ -35,13 +35,6 @@ void Container::detach(
 }
 
 // ----------------------------------------------------------------------------
-void Container::detach(
-    std::string const&              componentName)
-{
-
-}
-
-// ----------------------------------------------------------------------------
 void Container::resize(int parentWidth)
 {
     int const childWidth = parentWidth - (margin_.left + margin_.right);
@@ -72,6 +65,8 @@ ComponentPtr Container::checkHit(int x, int y)
     return ComponentPtr();
 }
 
+
+// ----------------------------------------------------------------------------
 
 
 END_NAMESPACE_NYANCO_GUI

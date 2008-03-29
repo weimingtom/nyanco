@@ -19,6 +19,15 @@ public:
     virtual void setColor(
         Color                       color);
 
+    virtual void setRectColor(
+        Color                       color);
+
+    virtual void setRectColor(
+        Color                       leftTop,
+        Color                       rightTop,
+        Color                       leftBottom,
+        Color                       rightBottom);
+
     virtual void drawText(
         Point const&                point,
         std::string const&          text,
@@ -42,6 +51,7 @@ public:
 
 private:
     Color                           color_;
+    Color                           rectColor_[4];
 
     LPDIRECT3DTEXTURE9              fontTexture_;
     FontInfo                        fontInfo_;

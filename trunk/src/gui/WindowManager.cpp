@@ -23,7 +23,7 @@ class FrameFinder
 {
 public:
     FrameFinder(ComponentId id) : m_id(id) {}
-    bool operator()(FramePtr framePtr) const
+    bool operator()(Frame<>::Ptr framePtr) const
     {
         return framePtr->getId() == m_id;
     }
@@ -44,14 +44,14 @@ void WindowManager::drawText(
 
 // ------------------------------------------------------------------------
 void WindowManager::attach(
-    FramePtr                        framePtr)
+    Frame<>::Ptr                        framePtr)
 {
     framePtrList_.push_front(framePtr);
 }
 
 // ------------------------------------------------------------------------
 void WindowManager::detach(
-    FramePtr                        framePtr)
+    Frame<>::Ptr                        framePtr)
 {
     killedFramePtrList_.push_back(framePtr);
 }
@@ -66,26 +66,26 @@ void WindowManager::detach(
 }
 
 // ------------------------------------------------------------------------
-FramePtr WindowManager::search(
+Frame<>::Ptr WindowManager::search(
     ComponentId                         id)
 {
     FramePtrList::iterator it = std::find_if(
         framePtrList_.begin(), framePtrList_.end(), FrameFinder(id));
-    return (it != framePtrList_.end())? *it: FramePtr();
+	return (it != framePtrList_.end())? *it: Frame<>::Ptr();
 }
 
 // ------------------------------------------------------------------------
 void WindowManager::activate(
-    FramePtr                        framePtr)
+    Frame<>::Ptr                        framePtr)
 {
     framePtrList_.remove(framePtr);
     framePtrList_.push_front(framePtr);
 }
 
 // ------------------------------------------------------------------------
-FramePtr WindowManager::getActiveWindow() const
+Frame<>::Ptr WindowManager::getActiveWindow() const
 {
-    return framePtrList_.back();
+    return framePtrList_.front();
 }
 
 // ------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void WindowManager::draw()
     // draw frame list
     std::for_each(
         framePtrList_.rbegin(), framePtrList_.rend(),
-        bind(&Frame::draw, _1, ref(*graphics_)));
+        bind(&Frame<>::draw, _1, ref(*graphics_)));
 
     // draw context menu
     contextMenu_->draw(*graphics_);
@@ -119,7 +119,7 @@ void WindowManager::draw()
 void WindowManager::update()
 {
     // invoke event
-    std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame::invokeEvent, _1));
+    std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame<>::invokeHandler, _1));
     
     // input
     {
@@ -130,11 +130,11 @@ void WindowManager::update()
     }
 
     // update
-    std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame::update, _1));
+    std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame<>::update, _1));
     contextMenu_->update();
 
     // kill frames
-    foreach (FramePtr frame, killedFramePtrList_)
+	foreach (Frame<>::Ptr frame, killedFramePtrList_)
     {
         framePtrList_.remove(frame);
     }
@@ -173,9 +173,9 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
     else
     {
         bool frameHit = false;
-        foreach (FramePtr frame, framePtrList_)
+        foreach (Frame<>::Ptr frame, framePtrList_)
         {
-            ComponentPtr p = frame->checkHit(command.posX, command.posY);
+            ComponentPtr p = frame->getHitComponent(command.posX, command.posY);
             if (p.get() != 0)
             {
                 frameHit = true;

@@ -12,13 +12,16 @@ BEGIN_NAMESPACE_NYANCO_GUI
 class Button : public Component
 {
 public:
-    static boost::shared_ptr<Button> Create(
+    NYANCO_GUI_COMPONENT_TYPEDEF(Button);
+
+    static Button::Ptr Create(
         ComponentId                     id,
         std::string const&              text);
 
-    enum Event
+    enum EventList
     {
-        PushEvent,
+        DownEvent,
+        UpEvent,
     };
 
 private:

@@ -34,11 +34,11 @@ namespace gui
     void Interface::onUpdate()
     {
         // “ü—Í‚ÌŽæ“¾
-        InputDevice& input = InputDevice::GetInterface();
-        impl::WindowManager&  manager     = impl::WindowManager::GetImplement();
-        manager.onMouseProcess(input.getMouse());
-        manager.onKeyboardProcess(input.getKeyboard());
+//        InputDevice& input = InputDevice::GetInterface();
 
+//        manager.onMouseProcess(input.getMouse());
+//        manager.onKeyboardProcess(input.getKeyboard());
+        impl::WindowManager&  manager     = impl::WindowManager::GetImplement();
         manager.update();
     }
 

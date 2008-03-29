@@ -9,13 +9,22 @@
 #include "afx/InputDevice.h"
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 
-#define BEGIN_NAMESPACE_NYANCO_GUI namespace nyanco { namespace gui {
-#define END_NAMESPACE_NYANCO_GUI }}
+#define BEGIN_NAMESPACE_NYANCO_GUI  namespace nyanco { namespace gui {
+#define END_NAMESPACE_NYANCO_GUI    }}
+#define NAMESPACE_NYANCO_GUI        nyanco::gui
+
+#define NYANCO_GUI_COMPONENT_TYPEDEF(Component_)    \
+    typedef boost::shared_ptr<Component_>   Ptr;    \
+    typedef boost::weak_ptr<Component_>     WeakPtr;\
+    typedef boost::scoped_ptr<Component_>   ScopedPtr;\
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
 typedef uint32                      Color;
+typedef sint32                      WindowId;
 typedef sint32                      ComponentId;
 
 // ----------------------------------------------------------------------------
@@ -53,6 +62,13 @@ public:
     {
         return (left <= x && x <= right && top  <= y && y <= bottom);
     }
+};
+
+// ----------------------------------------------------------------------------
+class ColorRect : public Rect
+{
+public:
+    Color leftColor, topColor, rightColor, bottomColor;
 };
 
 // ----------------------------------------------------------------------------

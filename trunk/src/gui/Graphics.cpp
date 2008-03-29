@@ -41,6 +41,26 @@ void Graphics::setColor(
     color_ = color;
 }
 
+// ----------------------------------------------------------------------------
+void Graphics::setRectColor(
+    Color                           color)
+{
+    rectColor_[0] = rectColor_[1] = rectColor_[2] = rectColor_[3] = color;
+}
+
+// ----------------------------------------------------------------------------
+void Graphics::setRectColor(
+    Color                           leftTop,
+    Color                           rightTop,
+    Color                           leftBottom,
+    Color                           rightBottom)
+{
+    rectColor_[0] = leftTop;
+    rectColor_[1] = rightTop;
+    rectColor_[2] = leftBottom;
+    rectColor_[3] = rightBottom;
+}
+
 // ------------------------------------------------------------------------
 void Graphics::drawText(
     Point const&                    point,
@@ -141,10 +161,10 @@ void Graphics::drawFillRect(
 {
     GuiVertex v[4] =
     {
-        { rect.left,    rect.top,       0.f,    1.f,    color_ },
-        { rect.right,   rect.top,       0.f,    1.f,    color_ },
-        { rect.right,   rect.bottom,    0.f,    1.f,    color_ },
-        { rect.left,    rect.bottom,    0.f,    1.f,    color_ }
+        { rect.left,    rect.top,       0.f,    1.f,    rectColor_[0] },
+        { rect.right,   rect.top,       0.f,    1.f,    rectColor_[1] },
+        { rect.right,   rect.bottom,    0.f,    1.f,    rectColor_[3] },
+        { rect.left,    rect.bottom,    0.f,    1.f,    rectColor_[2] }
     };
 
     device_.SetFVF(GuiVertex::Fvf);

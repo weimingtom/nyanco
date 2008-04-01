@@ -87,7 +87,7 @@ private:
 
         void draw(Graphics& graphics)
         {
-            graphics.drawText(point_, text_, color_);
+//            graphics.drawText(point_, text_, color_);
         }
 
     private:

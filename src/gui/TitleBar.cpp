@@ -54,7 +54,10 @@ void TitleBar::draw(Graphics& graphics)
     else
         graphics.setRectColor(0xff0000aa, 0xff000066, 0xff0000aa, 0xff000066);
     graphics.drawFillRect(caption);
-    graphics.drawText(Point(caption.left+1, caption.top+1), caption_, 0xffeeeeee);
+
+    Rect clip = location_;
+    clip.right -= 12;
+    graphics.drawText(Point(caption.left+1, caption.top+1), caption_, 0xffeeeeee, clip);
 
     // close button
     Rect closeRegion = location_;

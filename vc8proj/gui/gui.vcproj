@@ -201,6 +201,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\ListBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\TitleBar.cpp"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\Label.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\ListBox.h"
 				>
 			</File>
 			<File

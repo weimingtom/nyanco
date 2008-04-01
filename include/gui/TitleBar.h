@@ -28,7 +28,6 @@ public:
 protected:
     virtual void draw(Graphics& graphics);
     virtual int getHeight() const;
-
     virtual bool onMouseProcess(MouseCommand const& mouse);
 
 private:

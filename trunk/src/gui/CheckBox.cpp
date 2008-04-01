@@ -45,7 +45,9 @@ void CheckBox::draw(Graphics& graphics)
     graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
     graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
 
-    graphics.drawText(Point(location_.left+17, location_.top+2), text_, 0xffeeeeee);
+    Rect clip = location_;
+    clip.right -= 2;
+    graphics.drawText(Point(location_.left+17, location_.top+2), text_, 0xffeeeeee, clip);
 
     if (m_checked)
     {

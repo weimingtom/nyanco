@@ -24,7 +24,8 @@ namespace nyanco { namespace gui
     {
         Rect caption = location_;
         caption.bottom = caption.top + 14;
-        graphics.drawText(Point(caption.left+1, caption.top+1), text_, 0xffeeeeee);
+        Rect clip = location_;
+        graphics.drawText(Point(caption.left+1, caption.top+1), text_, 0xffeeeeee, clip);
     }
 
     int Label::getHeight() const

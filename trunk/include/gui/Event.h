@@ -78,12 +78,12 @@ class EventServer
 
 public:
     template <typename Type_, typename Event_>
-    void registHandler(int id, void (Type_::*handler)(Event<Event_> const&))
+    void registerHandler(int id, void (Type_::*handler)(Event<Event_> const&))
     {
         m_map[id] = HandlerSet(handler, &Invoker<Type_, Event_>::Invoke);
     }
 
-    void unregistHandler(int id)
+    void unregisterHandler(int id)
     {
         m_map.erase(id);
     }

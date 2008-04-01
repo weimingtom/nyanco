@@ -29,7 +29,8 @@ public:
     virtual void drawText(
         Point const&                point,
         std::string const&          text,
-        Color                       color) = 0;
+        Color                       color,
+        Rect const&                 region) = 0;
 
     virtual void drawRect(
         Rect const&                 rect) = 0;

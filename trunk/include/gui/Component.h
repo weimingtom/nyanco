@@ -35,11 +35,11 @@ public:
     virtual int getHeight() const;
     virtual int getWidth() const;
 
-    void setLocation(Rect const& location);
+    virtual void setLocation(Rect const& location);
     //void setPosition(int x, int y);
-    void setX(int x);
-    void setY(int y);
-    void setWidth(int width);
+    virtual void setX(int x);
+    virtual void setY(int y);
+    virtual void setWidth(int width);
 
     virtual void draw(Graphics& graphics) = 0;
     virtual void resize(int parentWidth);

@@ -65,7 +65,8 @@ void Graphics::setRectColor(
 void Graphics::drawText(
     Point const&                    point,
     std::string const&              text,
-    Color                           color)
+    Color                           color,
+    Rect const&                     region)
 {
     static float du = ((float)fontInfo_.charaWidth) / ((float)fontInfo_.texWidth);
     static float dv = ((float)fontInfo_.charaHeight) / ((float)fontInfo_.texHeight);
@@ -123,6 +124,18 @@ void Graphics::drawText(
 
     device_.SetFVF(FontVertex::Fvf);
     device_.SetTexture(0, fontTexture_);
+
+    D3DVIEWPORT9 viewport, clipView;
+    device_.GetViewport(&viewport);
+
+    clipView.X = region.left < 0? 0: region.left;
+    clipView.Y = region.top < 0? 0: region.top;
+    clipView.Width = region.getWidth();
+    clipView.Height = region.getHeight();
+    clipView.MinZ = 0.0f;
+    clipView.MaxZ = 1.0f;
+    device_.SetViewport(&clipView);
+    
     device_.DrawIndexedPrimitiveUP(
         D3DPT_TRIANGLELIST,
         0,
@@ -134,6 +147,7 @@ void Graphics::drawText(
         sizeof(FontVertex));
     device_.SetTexture(0, 0);
 
+    device_.SetViewport(&viewport);
     device_.SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
     delete[] v;

@@ -31,11 +31,11 @@ void MenuItem::draw(Graphics& g)
 {
     if (isFocused())
     {
-        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
     }
     else
     {
-        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
     }
 }
 
@@ -68,7 +68,7 @@ SubMenuItemPtr SubMenuItem::Create(
 // ----------------------------------------------------------------------------
 void SubMenuItem::draw(Graphics& g)
 {
-    g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//    g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
 }
 
 // ----------------------------------------------------------------------------

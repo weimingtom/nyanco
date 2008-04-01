@@ -33,8 +33,8 @@ void testEventServer()
         Frame()
         {
             ;
-            registHandler(ButtonId, &Frame::onClickButton);
-            registHandler(ListId, &Frame::onClickList);
+            registerHandler(ButtonId, &Frame::onClickButton);
+            registerHandler(ListId, &Frame::onClickList);
         }
 
         enum ComponentId

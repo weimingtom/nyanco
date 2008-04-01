@@ -31,7 +31,8 @@ public:
     virtual void drawText(
         Point const&                point,
         std::string const&          text,
-        Color                       color);
+        Color                       color,
+        Rect const&                 region);
 
     virtual void drawRect(
         Rect const&                 rect);

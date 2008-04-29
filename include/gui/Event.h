@@ -18,35 +18,48 @@ BEGIN_NAMESPACE_NYANCO_GUI
 template <typename Component_> class Event;
 class EventServer;
 
-// base event
+// any event
 template <>
 class Event<void>
 {
 public:
-    int getType() const { return m_type; }
+    virtual ComponentId getSenderId() const { return -1; };
 
-protected:
-    int                                 m_type;
+    template <typename Component_>
+    typename Component_::Event* castTo() const
+    {
+        return dynamic_cast<typename Component_::Event*>(this);
+    }
 };
 
-// event type
+// component event
 template <typename Component_ = void>
-class Event : public Event<void>
+class Event : public Event<>
 {
-    typedef Component_ ComponentType;
+    typedef Component_                      ComponentType;
+    typedef typename ComponentType::Ptr     ComponentPtr;
+    typedef typename ComponentType::Event   ComponentEvent;
+    typedef typename ComponentType::Event::Type EventType;
 
 public:
-    ComponentType* getSender() { return m_sender; }
+    ComponentId     getSenderId() const
+    {
+        return m_sender->getId();
+    }
 
-    Event(ComponentType* sender, int type)
-        : m_sender(sender) { setType(type); }
+    ComponentPtr    getSender() const   { return m_sender; }
+    EventType       getType() const     { return m_type; }
+    Event(ComponentPtr sender, EventType type)
+        : m_sender(sender), m_type(type) {}
     Event() {}
 
 private:
     void setSender(ComponentType* sender) { m_sender = sender; }
     void setType(int type) { m_type = type; }
 
-    ComponentType*                      m_sender;
+    ComponentPtr                        m_sender;
+    EventType                           m_type;
+
     friend ComponentType;
 };
 
@@ -57,7 +70,7 @@ class EventServer
     typedef void (*InvokerType)(void*, AnyHandler&, Event<> const&);
     typedef std::pair<AnyHandler, InvokerType>  HandlerSet;
     typedef std::map<ComponentId, HandlerSet>   HandlerMap;
-    typedef std::pair<ComponentId, Event<> >    EventSet;
+    typedef std::pair<ComponentId, boost::shared_ptr<Event<> > >    EventSet;
     typedef std::vector<EventSet>               EventQueue;
 
     template <typename Type_, typename Event_>
@@ -71,7 +84,7 @@ class EventServer
         {
             Handler&         h = boost::any_cast<Handler&>(handler);
             Type*            t = static_cast<Type*>(this_);
-            EventType const& e = static_cast<EventType const&>(event);
+            EventType const& e = dynamic_cast<EventType const&>(event);
             (t->*h)(e);
         }
     };
@@ -91,7 +104,8 @@ public:
     template <typename Event_>
     void queueEvent(int id, Event<Event_> const& e)
     {
-        m_queue.push_back(EventSet(id, e));
+        boost::shared_ptr<Event<> > p(new Event<Event_>(e));
+        m_queue.push_back(EventSet(id, p));
     }
 
     void invokeHandler()
@@ -102,7 +116,7 @@ public:
             if (it != m_map.end())
             {
                 HandlerSet& hs = m_map[e.first];
-                hs.second(this, hs.first, e.second);
+                hs.second(this, hs.first, *(e.second));
             }
             //else assert(0);
         }

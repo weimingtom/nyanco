@@ -15,9 +15,9 @@ public:
     typedef boost::shared_ptr<CheckBox> Ptr;
     typedef boost::weak_ptr<CheckBox>   WeakPtr;
 
-    enum Event
+    struct Event
     {
-        CheckChangedEvent,
+        enum Type { Click, };
     };
 
     static Ptr Create(

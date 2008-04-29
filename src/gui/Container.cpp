@@ -6,8 +6,12 @@
 #include "Container.h"
 #include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #define foreach BOOST_FOREACH
+
+using boost::bind;
+using boost::ref;
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
@@ -22,7 +26,7 @@ void Container::attach(
         componentPtr->setX(childLocation.left);
         componentPtr->setWidth(childLocation.right - childLocation.left);
     }
-    componentPtr->attachParent(ComponentPtr(this));
+    componentPtr->attachParent(Component::Ptr(this));
     componentList_.push_back(componentPtr);
 }
 
@@ -35,13 +39,37 @@ void Container::detach(
 }
 
 // ----------------------------------------------------------------------------
+sint32 Container::relocate(sint32 left, sint32 width, sint32 locationY)
+{
+    locationY += margin_.top;
+    foreach (ComponentPtr p, componentList_)
+    {
+        p->setX(location_.left + margin_.left);
+        p->setY(locationY);
+        p->resize(location_.getWidth() - margin_.left * 2);
+        int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY + margin_.top);
+        locationY = currentY;
+    }
+    location_.bottom = locationY;
+    return locationY;
+}
+
+// ----------------------------------------------------------------------------
 void Container::resize(int parentWidth)
 {
+    Component::resize(parentWidth);
     int const childWidth = parentWidth - (margin_.left + margin_.right);
     foreach (ComponentPtr comp, componentList_)
     {
         comp->resize(childWidth);
     }
+}
+
+// ----------------------------------------------------------------------------
+void Container::move(int x, int y)
+{
+    Component::move(x, y);
+    std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::move, _1, x, y));
 }
 
 // ----------------------------------------------------------------------------

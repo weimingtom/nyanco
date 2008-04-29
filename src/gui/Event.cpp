@@ -9,6 +9,7 @@
 // test
 BEGIN_NO_NAMESPACE
 
+#if 0
 void testEventServer()
 {
     using namespace nyanco::gui;
@@ -49,5 +50,6 @@ void testEventServer()
     es.queueEvent(Frame::ButtonId, Event<Button>());
     es.invokeHandler();
 }
+#endif
 
 END_NO_NAMESPACE

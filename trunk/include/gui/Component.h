@@ -42,6 +42,7 @@ public:
     virtual void setWidth(int width);
 
     virtual void draw(Graphics& graphics) = 0;
+    virtual sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY) { return getHeight() + locationY; }
     virtual void resize(int parentWidth);
     virtual boost::shared_ptr<Component> checkHit(int x, int y);
     virtual void update();

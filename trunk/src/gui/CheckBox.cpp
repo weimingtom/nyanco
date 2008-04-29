@@ -74,10 +74,12 @@ bool CheckBox::onMouseProcess(MouseCommand const& command)
     {
         if (location_.isInnerPoint(command.posX, command.posY))
         {
-            ComponentPtr frame = getTopLevelContainer();
-            if (frame != 0)
+            EventServer* es = getEventServer();
+            if (es != 0)
             {
-//                (static_cast<Frame*>(frame.get()))->setEvent(EventBase::Type(m_id, CheckChangedEvent));
+                Ptr this_ = boost::shared_dynamic_cast<CheckBox>(shared_from_this());
+                NAMESPACE_NYANCO_GUI::Event<CheckBox> event(this_, Event::Click);
+                es->queueEvent(getId(), event);
             }
             m_checked = !m_checked;
         }

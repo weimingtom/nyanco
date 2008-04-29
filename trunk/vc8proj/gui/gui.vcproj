@@ -193,6 +193,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\Group.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\Interface.cpp"
 				>
 			</File>
@@ -248,6 +252,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\Graphics.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\Group.h"
 				>
 			</File>
 			<File

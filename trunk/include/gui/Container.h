@@ -29,13 +29,15 @@ public:
         ComponentPtr                componentPtr);
 
 protected:
+    sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);
+    void move(int x, int y);
+
     virtual void draw(Graphics& graphcis) = 0;
     virtual ComponentPtr checkHit(int x, int y);
     virtual void resize(int parentWidth);
     void setMargin(Rect const& margin);
 
 protected:
-    virtual void move(int x, int y) { Component::move(x, y); }
     virtual void update() { Component::update(); }
 
     Rect                            margin_;

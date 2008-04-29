@@ -18,10 +18,9 @@ public:
         ComponentId                     id,
         std::string const&              text);
 
-    enum EventList
+    struct Event
     {
-        DownEvent,
-        UpEvent,
+        enum Type { Click, };
     };
 
 private:

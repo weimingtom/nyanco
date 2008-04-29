@@ -78,13 +78,6 @@ bool Button::onMouseProcess(MouseCommand const& command)
     if (command.onPushLeft)
     {
         pushed_ = true;
-
-        EventServer* es = getEventServer();
-        if (es != 0)
-        {
-            Event<Button> event(this, DownEvent);
-            es->queueEvent(m_id, event);
-        }
     }
     else if (command.onUpLeft && pushed_)
     {
@@ -94,8 +87,9 @@ bool Button::onMouseProcess(MouseCommand const& command)
             EventServer* es = getEventServer();
             if (es != 0)
             {
-                Event<Button> event(this, UpEvent);
-                es->queueEvent(m_id, event);
+                Ptr this_ = boost::shared_dynamic_cast<Button>(shared_from_this());
+                NAMESPACE_NYANCO_GUI::Event<Button> event(this_, Event::Click);
+                es->queueEvent(getId(), event);
             }
         }
     }

@@ -13,6 +13,9 @@
 
 #define foreach BOOST_FOREACH
 
+using boost::bind;
+using boost::ref;
+
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
@@ -82,8 +85,6 @@ void Frame<>::draw(
     static_cast<Component::Ptr>(m_titleBar)->draw(graphics);
     
     // Žq‚Ì•`‰æ
-    using boost::bind;
-    using boost::ref;
     std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::draw, _1, ref(graphics)));
 }
 
@@ -108,10 +109,11 @@ void Frame<>::relocateChildren()
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
     foreach (ComponentPtr p, componentList_)
     {
-        int height = p->getHeight();
         p->setX(location_.left + margin_.left);
         p->setY(locationY);
-        locationY += height + margin_.top;
+        p->resize(location_.getWidth() - margin_.left * 2);
+        int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+        locationY = margin_.top + currentY;
     }
     location_.bottom = locationY;
     resize(location_.getWidth());

@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="d3dx9d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -122,6 +123,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="d3dx9.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -209,6 +211,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\Panel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui\ScrollBar.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\TitleBar.cpp"
 				>
 			</File>
@@ -268,6 +278,14 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\ListBox.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\Panel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\ScrollBar.h"
 				>
 			</File>
 			<File

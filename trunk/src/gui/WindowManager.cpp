@@ -71,7 +71,7 @@ Frame<>::Ptr WindowManager::search(
 {
     FramePtrList::iterator it = std::find_if(
         framePtrList_.begin(), framePtrList_.end(), FrameFinder(id));
-	return (it != framePtrList_.end())? *it: Frame<>::Ptr();
+    return (it != framePtrList_.end())? *it: Frame<>::Ptr();
 }
 
 // ------------------------------------------------------------------------
@@ -85,6 +85,10 @@ void WindowManager::activate(
 // ------------------------------------------------------------------------
 Frame<>::Ptr WindowManager::getActiveWindow() const
 {
+    if (framePtrList_.empty())
+    {
+        return Frame<>::Ptr();
+    }
     return framePtrList_.front();
 }
 
@@ -134,7 +138,7 @@ void WindowManager::update()
     contextMenu_->update();
 
     // kill frames
-	foreach (Frame<>::Ptr frame, killedFramePtrList_)
+    foreach (Frame<>::Ptr frame, killedFramePtrList_)
     {
         framePtrList_.remove(frame);
     }
@@ -206,7 +210,22 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
 // ------------------------------------------------------------------------
 void WindowManager::onKeyboardProcess(Keyboard const& keyboard)
 {
+    KeyboardCommand command;
+    KeyboardCommand::Create(command, keyboard);
 
+    // キーボードキャプチャコンポーネントが存在
+    if (ComponentPtr p = m_capturedKeyboard.lock())
+    {
+        p->onKeyboardProcess(command);
+    }
+    else
+    {
+        Frame<>::Ptr frame = getActiveWindow();
+        if (frame.get() == 0)
+        {
+            
+        }
+    }
 }
 
 // ------------------------------------------------------------------------

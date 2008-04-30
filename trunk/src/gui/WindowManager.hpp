@@ -37,7 +37,7 @@ class WindowManager : public nyanco::gui::WindowManager
         Color                       color);
 
     virtual void attach(
-		nyanco::gui::Frame<>::Ptr       framePtr);
+        nyanco::gui::Frame<>::Ptr       framePtr);
 
     virtual void detach(
         Frame<>::Ptr                framePtr);
@@ -45,7 +45,7 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual void detach(
         ComponentId                 id);
 
-	virtual Frame<>::Ptr search(
+    virtual Frame<>::Ptr search(
         ComponentId                 id);
 
     virtual void activate(
@@ -106,9 +106,8 @@ private:
     //! ÉÅÉjÉÖÅ[
     ContextMenuPtr                  contextMenu_;
 
-//    ComponentPtr                    m_capturedKeyboard;
-//    ComponentPtr                    m_capturedMouse;
     Component::WeakPtr              m_capturedMouse;
+    Component::WeakPtr              m_capturedKeyboard;
 
     FramePtrList                    killedFramePtrList_;
 

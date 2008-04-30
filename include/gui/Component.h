@@ -49,7 +49,7 @@ public:
     virtual void move(int x, int y);
 
     virtual bool onMouseProcess(MouseCommand const& mouse) { return false; }
-    virtual void onKeyboardPtrocess(KeyboardCommand const& keyboard) {}
+    virtual void onKeyboardProcess(KeyboardCommand const& keyboard) {}
 
     bool isPointInner(Point const& point);
 

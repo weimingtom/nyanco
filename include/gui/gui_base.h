@@ -112,9 +112,14 @@ public:
     }
 };
 
+// ----------------------------------------------------------------------------
 class KeyboardCommand
 {
+public:
+    static void Create(KeyboardCommand& command, Keyboard const& keyboard)
+    {
 
+    }
 };
 
 END_NAMESPACE_NYANCO_GUI

@@ -78,6 +78,8 @@ Frame<>::Ptr WindowManager::search(
 void WindowManager::activate(
     Frame<>::Ptr                        framePtr)
 {
+    if (framePtrList_.empty()) return;
+    framePtrList_.front()->defocus();
     framePtrList_.remove(framePtr);
     framePtrList_.push_front(framePtr);
 }
@@ -179,13 +181,14 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
         bool frameHit = false;
         foreach (Frame<>::Ptr frame, framePtrList_)
         {
-            ComponentPtr p = frame->getHitComponent(command.posX, command.posY);
+            Component::Ptr p = frame->getHitComponent(command.posX, command.posY);
             if (p.get() != 0)
             {
                 frameHit = true;
                 if (command.onButtonDown)
                 {
                     activate(frame);
+                    frame->focus(p);
                     if (p->onMouseProcess(command))
                     {
                         // ÉLÉÉÉvÉ`ÉÉÇê›íË
@@ -193,6 +196,13 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
                     }
                 }
                 break;
+            }
+        }
+        if (!frameHit && command.onButtonDown)
+        {
+            foreach (Frame<>::Ptr frame, framePtrList_)
+            {
+                frame->defocus();
             }
         }
 

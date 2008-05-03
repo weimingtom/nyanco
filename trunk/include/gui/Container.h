@@ -33,7 +33,8 @@ protected:
     void move(int x, int y);
 
     virtual void draw(Graphics& graphcis) = 0;
-    virtual ComponentPtr checkHit(int x, int y);
+    virtual Component::Ptr checkHit(int x, int y);
+    virtual Component::Ptr searchById(int id);
     virtual void resize(int parentWidth);
     void setMargin(Rect const& margin);
 

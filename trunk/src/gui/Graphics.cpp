@@ -208,6 +208,34 @@ void Graphics::drawLine(
         sizeof(GuiVertex));
 }
 
+// ----------------------------------------------------------------------------
+void Graphics::drawIbeamCursor(
+    Point const&                    p)
+{
+    
+}
+
+// ----------------------------------------------------------------------------
+void Graphics::drawTriangle(
+    Point const&                    p1,
+    Point const&                    p2,
+    Point const&                    p3)
+{
+    GuiVertex v[3] =
+    {
+        { p1.x, p1.y, 0.f, 1.f, color_ },
+        { p2.x, p2.y, 0.f, 1.f, color_ },
+        { p3.x, p3.y, 0.f, 1.f, color_ },
+    };
+
+    device_.SetFVF(GuiVertex::Fvf);
+    device_.DrawPrimitiveUP(
+        D3DPT_TRIANGLEFAN,
+        1,
+        v,
+        sizeof(GuiVertex));
+}
+
 // ------------------------------------------------------------------------
 Graphics::Graphics(
     IDirect3DDevice9*               devicePtr)

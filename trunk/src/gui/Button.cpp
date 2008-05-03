@@ -18,7 +18,7 @@ Button::Ptr Button::Create(
 
     button->m_id        = id;
     button->caption_    = caption;
-    button->setLocation(Rect(0, 0, 0, 18));
+    button->setLocation(Rect(0, 0, 0, button->getHeight()));
 
     return Button::Ptr(button);
 }

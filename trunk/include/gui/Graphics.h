@@ -41,6 +41,14 @@ public:
     virtual void drawLine(
         Point const&                p1,
         Point const&                p2) = 0;
+
+    virtual void drawIbeamCursor(
+        Point const&                p) = 0;
+
+    virtual void drawTriangle(
+        Point const&                p1,
+        Point const&                p2,
+        Point const&                p3) = 0;
 };
 
 END_NAMESPACE_NYANCO_GUI

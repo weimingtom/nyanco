@@ -79,13 +79,13 @@ void Container::setMargin(Rect const& margin)
 }
 
 // ----------------------------------------------------------------------------
-ComponentPtr Container::checkHit(int x, int y)
+Component::Ptr Container::checkHit(int x, int y)
 {
     if (isPointInner(Point(x, y)))
     {
-        foreach (ComponentPtr comp, componentList_)
+        foreach (Component::Ptr comp, componentList_)
         {
-            ComponentPtr hit = comp->checkHit(x, y);
+            Component::Ptr hit = comp->checkHit(x, y);
             if (hit != 0) return hit;
         }
         return shared_from_this();
@@ -95,6 +95,14 @@ ComponentPtr Container::checkHit(int x, int y)
 
 
 // ----------------------------------------------------------------------------
-
+Component::Ptr Container::searchById(int id)
+{
+    foreach (Component::Ptr comp, componentList_)
+    {
+        Component::Ptr find = comp->searchById(id);
+        if (find != 0) return find;
+    }
+    return Component::searchById(id);
+}
 
 END_NAMESPACE_NYANCO_GUI

@@ -16,9 +16,19 @@ void Component::resize(int parentWidth)
 }
 
 // ----------------------------------------------------------------------------
-ComponentPtr Component::checkHit(int x, int y)
+Component::Ptr Component::checkHit(int x, int y)
 {
     return isPointInner(Point(x, y))? shared_from_this(): ComponentPtr();
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Component::searchById(sint32 id)
+{
+    if (m_id == id)
+    {
+        return shared_from_this();
+    }
+    return Component::Ptr();
 }
 
 // ----------------------------------------------------------------------------
@@ -34,6 +44,12 @@ bool Component::isPointInner(Point const& point)
 void Component::focus()
 {
     focused_ = true;
+}
+
+// ----------------------------------------------------------------------------
+void Component::defocus()
+{
+    focused_ = false;
 }
 
 // ----------------------------------------------------------------------------

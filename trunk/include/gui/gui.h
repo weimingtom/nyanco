@@ -13,6 +13,7 @@
 #include "Label.h"
 #include "Button.h"
 #include "CheckBox.h"
+#include "EditField.h"
 #include "ListBox.h"
 
 #include "Group.h"

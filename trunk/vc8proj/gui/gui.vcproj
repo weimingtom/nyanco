@@ -171,6 +171,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\EditField.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\Event.cpp"
 				>
 			</File>
@@ -250,6 +254,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\ContextMenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\EditField.h"
 				>
 			</File>
 			<File

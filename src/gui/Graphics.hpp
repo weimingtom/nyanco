@@ -44,6 +44,14 @@ public:
         Point const&                p1,
         Point const&                p2);
 
+    virtual void drawIbeamCursor(
+        Point const&                p);
+
+    virtual void drawTriangle(
+        Point const&                p1,
+        Point const&                p2,
+        Point const&                p3);
+
     FontInfo const& getFontInfo() const { return fontInfo_; }
 
     Graphics(

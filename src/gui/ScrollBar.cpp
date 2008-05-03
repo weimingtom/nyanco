@@ -45,8 +45,8 @@ void ScrollBar::draw(Graphics& graphics)
         graphics.drawLine(Point(closeRegion.left, closeRegion.bottom), Point(closeRegion.right, closeRegion.bottom));
 
         graphics.setColor(0xffeeeeee);
-        graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1));
-        graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-1, closeRegion.top+1));
+        sint32 half = (closeRegion.right - closeRegion.left) / 2;
+        graphics.drawTriangle(Point(closeRegion.left+half, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1), Point(closeRegion.left+2, closeRegion.bottom-1));
     }
 
     // close button
@@ -67,8 +67,8 @@ void ScrollBar::draw(Graphics& graphics)
         graphics.drawLine(Point(closeRegion.left, closeRegion.bottom), Point(closeRegion.right, closeRegion.bottom));
 
         graphics.setColor(0xffeeeeee);
-        graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1));
-        graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-1, closeRegion.top+1));
+        sint32 half = (closeRegion.right - closeRegion.left) / 2;
+        graphics.drawTriangle(Point(closeRegion.left+half, closeRegion.bottom-1), Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.top+2));
     }
 
     // scroll
@@ -148,7 +148,7 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
             if (closeRegion.isInnerPoint(mouse.posX, mouse.posY))
             {
                 m_scrollOffset += m_scrollSize;
-                if (m_scrollOffset + m_sliderSize-2 > location_.getHeight() - 20)
+                if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > location_.getHeight() - 20)
                     m_scrollOffset = location_.getHeight() - 20 - m_sliderSize;
                 return true;
             }

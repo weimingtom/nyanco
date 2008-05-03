@@ -52,13 +52,17 @@ public:
     void draw(Graphics& graphics);
     void update();
 
+    void focus(sint32 componentId);
+    void focus(Component::Ptr component);
+    void defocus();
+
 private:
     void relocateChildren();
     void relocateY();
     ComponentPtr getHitComponent(int x, int y);
 
 protected:
-    ComponentPtr                        focusedComponent_;
+    Component::WeakPtr                  m_focusedComponent;
     TitleBar::Ptr                       m_titleBar;
 
     friend impl::WindowManager;

@@ -67,6 +67,27 @@ void Frame<>::move(int x, int y)
 }
 
 // ----------------------------------------------------------------------------
+void Frame<>::focus(sint32 componentId)
+{
+    focus(searchById(componentId));
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::focus(Component::Ptr component)
+{
+    if (Component::Ptr comp = m_focusedComponent.lock()) comp->defocus();
+    m_focusedComponent = component;
+    if (Component::Ptr comp = m_focusedComponent.lock()) comp->focus();
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::defocus()
+{
+    if (Component::Ptr comp = m_focusedComponent.lock()) comp->defocus();
+    m_focusedComponent.reset();
+}
+
+// ----------------------------------------------------------------------------
 void Frame<>::draw(
     Graphics&                       graphics)
 {

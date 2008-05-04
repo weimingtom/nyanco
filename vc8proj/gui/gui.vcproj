@@ -223,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\SplitPanel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\TitleBar.cpp"
 				>
 			</File>
@@ -294,6 +298,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\ScrollBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\SplitPanel.h"
 				>
 			</File>
 			<File

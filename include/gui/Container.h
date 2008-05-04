@@ -39,7 +39,7 @@ protected:
     void setMargin(Rect const& margin);
 
 protected:
-    virtual void update() { Component::update(); }
+    virtual void update();
 
     Rect                            margin_;
     Layout                          m_layout;

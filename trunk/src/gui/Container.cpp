@@ -55,6 +55,12 @@ sint32 Container::relocate(sint32 left, sint32 width, sint32 locationY)
 }
 
 // ----------------------------------------------------------------------------
+void Container::update()
+{
+    std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::update, _1));
+}
+
+// ----------------------------------------------------------------------------
 void Container::move(int x, int y)
 {
     Component::move(x, y);

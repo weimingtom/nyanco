@@ -34,6 +34,7 @@ private:
     virtual Component::Ptr checkHit(int x, int y);
 
     boost::array<Panel::Ptr, Num_>      m_panels;
+    sint32                              m_splitWidth;
 };
 
 // ----------------------------------------------------------------------------
@@ -42,6 +43,7 @@ typename SplitPanel<Num_>::Ptr SplitPanel<Num_>::Create(
     ComponentId                         id)
 {
     SplitPanel<Num_>* p = new SplitPanel<Num_>;
+    p->m_splitWidth     = 3;
     for (int i = 0; i < Num_; ++i) p->m_panels[i] = Panel::Create(-1);
     return Ptr(p);
 }
@@ -52,10 +54,10 @@ sint32 SplitPanel<Num_>::relocate(sint32 parentLeft, sint32 parentWidth, sint32 
 {
     Component::relocate(parentLeft, parentWidth, locationY);
     // HACK:
-    sint32 width = parentWidth / Num_;
+    sint32 width = (parentWidth-(Num_-1)*m_splitWidth) / Num_;
     for (int i = 0; i < Num_; ++i)
     {
-        static_cast<Component::Ptr>(m_panels[i])->relocate(parentLeft+(i*width), width, locationY);
+        static_cast<Component::Ptr>(m_panels[i])->relocate(parentLeft+(i*(width+m_splitWidth)), width, locationY);
     }
     location_.bottom = location_.top + getHeight();
     return location_.bottom;

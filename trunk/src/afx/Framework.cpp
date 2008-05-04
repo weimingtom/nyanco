@@ -244,6 +244,8 @@ LRESULT Framework::messageProcedure(
             pp.BackBufferHeight         = HIWORD(lparam);
 
             reset();
+
+            guiPtr_->setClientRect(0, 0, pp.BackBufferWidth, pp.BackBufferHeight);
         }
         break;
 

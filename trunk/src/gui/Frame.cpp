@@ -31,6 +31,8 @@ void Frame<>::create(
     m_titleBar = TitleBar::Create(-1, caption, frame);
     m_titleBar->setCaption(caption);
 
+    m_panel->attachParent(frame);
+
     {
         frame->location_.left = frame->location_.top = 0;
         frame->location_.right          = width;

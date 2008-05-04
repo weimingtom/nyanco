@@ -55,6 +55,8 @@ class WindowManager : public nyanco::gui::WindowManager
 
     virtual ContextMenuPtr getContextMenu() const;
 
+    virtual Rect const& getClientRect() const { return m_clientRect; }
+
     void initialize(
         LPDIRECT3DDEVICE9           devicePtr);
 
@@ -63,6 +65,8 @@ class WindowManager : public nyanco::gui::WindowManager
     void update();
 
     void draw();
+
+    void setClientRect(Rect const& rect) { m_clientRect = rect; }
 
     static WindowManager& GetImplement();
 

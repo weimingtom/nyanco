@@ -17,6 +17,7 @@ namespace nyanco { namespace gui
         void onFinalize();
         void onUpdate();
         void onDraw();
+        void setClientRect(sint32 left, sint32 top, sint32 right, sint32 bottom);
 
         static GuiInterface* Create()
         {

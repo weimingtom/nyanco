@@ -5,6 +5,8 @@
     @author dasyprocta
  */
 
+#include "base.h"
+
 namespace nyanco
 {
     class Framework;
@@ -32,6 +34,7 @@ namespace nyanco
         virtual void onFinalize()   {}
         virtual void onUpdate()     {}
         virtual void onDraw()       {}
+        virtual void setClientRect(sint32 left, sint32 top, sint32 right, sint32 bottom) {}
 
         static  void Implement();
         static Factory                  Factory_;

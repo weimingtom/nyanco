@@ -33,11 +33,6 @@ namespace gui
 
     void Interface::onUpdate()
     {
-        // “ü—Í‚ÌŽæ“¾
-//        InputDevice& input = InputDevice::GetInterface();
-
-//        manager.onMouseProcess(input.getMouse());
-//        manager.onKeyboardProcess(input.getKeyboard());
         impl::WindowManager&  manager     = impl::WindowManager::GetImplement();
         manager.update();
     }
@@ -46,6 +41,12 @@ namespace gui
     {
         impl::WindowManager&  manager     = impl::WindowManager::GetImplement();
         manager.draw();
+    }
+
+    void Interface::setClientRect(sint32 left, sint32 top, sint32 right, sint32 bottom)
+    {
+        impl::WindowManager& manager = impl::WindowManager::GetImplement();
+        manager.setClientRect(Rect(left, top, right, bottom));
     }
 
 } } // namespace nyanco::gui

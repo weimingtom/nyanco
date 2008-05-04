@@ -32,7 +32,7 @@ public:
     virtual void detach(
         ComponentId                 id) = 0;
 
-	virtual Frame<>::Ptr search(
+    virtual Frame<>::Ptr search(
         ComponentId                 id) = 0;
 
     virtual void activate(
@@ -41,6 +41,8 @@ public:
     virtual Frame<>::Ptr getActiveWindow() const = 0;
 
     virtual ContextMenuPtr getContextMenu() const = 0;
+
+    virtual Rect const& getClientRect() const = 0;
 
     static WindowManager& GetInterface();
 };

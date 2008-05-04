@@ -58,9 +58,10 @@ public:
 
     bool isPointInner(Point const& point);
 
-protected:
     void attachParent(ComponentPtr parent);
     void detachParent();
+
+protected:
     EventServer* getEventServer() const;
     ComponentPtr getTopLevelContainer() const;
 

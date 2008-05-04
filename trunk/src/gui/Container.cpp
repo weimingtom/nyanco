@@ -26,7 +26,7 @@ void Container::attach(
         componentPtr->setX(childLocation.left);
         componentPtr->setWidth(childLocation.right - childLocation.left);
     }
-    componentPtr->attachParent(Component::Ptr(this));
+    componentPtr->attachParent(shared_from_this());
     componentList_.push_back(componentPtr);
 }
 
@@ -41,28 +41,17 @@ void Container::detach(
 // ----------------------------------------------------------------------------
 sint32 Container::relocate(sint32 left, sint32 width, sint32 locationY)
 {
+    Component::relocate(left, width, locationY);
+
     locationY += margin_.top;
     foreach (ComponentPtr p, componentList_)
     {
-        p->setX(location_.left + margin_.left);
-        p->setY(locationY);
-        p->resize(location_.getWidth() - margin_.left * 2);
-        int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY + margin_.top);
+        int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
         locationY = currentY;
     }
-    location_.bottom = locationY;
-    return locationY;
-}
+    location_.bottom = locationY + margin_.bottom;
 
-// ----------------------------------------------------------------------------
-void Container::resize(int parentWidth)
-{
-    Component::resize(parentWidth);
-    int const childWidth = parentWidth - (margin_.left + margin_.right);
-    foreach (ComponentPtr comp, componentList_)
-    {
-        comp->resize(childWidth);
-    }
+    return location_.bottom;
 }
 
 // ----------------------------------------------------------------------------

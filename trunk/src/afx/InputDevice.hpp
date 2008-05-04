@@ -9,8 +9,10 @@
 
 #include "nyanco.hpp"
 #include "InputDevice.h"
+#include "KeyCode.hpp"
 #include <dinput.h>
 #include <vector>
+#include <deque>
 
 namespace nyanco { namespace impl
 {
@@ -38,6 +40,46 @@ namespace nyanco { namespace impl
                    ((buffer_[prev_ * 256 + key] & 0x80) != 0);
         }
 
+        KeyCode::Type getKeyCode() const
+        {
+            return m_key;
+        }
+
+        char8 getAsciiCode() const
+        {
+            return static_cast<char8>(m_key);
+        }
+
+        void setVirtualKey(uint8 key)
+        {
+            m_key = mapFromVirtualKey(key);
+        }
+
+        void clear()
+        {
+            m_key = KeyCode::Unknown;
+        }
+
+#if 0
+        char8 popAsciiCode()
+        {
+            if (m_asciiQueue.empty()) return -1;
+            char8 elem = m_asciiQueue[0];
+            m_asciiQueue.pop_front();
+            return elem;
+        }
+
+        void pushAsciiCode(char8 ascii)
+        {
+            m_asciiQueue.push_back(ascii);
+        }
+
+        void clearAsciiQueue()
+        {
+            m_asciiQueue.clear();
+        }
+#endif
+
         void swap()
         {
             current_ = (current_ == 0? 1: 0);
@@ -58,6 +100,10 @@ namespace nyanco { namespace impl
     private:
         uint8                           buffer_[512];
         uint32                          current_; // 0 or 1;
+
+        KeyCode::Type                   m_key;
+
+//        std::deque<char8>               m_asciiQueue;
     };
 
     // ========================================================================
@@ -138,6 +184,11 @@ namespace nyanco { namespace impl
         void getKeyboardCount() const;
         void getMouseCount() const;
 #endif
+
+        Keyboard& getImplKeyboard() const
+        {
+            return *keyboardPtr_;
+        }
 
         bool create(
             HINSTANCE                   hinstance,

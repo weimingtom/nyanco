@@ -100,7 +100,13 @@ void Framework::run()
 
             // TEST: GUI ‚ÌXV
             guiPtr_->onUpdate();
-            appPtr_->onUpdate();
+
+            {
+                appPtr_->onUpdate();
+                impl::InputDevice& device = impl::InputDevice::GetImplement();
+                impl::Keyboard& keyboard    = device.getImplKeyboard();
+                keyboard.clear();
+            }
 
             device.clear();
             d3dDevice->BeginScene();
@@ -238,6 +244,16 @@ LRESULT Framework::messageProcedure(
             pp.BackBufferHeight         = HIWORD(lparam);
 
             reset();
+        }
+        break;
+
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+        {
+            impl::InputDevice& device   = impl::InputDevice::GetImplement();
+            impl::Keyboard& keyboard    = device.getImplKeyboard();
+            keyboard.setVirtualKey(static_cast<uint8>(wparam));
+            //keyboard.pushAsciiCode(static_cast<char8>(wparam));
         }
         break;
 

@@ -29,9 +29,11 @@ public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Component);
 
     ComponentId getId() const { return m_id; }
-    void focus();
-    void defocus();
-    bool isFocused() const;
+
+    virtual void focus();
+    virtual void defocus();
+    virtual bool isFocused() const;
+    virtual bool enableFocus() const { return true; }
 
     virtual int getHeight() const;
     virtual int getWidth() const;
@@ -43,15 +45,16 @@ public:
     virtual void setWidth(int width);
 
     virtual void draw(Graphics& graphics) = 0;
-    virtual sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY) { return getHeight() + locationY; }
-    virtual void resize(int parentWidth);
+    virtual sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);
+
+    //virtual void resize(int parentWidth);
     virtual Component::Ptr searchById(sint32 id);
     virtual Component::Ptr checkHit(int x, int y);
     virtual void update();
     virtual void move(int x, int y);
 
     virtual bool onMouseProcess(MouseCommand const& mouse) { return false; }
-    virtual void onKeyboardProcess(KeyboardCommand const& keyboard) {}
+    virtual bool onKeyboardProcess(KeyboardCommand const& keyboard) { return false;}
 
     bool isPointInner(Point const& point);
 

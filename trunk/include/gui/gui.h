@@ -16,4 +16,7 @@
 #include "EditField.h"
 #include "ListBox.h"
 
+#include "Panel.h"
 #include "Group.h"
+
+#include "SplitPanel.h"

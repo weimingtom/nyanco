@@ -13,8 +13,7 @@ BEGIN_NAMESPACE_NYANCO_GUI
 // ============================================================================
 class EditField : public Component
 {
-public:
-    NYANCO_GUI_COMPONENT_TYPEDEF(EditField);
+protected:
 };
 
 // ============================================================================
@@ -22,6 +21,13 @@ class TextField : public EditField
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(TextField);
+
+    struct Arg
+    {
+        sint32                          m_maxLength;
+
+        Arg& maxLength(sint32 maxLength)    { m_maxLength = maxLength; return *this; }
+    };
 
     static TextField::Ptr Create(
         ComponentId                     id);
@@ -34,7 +40,7 @@ private:
     virtual int getHeight() const;
 
     bool onMouseProcess(MouseCommand const& command);
-    void onKeyboardProcess(KeyboardCommand const& command);
+    bool onKeyboardProcess(KeyboardCommand const& command);
 
     void setCaret(sint32 x, sint32 y);
 
@@ -44,6 +50,20 @@ private:
     boost::timer                        m_timer;
 
     TextField() : m_edit(false), m_caret(-1) {}
+};
+
+// ============================================================================
+class IntEdit : public EditField
+{
+public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(IntEdit);
+};
+
+// ============================================================================
+class FloatEdit : public EditField
+{
+public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(FloatEdit);
 };
 
 END_NAMESPACE_NYANCO_GUI

@@ -66,8 +66,10 @@ class WindowManager : public nyanco::gui::WindowManager
 
     static WindowManager& GetImplement();
 
-    void onMouseProcess(Mouse const& mouse);
-    void onKeyboardProcess(Keyboard const& keyboard);
+    
+    //void onMouseProcess(Mouse const& mouse);
+    //void onKeyboardProcess(Keyboard const& keyboard);
+    void onInputProcess(Keyboard const& keyboard, Mouse const& mouse);
 
 private:
     class InputState

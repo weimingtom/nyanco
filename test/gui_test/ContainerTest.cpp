@@ -35,6 +35,10 @@ public:
         SplitPanel<2>::Ptr splitPanel = SplitPanel<2>::Create(-1);
         splitPanel->get<0>()->attach(group1);
         splitPanel->get<1>()->attach(Button::Create(-1, "Button 6"));
+        SplitPanel<2>::Ptr splitPanel2 = SplitPanel<2>::Create(-1);
+        splitPanel2->get<0>()->attach(Button::Create(-1, "Button 7"));
+        splitPanel2->get<1>()->attach(Button::Create(-1, "Button 8"));
+        splitPanel->get<1>()->attach(splitPanel2);
 
         attach(splitPanel);
     }

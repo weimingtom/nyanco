@@ -135,7 +135,44 @@ bool TitleBar::onMouseProcess(MouseCommand const& command)
     {
         if (onMoving_)
         {
-            owner_->move(command.moveX, command.moveY);
+            WindowManager& wm = WindowManager::GetInterface();
+            Rect const& client = wm.getClientRect();
+
+            // X •ûŒü‚ÌˆÚ“®§ŒÀ
+            sint32 moveX = command.moveX;
+            if (command.posX >= client.right)
+            {
+                if (command.posX - moveX < client.right) moveX -= (command.posX - client.right);
+                else moveX = 0;
+            }
+            else if (command.posX <= client.left)
+            {
+                if (command.posX - moveX > client.left) moveX -= (command.posX - client.left);
+                else moveX = 0;
+            }
+            else
+            {
+                if      (command.posX - moveX >= client.right)  moveX = (command.posX - client.right);
+                else if (command.posX - moveX < client.left)    moveX = (command.posX - client.left);
+            }
+            // Y •ûŒü‚ÌˆÚ“®§ŒÀ
+            sint32 moveY = command.moveY;
+            if (command.posY >= client.bottom)
+            {
+                if (command.posY - moveY < client.bottom) moveY -= (command.posY - client.bottom);
+                else moveY = 0;
+            }
+            else if (command.posY <= client.top)
+            {
+                if (command.posY - moveY > client.top) moveY -= (command.posY - client.top);
+                else moveY = 0;
+            }
+            else
+            {
+                if      (command.posY - moveY >= client.bottom) moveY = (command.posY - client.bottom);
+                else if (command.posY - moveY < client.top)     moveY = (command.posY - client.top);
+            }
+            owner_->move(moveX, moveY);
         }
         return true;
     }

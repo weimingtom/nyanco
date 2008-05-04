@@ -35,7 +35,7 @@ protected:
     virtual void draw(Graphics& graphcis) = 0;
     virtual Component::Ptr checkHit(int x, int y);
     virtual Component::Ptr searchById(int id);
-    virtual void resize(int parentWidth);
+//    virtual void resize(int parentWidth);
     void setMargin(Rect const& margin);
 
 protected:

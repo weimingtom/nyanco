@@ -25,4 +25,7 @@ typedef boost::uint8_t                  uint8;
 typedef float                           float32;
 typedef double                          float64;
 
+typedef sint8                           char8;
+typedef wchar_t                         wchar;
+
 END_NAMESPACE_NYANCO

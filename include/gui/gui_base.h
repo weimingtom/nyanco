@@ -116,9 +116,16 @@ public:
 class KeyboardCommand
 {
 public:
-    static void Create(KeyboardCommand& command, Keyboard const& keyboard)
-    {
+    char8                               ascii;
+    KeyCode::Type                       code;
+    bool                                onAlt;
+    bool                                onCtrl;
+    bool                                onShift;
 
+    static void Create(KeyboardCommand& command, Keyboard& keyboard)
+    {
+        command.ascii   = keyboard.getAsciiCode();
+        command.code    = keyboard.getKeyCode();
     }
 };
 

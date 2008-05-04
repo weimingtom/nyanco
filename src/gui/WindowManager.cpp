@@ -130,9 +130,7 @@ void WindowManager::update()
     // input
     {
         InputDevice& input = InputDevice::GetInterface();
-
-        onMouseProcess(input.getMouse());
-        onKeyboardProcess(input.getKeyboard());
+        onInputProcess(input.getKeyboard(), input.getMouse());
     }
 
     // update
@@ -162,34 +160,62 @@ void WindowManager::finalize()
 }
 
 // ------------------------------------------------------------------------
-void WindowManager::onMouseProcess(Mouse const& mouse)
+void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
 {
-    MouseCommand command;
-    MouseCommand::Create(command, mouse);
+    KeyboardCommand keyboardCommand;
+    KeyboardCommand::Create(keyboardCommand, const_cast<Keyboard&>(keyboard));
+
+    MouseCommand mouseCommand;
+    MouseCommand::Create(mouseCommand, mouse);
+
+    // キーボードキャプチャコンポーネントが存在
+    if (Component::Ptr p = m_capturedKeyboard.lock())
+    {
+        if (!p->onKeyboardProcess(keyboardCommand))
+        {
+            m_capturedKeyboard.reset();
+        }
+    }
+    // システムキーボード操作
+    else
+    {
+        Frame<>::Ptr frame = getActiveWindow();
+        if (frame.get() != 0)
+        {
+            if (Component::Ptr p = frame->getFocusedComponent())
+            {
+                if (p->onKeyboardProcess(keyboardCommand))
+                {
+                    m_capturedKeyboard = p;
+                }
+            }
+        }
+    }
 
     // マウスキャプチャコンポーネントが存在
     if (ComponentPtr p = m_capturedMouse.lock())
     {
-        if (!p->onMouseProcess(command))
+        if (!p->onMouseProcess(mouseCommand))
         {
             // キャプチャを解除
             m_capturedMouse.reset();
         }
     }
+    // システムマウス操作
     else
     {
         bool frameHit = false;
         foreach (Frame<>::Ptr frame, framePtrList_)
         {
-            Component::Ptr p = frame->getHitComponent(command.posX, command.posY);
+            Component::Ptr p = frame->getHitComponent(mouseCommand.posX, mouseCommand.posY);
             if (p.get() != 0)
             {
                 frameHit = true;
-                if (command.onButtonDown)
+                if (mouseCommand.onButtonDown)
                 {
                     activate(frame);
                     frame->focus(p);
-                    if (p->onMouseProcess(command))
+                    if (p->onMouseProcess(mouseCommand))
                     {
                         // キャプチャを設定
                         m_capturedMouse = p;
@@ -198,7 +224,7 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
                 break;
             }
         }
-        if (!frameHit && command.onButtonDown)
+        if (!frameHit && mouseCommand.onButtonDown)
         {
             foreach (Frame<>::Ptr frame, framePtrList_)
             {
@@ -206,34 +232,13 @@ void WindowManager::onMouseProcess(Mouse const& mouse)
             }
         }
 
-        if (!frameHit && command.onPushRight)
+        if (!frameHit && mouseCommand.onPushRight)
         {
-            contextMenu_->visible(command.posX, command.posY);
+            contextMenu_->visible(mouseCommand.posX, mouseCommand.posY);
         }
-        else if (command.onPushRight || command.onPushLeft)
+        else if (mouseCommand.onPushRight || mouseCommand.onPushLeft)
         {
             contextMenu_->invisible();
-        }
-    }
-}
-
-// ------------------------------------------------------------------------
-void WindowManager::onKeyboardProcess(Keyboard const& keyboard)
-{
-    KeyboardCommand command;
-    KeyboardCommand::Create(command, keyboard);
-
-    // キーボードキャプチャコンポーネントが存在
-    if (ComponentPtr p = m_capturedKeyboard.lock())
-    {
-        p->onKeyboardProcess(command);
-    }
-    else
-    {
-        Frame<>::Ptr frame = getActiveWindow();
-        if (frame.get() == 0)
-        {
-            
         }
     }
 }

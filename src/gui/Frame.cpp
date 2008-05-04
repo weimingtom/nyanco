@@ -63,7 +63,8 @@ void Frame<>::move(int x, int y)
     location_.bottom += y;
 
     m_titleBar->move(x, y);
-    std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::move, _1, x, y));
+    static_cast<Component::Ptr>(m_panel)->move(x, y);
+    //std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::move, _1, x, y));
 }
 
 // ----------------------------------------------------------------------------
@@ -88,6 +89,12 @@ void Frame<>::defocus()
 }
 
 // ----------------------------------------------------------------------------
+Component::Ptr Frame<>::getFocusedComponent()
+{
+    return m_focusedComponent.lock();
+}
+
+// ----------------------------------------------------------------------------
 void Frame<>::draw(
     Graphics&                       graphics)
 {
@@ -106,15 +113,15 @@ void Frame<>::draw(
     static_cast<Component::Ptr>(m_titleBar)->draw(graphics);
     
     // 子の描画
-    std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::draw, _1, ref(graphics)));
+    static_cast<Component::Ptr>(m_panel)->draw(graphics);
+    //std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::draw, _1, ref(graphics)));
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::update()
 {
-    //relocateChildren();
-    //static_cast<Component::Ptr>(m_titleBar)->update();
-    std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::update, _1));
+    static_cast<Component::Ptr>(m_panel)->update();
+    //std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::update, _1));
 }
 
 // ----------------------------------------------------------------------------
@@ -122,24 +129,21 @@ void Frame<>::relocateChildren()
 {
     // title bar
     int locationY = location_.top + margin_.top;
-    m_titleBar->setX(location_.left + margin_.left);
-    m_titleBar->setY(locationY);
-    m_titleBar->resize(location_.getWidth() - margin_.left * 2);
-
+    m_titleBar->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
     // component
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
+    static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+#if 0
     foreach (ComponentPtr p, componentList_)
     {
-        p->setX(location_.left + margin_.left);
-        p->setY(locationY);
-        p->resize(location_.getWidth() - margin_.left * 2);
         int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
         locationY = margin_.top + currentY;
     }
-    location_.bottom = locationY;
-    resize(location_.getWidth());
+#endif
+    location_.bottom = locationY + static_cast<Component::Ptr>(m_panel)->getHeight() + margin_.bottom;;
 }
 
+#if 0
 // ----------------------------------------------------------------------------
 void Frame<>::relocateY()
 {
@@ -150,8 +154,9 @@ void Frame<>::relocateY()
         p->setY(locationY);
         locationY += height + margin_.top;
     }
-    location_.bottom = locationY;
+    location_.bottom = locationY + margin_.bottom;
 }
+#endif
 
 // ----------------------------------------------------------------------------
 ComponentPtr Frame<>::getHitComponent(int x, int y)
@@ -163,7 +168,7 @@ ComponentPtr Frame<>::getHitComponent(int x, int y)
             return m_titleBar;
 
         // 子コンポーネントにヒット
-        ComponentPtr hit = checkHit(x, y);
+        Component::Ptr hit = static_cast<Component::Ptr>(m_panel)->checkHit(x, y);
         if (hit != 0) return hit;
     }
     return ComponentPtr();

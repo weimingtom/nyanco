@@ -10,9 +10,13 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
-void Component::resize(int parentWidth)
+sint32 Component::relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY)
 {
-    location_.right = location_.left + parentWidth;
+    location_.right  = parentLeft + parentWidth;
+    location_.left   = parentLeft;
+    location_.bottom = locationY + getHeight();
+    location_.top    = locationY;
+    return getHeight() + locationY;
 }
 
 // ----------------------------------------------------------------------------

@@ -33,9 +33,7 @@ void TextField::draw(Graphics& graphics)
 
     Rect clip = location_;
     clip.left += 2; clip.right -= 2;
-    size_t textWidth = m_text.size() * 6;
-    size_t left = (box.getWidth() - textWidth) / 2;
-    graphics.drawText(Point(box.left + left, box.top + 2), m_text, 0xffeeeeee, clip);
+    graphics.drawText(Point(box.left+2, box.top+2), m_text, 0xffeeeeee, clip);
 
     if (isFocused())
     {
@@ -63,12 +61,33 @@ bool TextField::onMouseProcess(MouseCommand const& command)
 }
 
 // ----------------------------------------------------------------------------
-void TextField::onKeyboardProcess(KeyboardCommand const& command)
+bool TextField::onKeyboardProcess(KeyboardCommand const& command)
 {
-    if (isFocused())
+    if (!isFocused()) return false;
+    if (command.ascii < 0) return true;
+
+    if (command.code == KeyCode::Left)
     {
-        
+        if (--m_caret < 0) m_caret = 0;
+        m_timer = boost::timer();
     }
+    else if (command.code == KeyCode::Right)
+    {
+        if (++m_caret > m_text.size()) m_caret = m_text.size();
+        m_timer = boost::timer();
+    }
+    else if (command.code == KeyCode::BackSpace)
+    {
+        if (m_caret == 0) return true;
+        m_text.erase(--m_caret, 1);
+        m_timer = boost::timer();
+    }
+    else
+    {
+        m_text.insert(m_caret++, 1, command.ascii);
+        m_timer = boost::timer();
+    }
+    return true;
 }
 
 // ----------------------------------------------------------------------------

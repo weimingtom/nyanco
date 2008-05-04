@@ -6,8 +6,8 @@
  */
 
 #include "gui_base.h"
-#include "Container.h"
 #include "TitleBar.h"
+#include "Panel.h"
 #include "Event.h"
 #include <vector>
 #include <boost/tuple/tuple.hpp>
@@ -24,7 +24,7 @@ namespace impl { class WindowManager; }
 template <>
 class Frame<void>
     : public EventServer,
-      public Container
+      public Component
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Frame<void>);
@@ -56,6 +56,11 @@ public:
     void focus(Component::Ptr component);
     void defocus();
 
+    void attach(Component::Ptr component) { m_panel->attach(component); }
+    void detach(Component::Ptr component) { m_panel->detach(component); }
+
+    Component::Ptr getFocusedComponent();
+
 private:
     void relocateChildren();
     void relocateY();
@@ -64,6 +69,11 @@ private:
 protected:
     Component::WeakPtr                  m_focusedComponent;
     TitleBar::Ptr                       m_titleBar;
+    Panel::Ptr                          m_panel;
+
+    Rect                                margin_;
+
+    Frame() : m_panel(Panel::Create(-1)) {}
 
     friend impl::WindowManager;
 };

@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual C++ Express 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListBoxTest", "ListBoxTest\ListBoxTest.vcproj", "{4059EA99-FD32-49AE-8CAA-2DEDF6D97DE1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EditTest", "EditTest\EditTest.vcproj", "{E5F11629-7610-4063-B282-5A307471455B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ContainerTest", "ContainerTest\ContainerTest.vcproj", "{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +17,14 @@ Global
 		{4059EA99-FD32-49AE-8CAA-2DEDF6D97DE1}.Debug|Win32.Build.0 = Debug|Win32
 		{4059EA99-FD32-49AE-8CAA-2DEDF6D97DE1}.Release|Win32.ActiveCfg = Release|Win32
 		{4059EA99-FD32-49AE-8CAA-2DEDF6D97DE1}.Release|Win32.Build.0 = Release|Win32
+		{E5F11629-7610-4063-B282-5A307471455B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5F11629-7610-4063-B282-5A307471455B}.Debug|Win32.Build.0 = Debug|Win32
+		{E5F11629-7610-4063-B282-5A307471455B}.Release|Win32.ActiveCfg = Release|Win32
+		{E5F11629-7610-4063-B282-5A307471455B}.Release|Win32.Build.0 = Release|Win32
+		{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}.Debug|Win32.Build.0 = Debug|Win32
+		{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}.Release|Win32.ActiveCfg = Release|Win32
+		{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

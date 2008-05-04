@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="afx"
-	ProjectGUID="{205D7B35-02BD-455B-A5CB-F699DC82BB10}"
-	RootNamespace="afx"
+	Name="ContainerTest"
+	ProjectGUID="{49D93C3B-4D3A-4341-97D7-7609D3D3DD6D}"
+	RootNamespace="ContainerTest"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,7 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\afx&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)\..\..\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -59,11 +60,19 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="winmm.lib d3d9.lib dinput8.lib dxguid.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="nyanco_d.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)\..\..\lib"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -75,6 +84,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -82,7 +97,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -103,7 +118,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\include&quot;;&quot;$(SolutionDir)\..\include\afx&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)\..\..\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -120,11 +136,21 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="winmm.lib d3d9.lib dinput8.lib dxguid.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="nyanco.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)\..\..\lib"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -136,6 +162,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -143,60 +175,8 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="interface"
-			>
-			<File
-				RelativePath="..\..\src\afx\Framework.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\GraphicsDevice.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\afx\InputDevice.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\afx\KeyCode.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="implement"
-			>
-			<File
-				RelativePath="..\..\src\afx\Framework.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\Framework.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\GraphicsDevice.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\GraphicsDevice.hpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\InputDevice.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\KeyCode.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\afx\KeyCode.hpp"
-				>
-			</File>
-		</Filter>
 		<File
-			RelativePath="..\..\src\afx\afx.h"
+			RelativePath="..\ContainerTest.cpp"
 			>
 		</File>
 	</Files>

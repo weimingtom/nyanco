@@ -8,6 +8,7 @@
 #include "gui_base.h"
 #include "Frame.h"
 #include "ContextMenu.h"
+#include "Dock.h"
 #include <d3d9.h>
 #include <string>
 
@@ -43,6 +44,13 @@ public:
     virtual ContextMenuPtr getContextMenu() const = 0;
 
     virtual Rect const& getClientRect() const = 0;
+
+    virtual Dock::Ptr dock(
+        Dockable::Ptr                   dockable,
+        Dock::Type                      type) = 0;
+
+    virtual void undock(
+        Dockable::Ptr                   dockable) = 0;
 
     static WindowManager& GetInterface();
 };

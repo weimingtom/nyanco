@@ -6,6 +6,7 @@
  */
 
 #include <boost/cstdint.hpp>
+#include <windows.h>
 
 #define BEGIN_NAMESPACE_NYANCO  namespace nyanco {
 #define END_NAMESPACE_NYANCO    }
@@ -29,3 +30,10 @@ typedef sint8                           char8;
 typedef wchar_t                         wchar;
 
 END_NAMESPACE_NYANCO
+
+#ifdef max
+#   undef max
+#endif
+#ifdef min
+#   undef min
+#endif

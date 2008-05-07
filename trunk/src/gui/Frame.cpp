@@ -135,13 +135,7 @@ void Frame<>::relocateChildren()
     // component
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
     static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
-#if 0
-    foreach (ComponentPtr p, componentList_)
-    {
-        int currentY = p->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
-        locationY = margin_.top + currentY;
-    }
-#endif
+
     location_.bottom = locationY + static_cast<Component::Ptr>(m_panel)->getHeight() + margin_.bottom;;
 }
 
@@ -174,6 +168,30 @@ ComponentPtr Frame<>::getHitComponent(int x, int y)
         if (hit != 0) return hit;
     }
     return ComponentPtr();
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::getDockableRect(Rect& rect)
+{
+    rect = location_;
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::setDockableRect(Rect const& rect)
+{
+    location_ = rect;
+    // title bar
+    int locationY = location_.top + margin_.top;
+    m_titleBar->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+    // component
+    locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
+    static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::drawDockable(Graphics& graphics)
+{
+    draw(graphics);
 }
 
 END_NAMESPACE_NYANCO_GUI

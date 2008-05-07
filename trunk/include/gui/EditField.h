@@ -25,8 +25,10 @@ public:
     struct Arg
     {
         sint32                          m_maxLength;
+        std::string                     m_initial;
 
         Arg& maxLength(sint32 maxLength)    { m_maxLength = maxLength; return *this; }
+        Arg& initial(std::string const& initial) { m_initial = initial; return *this; }
     };
 
     static TextField::Ptr Create(
@@ -57,6 +59,22 @@ class IntEdit : public EditField
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(IntEdit);
+
+    struct Arg
+    {
+        sint32                          m_min;
+        sint32                          m_max;
+        sint32                          m_step;
+        sint32                          m_initial;
+
+        Arg& min(sint32 min)    { m_min = min; return *this; }
+        Arg& max(sint32 max)    { m_max = max; return *this; }
+        Arg& step(sint32 step)  { m_step = step; return *this; }
+        Arg& initial(sint32 initial) { m_initial = initial; return *this; }
+    };
+
+private:
+    Arg                                 m_arg;
 };
 
 // ============================================================================
@@ -64,6 +82,22 @@ class FloatEdit : public EditField
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(FloatEdit);
+
+    struct Arg
+    {
+        float32                         m_min;
+        float32                         m_max;
+        float32                         m_step;
+        float32                         m_initial;
+
+        Arg& min(float32 min)    { m_min = min; return *this; }
+        Arg& max(float32 max)    { m_max = max; return *this; }
+        Arg& step(float32 step)  { m_step = step; return *this; }
+        Arg& initial(float32 initial) { m_initial = initial; return *this; }
+    };
+
+private:
+    Arg                                 m_arg;
 };
 
 END_NAMESPACE_NYANCO_GUI

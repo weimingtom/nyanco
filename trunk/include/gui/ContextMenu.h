@@ -30,6 +30,8 @@ typedef boost::shared_ptr<ContextMenu>      ContextMenuPtr;
 class MenuItemBase : public Component
 {
 public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(MenuItemBase);
+
     virtual int getTextWidth() const { return 0; }
     virtual void setWidth(int width) = 0;
 };
@@ -38,7 +40,9 @@ public:
 class MenuItem : public MenuItemBase
 {
 public:
-    static MenuItemPtr Create(
+    NYANCO_GUI_COMPONENT_TYPEDEF(MenuItem);
+
+    static MenuItem::Ptr Create(
         ComponentId const&          componentId,
         std::string const&          text);
 
@@ -61,7 +65,9 @@ private:
 class SubMenuItem : public MenuItemBase
 {
 public:
-    static boost::shared_ptr<SubMenuItem> Create(
+    NYANCO_GUI_COMPONENT_TYPEDEF(SubMenuItem);
+
+    static SubMenuItem::Ptr Create(
         ComponentId const&          componentId,
         std::string const&          text);
 
@@ -72,7 +78,7 @@ private:
 
     std::string                     text_;
 
-    std::list<MenuItemBasePtr>      itemList_;
+    std::list<MenuItemBase::Ptr>    itemList_;
 
     friend ContextMenu;
 };
@@ -81,7 +87,9 @@ private:
 class MenuSeparator : public MenuItemBase
 {
 public:
-    static boost::shared_ptr<MenuSeparator> Create();
+    NYANCO_GUI_COMPONENT_TYPEDEF(MenuSeparator);
+
+    static MenuSeparator::Ptr Create();
 
 private:
     virtual void draw(Graphics& g);
@@ -93,10 +101,10 @@ class ContextMenu : public Component
 {
 public:
     void addItem(
-        MenuItemBasePtr             menuItem);
+        MenuItemBase::Ptr               menuItem);
 
 protected:
-    void draw(Graphics&             graphics);
+    void draw(Graphics&                 graphics);
     void update();
 
     void visible(int x, int y);
@@ -106,8 +114,8 @@ private:
     void relocateItems();
 
 private:
-    std::list<MenuItemBasePtr>      itemList_;
-    bool                            showed_;
+    std::list<MenuItemBase::Ptr>        itemList_;
+    bool                                showed_;
 
     ContextMenu() : showed_(false) {}
 

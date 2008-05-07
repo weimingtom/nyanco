@@ -100,6 +100,22 @@ ContextMenuPtr WindowManager::getContextMenu() const
     return contextMenu_;
 }
 
+// ----------------------------------------------------------------------------
+Dock::Ptr WindowManager::dock(
+    Dockable::Ptr                       dockable,
+    Dock::Type                          type)
+{
+    detach(boost::shared_dynamic_cast<Frame<> >(dockable));
+    return m_dockManager->getRoot()->dock(dockable, type);
+}
+
+// ----------------------------------------------------------------------------
+void WindowManager::undock(
+    Dockable::Ptr                       dockable)
+{
+    m_dockManager->getRoot()->undock(dockable);
+}
+
 // ------------------------------------------------------------------------
 void WindowManager::draw()
 {
@@ -111,6 +127,9 @@ void WindowManager::draw()
         textList_.begin(), textList_.end(),
         bind(&Text::draw, _1, ref(*graphics_)));
     textList_.clear();
+
+    // draw dock
+    m_dockManager->draw(*graphics_);
 
     // draw frame list
     std::for_each(
@@ -134,6 +153,7 @@ void WindowManager::update()
     }
 
     // update
+    m_dockManager->update(m_clientRect, m_windowRect);
     std::for_each(framePtrList_.begin(), framePtrList_.end(), bind(&Frame<>::update, _1));
     contextMenu_->update();
 
@@ -149,6 +169,7 @@ void WindowManager::update()
 void WindowManager::initialize(
     LPDIRECT3DDEVICE9           devicePtr)
 {
+    m_dockManager.reset(new DockManager);
     graphics_.reset(new Graphics(devicePtr));
     contextMenu_.reset(new ContextMenu);
 }

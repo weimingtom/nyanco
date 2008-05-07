@@ -9,6 +9,7 @@
 #include "gui/WindowManager.h"
 #include "Graphics.hpp"
 #include "Component.h"
+#include "Dock.h"
 #include <d3d9.h>
 #include <vector>
 #include <list>
@@ -56,6 +57,13 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual ContextMenuPtr getContextMenu() const;
 
     virtual Rect const& getClientRect() const { return m_clientRect; }
+
+    virtual Dock::Ptr dock(
+        Dockable::Ptr                   dockable,
+        Dock::Type                      type);
+
+    virtual void undock(
+        Dockable::Ptr                   dockable);
 
     void initialize(
         LPDIRECT3DDEVICE9           devicePtr);
@@ -117,7 +125,10 @@ private:
 
     FramePtrList                    killedFramePtrList_;
 
+    Rect                            m_windowRect;
     Rect                            m_clientRect;
+
+    boost::scoped_ptr<DockManager>  m_dockManager;
 
     boost::scoped_ptr<Graphics>     graphics_;
 

@@ -42,10 +42,14 @@ template <int Num_>
 typename SplitPanel<Num_>::Ptr SplitPanel<Num_>::Create(
     ComponentId                         id)
 {
-    SplitPanel<Num_>* p = new SplitPanel<Num_>;
+    Ptr p(new SplitPanel<Num_>);
     p->m_splitWidth     = 3;
-    for (int i = 0; i < Num_; ++i) p->m_panels[i] = Panel::Create(-1);
-    return Ptr(p);
+    for (int i = 0; i < Num_; ++i)
+    {
+        p->m_panels[i] = Panel::Create(-1);
+        p->m_panels[i]->attachParent(p);
+    }
+    return p;
 }
 
 // ----------------------------------------------------------------------------

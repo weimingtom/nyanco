@@ -83,6 +83,10 @@ void SubMenuItem::setWidth(int width)
     location_.right = location_.left + width;
 }
 
+
+
+
+
 // ----------------------------------------------------------------------------
 MenuSeparatorPtr MenuSeparator::Create()
 {
@@ -108,6 +112,10 @@ void MenuSeparator::setWidth(int width)
 {
     location_.right = location_.left + width;
 }
+
+
+
+
 
 // ----------------------------------------------------------------------------
 void ContextMenu::addItem(MenuItemBasePtr menuItem)

@@ -78,20 +78,15 @@ Frame<>::Ptr WindowManager::search(
 void WindowManager::activate(
     Frame<>::Ptr                        framePtr)
 {
-    if (framePtrList_.empty()) return;
-    framePtrList_.front()->defocus();
     framePtrList_.remove(framePtr);
     framePtrList_.push_front(framePtr);
+    m_activeFrame = framePtr;
 }
 
 // ------------------------------------------------------------------------
 Frame<>::Ptr WindowManager::getActiveWindow() const
 {
-    if (framePtrList_.empty())
-    {
-        return Frame<>::Ptr();
-    }
-    return framePtrList_.front();
+    return m_activeFrame.lock();
 }
 
 // ------------------------------------------------------------------------
@@ -225,27 +220,52 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     // システムマウス操作
     else
     {
-        bool frameHit = false;
+        Point point(mouseCommand.posX, mouseCommand.posY);
+
+        Frame<>::Ptr    hitFrame;
+        Component::Ptr  hitComponent;
+        // 浮動フレームのヒットチェック
         foreach (Frame<>::Ptr frame, framePtrList_)
         {
-            Component::Ptr p = frame->getHitComponent(mouseCommand.posX, mouseCommand.posY);
-            if (p.get() != 0)
+            if (frame->isPointInner(point))
             {
-                frameHit = true;
-                if (mouseCommand.onButtonDown)
-                {
-                    activate(frame);
-                    frame->focus(p);
-                    if (p->onMouseProcess(mouseCommand))
-                    {
-                        // キャプチャを設定
-                        m_capturedMouse = p;
-                    }
-                }
+                hitFrame = frame;
                 break;
             }
         }
-        if (!frameHit && mouseCommand.onButtonDown)
+        // ドックのヒットチェック
+        if (hitFrame.get() == 0)
+        {
+            Dock::Ptr dock = m_dockManager->getDock(point);
+            if (dock.get() != 0)
+            {
+                Dockable::Ptr p = dock->getDockee();
+                Rect rect;
+                p->getDockableRect(rect);
+                if (rect.isInnerPoint(point.x, point.y))
+                    hitFrame = boost::shared_static_cast<Frame<> >(p);
+                else
+                    hitComponent = dock;
+            }
+        }
+        // フレームヒット時処理
+        if (mouseCommand.onButtonDown)
+        {
+            if (hitComponent.get() == 0 && hitFrame.get() != 0 )
+            {
+                hitComponent = hitFrame->getHitComponent(point.x, point.y);
+                activate(hitFrame);
+                hitFrame->focus(hitComponent);
+            }
+
+            if (hitComponent.get() != 0 && hitComponent->onMouseProcess(mouseCommand))
+            {
+                // キャプチャを設定
+                m_capturedMouse = hitComponent;
+            }
+        }
+
+        if (!hitFrame.get() && mouseCommand.onButtonDown)
         {
             foreach (Frame<>::Ptr frame, framePtrList_)
             {
@@ -253,7 +273,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
             }
         }
 
-        if (!frameHit && mouseCommand.onPushRight)
+        if (!hitFrame.get() && mouseCommand.onPushRight)
         {
             contextMenu_->visible(mouseCommand.posX, mouseCommand.posY);
         }

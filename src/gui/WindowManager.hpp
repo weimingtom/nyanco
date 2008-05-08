@@ -115,6 +115,7 @@ private:
 
     //! フレームリスト
     FramePtrList                    framePtrList_;
+    Frame<>::WeakPtr                m_activeFrame;
     //! テキスト
     TextList                        textList_;
     //! メニュー

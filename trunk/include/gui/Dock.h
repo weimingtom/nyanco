@@ -5,7 +5,7 @@
     @author dasyprocta
  */
 
-#include "gui_base.h"
+#include "Component.h"
 #include <vector>
 #include <boost/array.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -24,12 +24,13 @@ public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Dockable);
     bool isDocked() const { return m_isDocked; }
 
+    virtual void getDockableRect(Rect& rect) = 0;
+    virtual void setDockableRect(Rect const& rect) = 0;
+
 protected:
     Dockable() : m_isDocked(false) {}
 
 private:
-    virtual void getDockableRect(Rect& rect) = 0;
-    virtual void setDockableRect(Rect const& rect) = 0;
     virtual void drawDockable(Graphics& graphics) = 0;
 
     virtual void onDock() {}
@@ -42,7 +43,7 @@ private:
 };
 
 // ============================================================================
-class Dock : public boost::enable_shared_from_this<Dock>
+class Dock : public Component
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Dock);
@@ -52,9 +53,14 @@ public:
     Dock::Ptr dock(Dockable::Ptr frame, Dock::Type type);
     void undock(Dockable::Ptr frame);
 
+    Dockable::Ptr getDockee() const { return m_dockee; }
+
 private:
     void draw(Graphics& graphics);
     void update();
+    bool onMouseProcess(MouseCommand const& command);
+    bool isPointInner(Point const& point);
+    Dock::Ptr getDock(Point const& point);
 
     std::vector<Dock::Ptr>              m_docks;
     Dock::Ptr                           m_parent;
@@ -73,7 +79,7 @@ public:
 
     void update(Rect const& windowRect, Rect& clientRect);
     void draw(Graphics& graphics);
-    void onMouseProcess(MouseCommand const& command);
+    Dock::Ptr getDock(Point const& point);
 
     DockManager();
 

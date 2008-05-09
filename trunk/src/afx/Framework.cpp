@@ -259,6 +259,13 @@ LRESULT Framework::messageProcedure(
         }
         break;
 
+    case WM_SETFOCUS:
+        {
+            impl::InputDevice& device = impl::InputDevice::GetImplement();
+            device.acquire();
+        }
+        break;
+
     default:
         return ::DefWindowProc(hwnd, msg, wparam, lparam);
     }

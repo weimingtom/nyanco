@@ -67,6 +67,8 @@ public:
     void getDockableRect(Rect& rect);
     void setDockableRect(Rect const& rect);
     void drawDockable(Graphics& graphics);
+    void onDock();
+    void onUndock();
 
 private:
     void relocateChildren();
@@ -79,6 +81,7 @@ protected:
     Panel::Ptr                          m_panel;
 
     Rect                                margin_;
+    Rect                                m_prevLocation;
 
     Frame() : m_panel(Panel::Create(-1)) {}
 

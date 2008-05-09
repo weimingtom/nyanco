@@ -48,7 +48,7 @@ class Dock : public Component
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Dock);
 
-    enum Type { Root, Left, Top, Right, Bottom };
+    enum Type { Left, Top, Right, Bottom, Root };
 
     Dock::Ptr dock(Dockable::Ptr frame, Dock::Type type);
     void undock(Dockable::Ptr frame);

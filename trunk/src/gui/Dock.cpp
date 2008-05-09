@@ -11,6 +11,47 @@
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
+BEGIN_NO_NAMESPACE
+
+sint32 const SplitSize = 5;
+sint32 const splitSize = SplitSize;
+
+void calcLeft(Rect& rect, Rect& parent)
+{
+    rect.setHeight(parent.getHeight());
+    rect.setLeft(parent.left);
+    rect.setTop(parent.top);
+    parent.setLeft(rect.left + rect.getWidth() + splitSize);
+    parent.setWidth(parent.getWidth() - rect.getWidth() - splitSize);
+}
+
+void calcRight(Rect& rect, Rect& parent)
+{
+    rect.setHeight(parent.getHeight());
+    rect.setLeft(parent.left + parent.getWidth() - rect.getWidth());
+    rect.setTop(parent.top);
+    parent.setWidth(parent.getWidth() - rect.getWidth() - splitSize);
+}
+
+void calcTop(Rect& rect, Rect& parent)
+{
+    rect.setWidth(parent.getWidth());
+    rect.setLeft(parent.left);
+    rect.setTop(parent.top);
+    parent.setTop(rect.top + rect.getHeight() + splitSize);
+    parent.setHeight(parent.getHeight() - rect.getHeight() - splitSize);
+}
+
+void calcBottom(Rect& rect, Rect& parent)
+{
+    rect.setWidth(parent.getWidth());
+    rect.setLeft(parent.left);
+    rect.setTop(parent.top + parent.getHeight() - rect.getHeight());
+    parent.setHeight(parent.getHeight() - rect.getHeight() - splitSize);
+}
+
+END_NO_NAMESPACE
+
 // ----------------------------------------------------------------------------
 Dock::Ptr Dock::dock(Dockable::Ptr dockee, Dock::Type type)
 {
@@ -45,46 +86,17 @@ void Dock::undock(Dockable::Ptr dockee)
 // ----------------------------------------------------------------------------
 void Dock::update()
 {
-    static sint32 const SplitSize = 5;
-    sint32 splitSize = m_type == Dock::Root? 0: SplitSize;
-
     Rect rect, parentRect;
     m_dockee->getDockableRect(rect);
     m_parent->m_dockee->getDockableRect(parentRect);
 
     // UNDONE: 境界チェック
-    switch (m_type)
+    typedef void (*Callback)(Rect&, Rect&);
+    static Callback calcLocation[] =
     {
-    case Dock::Left:
-        rect.setHeight(parentRect.getHeight());
-        rect.setLeft(parentRect.left);
-        rect.setTop(parentRect.top);
-        parentRect.setLeft(rect.left + rect.getWidth() + splitSize);
-        parentRect.setWidth(parentRect.getWidth() - rect.getWidth() - splitSize);
-        break;
-
-    case Dock::Right:
-        rect.setHeight(parentRect.getHeight());
-        rect.setLeft(parentRect.left + parentRect.getWidth() - rect.getWidth());
-        rect.setTop(parentRect.top);
-        parentRect.setWidth(parentRect.getWidth() - rect.getWidth() - splitSize);
-        break;
-
-    case Dock::Top:
-        rect.setWidth(parentRect.getWidth());
-        rect.setLeft(parentRect.left);
-        rect.setTop(parentRect.top);
-        parentRect.setTop(rect.top + rect.getHeight() + splitSize);
-        parentRect.setHeight(parentRect.getHeight() - rect.getHeight() - splitSize);
-        break;
-
-    case Dock::Bottom:
-        rect.setWidth(parentRect.getWidth());
-        rect.setLeft(parentRect.left);
-        rect.setTop(parentRect.top + parentRect.getHeight() - rect.getHeight());
-        parentRect.setHeight(parentRect.getHeight() - rect.getHeight() - splitSize);
-        break;
-    }
+        calcLeft, calcTop, calcRight, calcBottom,
+    };
+    calcLocation[m_type](rect, parentRect);
 
     m_dockee->setDockableRect(rect);
     m_parent->m_dockee->setDockableRect(parentRect);
@@ -163,7 +175,10 @@ Dock::Ptr Dock::getDock(Point const& point)
 // ----------------------------------------------------------------------------
 bool Dock::onMouseProcess(MouseCommand const& command)
 {
-    if (!command.onDownLeft) return false;
+    static bool moving = false;
+    if (command.onPushLeft) moving = true;
+    if (!command.onDownLeft && !moving) return false;
+    if (command.onUpLeft) moving = false;
 
 static sint32 const SplitSize = 5;
     sint32 splitSize = m_parent->m_type == Dock::Root? 0: SplitSize;

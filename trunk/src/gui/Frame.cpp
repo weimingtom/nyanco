@@ -100,14 +100,14 @@ Component::Ptr Frame<>::getFocusedComponent()
 void Frame<>::draw(
     Graphics&                       graphics)
 {
-    graphics.setRectColor(0xff444444);
+    graphics.setRectColor(0x77444444);
     graphics.drawFillRect(location_);
 
-    graphics.setColor(0xff888888);
+    graphics.setColor(0x77888888);
     graphics.drawLine(Point(location_.left, location_.top), Point(location_.right, location_.top));
     graphics.drawLine(Point(location_.left, location_.top), Point(location_.left, location_.bottom-1));
 
-    graphics.setColor(0xff222222);
+    graphics.setColor(0x77222222);
     graphics.drawLine(Point(location_.right, location_.top+1), Point(location_.right, location_.bottom));
     graphics.drawLine(Point(location_.left, location_.bottom), Point(location_.right, location_.bottom));
 
@@ -186,6 +186,19 @@ void Frame<>::setDockableRect(Rect const& rect)
     // component
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
     static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::onDock()
+{
+    m_prevLocation = location_;
+}
+
+// ----------------------------------------------------------------------------
+void Frame<>::onUndock()
+{
+    location_ = m_prevLocation;
+    relocateChildren();
 }
 
 // ----------------------------------------------------------------------------

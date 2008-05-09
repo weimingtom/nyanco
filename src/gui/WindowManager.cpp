@@ -249,7 +249,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
             }
         }
         // フレームヒット時処理
-        if (mouseCommand.onButtonDown)
+        if (mouseCommand.onPushLeft)
         {
             if (hitComponent.get() == 0 && hitFrame.get() != 0 )
             {
@@ -267,6 +267,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
 
         if (!hitFrame.get() && mouseCommand.onButtonDown)
         {
+            m_activeFrame.reset();
             foreach (Frame<>::Ptr frame, framePtrList_)
             {
                 frame->defocus();

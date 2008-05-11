@@ -38,7 +38,7 @@ class WindowManager : public nyanco::gui::WindowManager
         Color                       color);
 
     virtual void attach(
-        nyanco::gui::Frame<>::Ptr       framePtr);
+        nyanco::gui::Frame<>::Ptr   framePtr);
 
     virtual void detach(
         Frame<>::Ptr                framePtr);
@@ -55,15 +55,16 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual Frame<>::Ptr getActiveWindow() const;
 
     virtual ContextMenuPtr getContextMenu() const;
+    virtual void setContextMenu(ContextMenu::Ptr menu);
 
     virtual Rect const& getClientRect() const { return m_clientRect; }
 
     virtual Dock::Ptr dock(
-        Dockable::Ptr                   dockable,
+        Frame<>::Ptr                    dockable,
         Dock::Type                      type);
 
     virtual void undock(
-        Dockable::Ptr                   dockable);
+        Frame<>::Ptr                    dockable);
 
     void initialize(
         LPDIRECT3DDEVICE9           devicePtr);
@@ -78,9 +79,6 @@ class WindowManager : public nyanco::gui::WindowManager
 
     static WindowManager& GetImplement();
 
-    
-    //void onMouseProcess(Mouse const& mouse);
-    //void onKeyboardProcess(Keyboard const& keyboard);
     void onInputProcess(Keyboard const& keyboard, Mouse const& mouse);
 
 private:
@@ -111,15 +109,26 @@ private:
     };
 
     typedef std::list<Frame<>::Ptr> FramePtrList;
+    typedef std::list<EventServer::Ptr> EventServerList;
     typedef std::vector<Text>       TextList;
 
     //! フレームリスト
-    FramePtrList                    framePtrList_;
+    FramePtrList                    m_frameList;
+    bool isExistFrame(Frame<>::Ptr frame)
+    {
+        FramePtrList::iterator it = std::find(m_frameList.begin(), m_frameList.end(), frame);
+        if (it != m_frameList.end()) return true;
+
+        return m_dockManager->isDockableExist(frame);
+    }
+
     Frame<>::WeakPtr                m_activeFrame;
+    EventServerList                 m_eventServerList;
+
     //! テキスト
     TextList                        textList_;
     //! メニュー
-    ContextMenuPtr                  contextMenu_;
+    ContextMenu::Ptr                contextMenu_;
 
     Component::WeakPtr              m_capturedMouse;
     Component::WeakPtr              m_capturedKeyboard;

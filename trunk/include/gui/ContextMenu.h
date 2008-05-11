@@ -97,9 +97,11 @@ private:
 };
 
 // ============================================================================
-class ContextMenu : public Component
+class ContextMenu : public Component, public EventServer
 {
 public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(ContextMenu);
+
     void addItem(
         MenuItemBase::Ptr               menuItem);
 

@@ -162,6 +162,10 @@
 				RelativePath="..\..\include\afx\KeyCode.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\include\afx\ProcessManager.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="implement"
@@ -192,6 +196,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\afx\KeyCode.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\ProcessManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\afx\ProcessManager.hpp"
 				>
 			</File>
 		</Filter>

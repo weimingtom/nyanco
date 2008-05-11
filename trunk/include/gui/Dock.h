@@ -53,6 +53,7 @@ public:
     Dock::Ptr dock(Dockable::Ptr frame, Dock::Type type);
     void undock(Dockable::Ptr frame);
 
+    bool isDockableExist(Dockable::Ptr dockable) const;
     Dockable::Ptr getDockee() const { return m_dockee; }
 
 private:
@@ -79,7 +80,9 @@ public:
 
     void update(Rect const& windowRect, Rect& clientRect);
     void draw(Graphics& graphics);
-    Dock::Ptr getDock(Point const& point);
+
+    Dock::Ptr getDock(Point const& point) const;
+    bool isDockableExist(Dockable::Ptr dockable) const;
 
     DockManager();
 

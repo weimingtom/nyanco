@@ -41,16 +41,17 @@ public:
 
     virtual Frame<>::Ptr getActiveWindow() const = 0;
 
-    virtual ContextMenuPtr getContextMenu() const = 0;
+    virtual ContextMenu::Ptr getContextMenu() const = 0;
+    virtual void setContextMenu(ContextMenu::Ptr menu) = 0;
 
     virtual Rect const& getClientRect() const = 0;
 
     virtual Dock::Ptr dock(
-        Dockable::Ptr                   dockable,
+        Frame<>::Ptr                    dockable,
         Dock::Type                      type) = 0;
 
     virtual void undock(
-        Dockable::Ptr                   dockable) = 0;
+        Frame<>::Ptr                    dockable) = 0;
 
     static WindowManager& GetInterface();
 };

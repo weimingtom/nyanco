@@ -173,6 +173,20 @@ Dock::Ptr Dock::getDock(Point const& point)
 }
 
 // ----------------------------------------------------------------------------
+bool Dock::isDockableExist(Dockable::Ptr dockable) const
+{
+    if (dockable == m_dockee)
+        return true;
+
+    foreach (Dock::Ptr dock, m_docks)
+    {
+        if (dock->isDockableExist(dockable))
+            return true;
+    }
+    return false;
+}
+
+// ----------------------------------------------------------------------------
 bool Dock::onMouseProcess(MouseCommand const& command)
 {
     static bool moving = false;
@@ -268,7 +282,7 @@ void DockManager::draw(Graphics& graphics)
 }
 
 // ----------------------------------------------------------------------------
-Dock::Ptr DockManager::getDock(Point const& point)
+Dock::Ptr DockManager::getDock(Point const& point) const
 {
     foreach (Dock::Ptr dock, m_root->m_docks)
     {
@@ -276,6 +290,12 @@ Dock::Ptr DockManager::getDock(Point const& point)
             return p;
     }
     return Dock::Ptr();
+}
+
+// ----------------------------------------------------------------------------
+bool DockManager::isDockableExist(Dockable::Ptr dockable) const
+{
+    return m_root->isDockableExist(dockable);
 }
 
 END_NAMESPACE_NYANCO_GUI

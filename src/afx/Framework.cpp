@@ -10,6 +10,7 @@
 
 // TEST: GUI ‚Ì‘g‚Ýž‚Ý
 #include "GuiInterface.h"
+//#include "DefaultMenu.hpp"
 
 namespace nyanco
 {
@@ -42,6 +43,7 @@ void Framework::initialize()
         GuiInterface::Implement();
         guiPtr_ = GuiInterface::Instanciate();
         guiPtr_->onInitialize();
+        //impl::setupMenu();
     }
 
     appPtr_->onInitialize();

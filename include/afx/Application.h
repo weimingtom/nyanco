@@ -10,6 +10,7 @@ namespace nyanco
 
 class Framework;
 
+// OBSOLETE: ProcessApplication �ֈڍs
 class Application
 {
 protected:
@@ -45,6 +46,15 @@ protected:
     virtual void onLostDevice() {}
 
     friend class Framework;
+};
+
+template <typename RootProcess_>
+class ProcessApplication : Application
+{
+    void onInitialize();
+    void onUpdate();
+
+    void getRootType() const { return RootProcess_::Type; }
 };
 
 } // namespace nyanco

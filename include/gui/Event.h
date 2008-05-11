@@ -106,6 +106,8 @@ class EventServer
     };
 
 public:
+    typedef boost::shared_ptr<EventServer> Ptr;
+
     // register member function
     template <typename Type_, typename Event_>
     void registerHandler(int id, void (Type_::*handler)(Event<Event_> const&), Type_* this_)

@@ -16,10 +16,12 @@
 #define END_NAMESPACE_NYANCO_GUI    }}
 #define NAMESPACE_NYANCO_GUI        nyanco::gui
 
-#define NYANCO_GUI_COMPONENT_TYPEDEF(Component_)    \
-    typedef boost::shared_ptr<Component_>   Ptr;    \
-    typedef boost::weak_ptr<Component_>     WeakPtr;\
-    typedef boost::scoped_ptr<Component_>   ScopedPtr;\
+#define NYANCO_GUI_COMPONENT_TYPEDEF(Component_)                \
+    typedef boost::shared_ptr<Component_>       Ptr;            \
+    typedef boost::shared_ptr<Component_ const> ConstPtr;       \
+    typedef boost::weak_ptr<Component_>         WeakPtr;        \
+    typedef boost::weak_ptr<Component_ const>   ConstWeakPtr;   \
+    typedef boost::scoped_ptr<Component_>       ScopedPtr;      \
 
 BEGIN_NAMESPACE_NYANCO_GUI
 

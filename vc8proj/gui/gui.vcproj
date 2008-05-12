@@ -223,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\Rollup.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\ScrollBar.cpp"
 				>
 			</File>
@@ -302,6 +306,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\Panel.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\Rollup.h"
 				>
 			</File>
 			<File

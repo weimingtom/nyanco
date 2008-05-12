@@ -115,7 +115,7 @@ void Dock::draw(Graphics& graphics)
     m_dockee->getDockableRect(rect);
     if (m_type == Dock::Left)
     {
-        rect.left = rect.getWidth()+1;
+        rect.left = rect.left + rect.getWidth()+1;
         rect.setWidth(4);
         graphics.setColor(0xff444444);
         graphics.drawFillRect(rect);

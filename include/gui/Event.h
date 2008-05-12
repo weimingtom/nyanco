@@ -68,8 +68,8 @@ private:
 class EventServer
 {
     typedef boost::any                          AnyHandler;
-    typedef void (*InvokerType)(void*, AnyHandler&, Event<> const&);
-    typedef boost::tuple<AnyHandler, InvokerType, void*>  HandlerSet;
+    typedef void (*InvokerType)(EventServer*, AnyHandler&, Event<> const&);
+    typedef boost::tuple<AnyHandler, InvokerType, EventServer*>  HandlerSet;
     typedef std::map<ComponentId, HandlerSet>   HandlerMap;
     typedef std::pair<ComponentId, boost::shared_ptr<Event<> > >    EventSet;
     typedef std::vector<EventSet>               EventQueue;
@@ -82,7 +82,7 @@ class EventServer
         typedef Event<Event_>       EventType;
         typedef void (Type::*Handler)(EventType const&);
         //typedef boost::function<void (EventType const&)> Handler;
-        static void Invoke(void* this_, AnyHandler& handler, Event<> const& event)
+        static void Invoke(EventServer* this_, AnyHandler& handler, Event<> const& event)
         {
             Handler&         h = boost::any_cast<Handler&>(handler);
             Type*            t = static_cast<Type*>(this_);
@@ -97,7 +97,7 @@ class EventServer
     {
         typedef Event<Event_>       EventType;
         typedef void (*Handler)(EventType const&);
-        static void Invoke(void*, AnyHandler& handler, Event<> const& event)
+        static void Invoke(EventServer*, AnyHandler& handler, Event<> const& event)
         {
             Handler&         h = boost::any_cast<Handler&>(handler);
             EventType const& e = dynamic_cast<EventType const&>(event);
@@ -110,9 +110,9 @@ public:
 
     // register member function
     template <typename Type_, typename Event_>
-    void registerHandler(int id, void (Type_::*handler)(Event<Event_> const&), Type_* this_)
+    void registerHandler(int id, void (Type_::*handler)(Event<Event_> const&))
     {
-        m_map[id] = boost::make_tuple(handler, &Invoker<Type_, Event_>::Invoke, this_);
+        m_map[id] = boost::make_tuple(handler, &Invoker<Type_, Event_>::Invoke, this);
     }
 
     // register function

@@ -41,8 +41,8 @@ public:
         attach(Button::Create(AddButtonId, "Add"));
         attach(Button::Create(DeleteButtonId, "Delete"));
 
-        registerHandler(AddButtonId, &MyFrame::onAddButtonEvent, this);
-        registerHandler(DeleteButtonId, &MyFrame::onDeleteButtonEvent, this);
+        registerHandler(AddButtonId, &MyFrame::onAddButtonEvent);
+        registerHandler(DeleteButtonId, &MyFrame::onDeleteButtonEvent);
 
         m_listBox = listBox;
     }

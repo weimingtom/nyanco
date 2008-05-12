@@ -100,14 +100,14 @@ Component::Ptr Frame<>::getFocusedComponent()
 void Frame<>::draw(
     Graphics&                       graphics)
 {
-    graphics.setRectColor(0x77444444);
+    graphics.setRectColor(0xcc444444);
     graphics.drawFillRect(location_);
 
-    graphics.setColor(0x77888888);
+    graphics.setColor(0xcc888888);
     graphics.drawLine(Point(location_.left, location_.top), Point(location_.right, location_.top));
     graphics.drawLine(Point(location_.left, location_.top), Point(location_.left, location_.bottom-1));
 
-    graphics.setColor(0x77222222);
+    graphics.setColor(0xcc222222);
     graphics.drawLine(Point(location_.right, location_.top+1), Point(location_.right, location_.bottom));
     graphics.drawLine(Point(location_.left, location_.bottom), Point(location_.right, location_.bottom));
 

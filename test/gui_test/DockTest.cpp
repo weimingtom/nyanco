@@ -32,17 +32,17 @@ public:
         attach(splitPanel);
         attach(Button::Create(CreateButtonId, "Create"));
 
-        registerHandler(DockLeftButtonId, &MyFrame::onPushButton, this);
-        registerHandler(DockRightButtonId, &MyFrame::onPushButton, this);
-        registerHandler(DockTopButtonId, &MyFrame::onPushButton, this);
-        registerHandler(DockBottomButtonId, &MyFrame::onPushButton, this);
-        registerHandler(CreateButtonId, &MyFrame::onPushCreate, this);
+        registerHandler(DockLeftButtonId, &MyFrame::onPushButton);
+        registerHandler(DockRightButtonId, &MyFrame::onPushButton);
+        registerHandler(DockTopButtonId, &MyFrame::onPushButton);
+        registerHandler(DockBottomButtonId, &MyFrame::onPushButton);
+        registerHandler(CreateButtonId, &MyFrame::onPushCreate);
     }
 
     void onPushButton(Event<Button> const& e)
     {
         WindowManager& manager = WindowManager::GetInterface();
-        Frame<>::Ptr this_ = manager.search(-1);
+        Frame<>::Ptr this_ = boost::shared_static_cast< Frame<> >(shared_from_this());
         if (this_->isDocked()) manager.undock(this_);
         else
         {

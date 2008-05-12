@@ -30,8 +30,6 @@ public:
         group2->attach(Button::Create(-1, "Button 4"));
         group1->attach(Button::Create(-1, "Button 5"));
 
-//        attach(group1);
-
         SplitPanel<2>::Ptr splitPanel = SplitPanel<2>::Create(-1);
         splitPanel->get<0>()->attach(group1);
         splitPanel->get<1>()->attach(Button::Create(-1, "Button 6"));
@@ -39,6 +37,11 @@ public:
         splitPanel2->get<0>()->attach(Button::Create(-1, "Button 7"));
         splitPanel2->get<1>()->attach(Button::Create(-1, "Button 8"));
         splitPanel->get<1>()->attach(splitPanel2);
+
+        Rollup::Ptr rollup = Rollup::Create(-1, "Rollup");
+        splitPanel->get<1>()->attach(rollup);
+        rollup->attach(Button::Create(-1, "Button 9"));
+        rollup->attach(Button::Create(-1, "Button 10"));
 
         attach(splitPanel);
     }

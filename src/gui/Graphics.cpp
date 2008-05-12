@@ -166,7 +166,12 @@ void Graphics::drawRect(
         { rect.left,    rect.bottom,    0.f,    1.f }
     };
 
-    // device.DrawPrimitiveUP;
+    device_.SetFVF(GuiVertex::Fvf);
+    device_.DrawPrimitiveUP(
+        D3DPT_LINESTRIP,
+        4,
+        v,
+        sizeof(GuiVertex));
 }
 
 // ------------------------------------------------------------------------
@@ -180,7 +185,9 @@ void Graphics::drawFillRect(
         { rect.right,   rect.bottom,    0.f,    1.f,    rectColor_[3] },
         { rect.left,    rect.bottom,    0.f,    1.f,    rectColor_[2] }
     };
-
+device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    device_.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    device_.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     device_.SetFVF(GuiVertex::Fvf);
     device_.DrawPrimitiveUP(
         D3DPT_TRIANGLEFAN,
@@ -243,6 +250,9 @@ Graphics::Graphics(
       color_(0xffffffff)
 {
     fontTexture_ = createFontTexture(devicePtr, fontInfo_);
+    device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    device_.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    device_.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 // ------------------------------------------------------------------------

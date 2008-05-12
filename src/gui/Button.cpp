@@ -34,7 +34,7 @@ void Button::draw(Graphics& graphics)
 
     if (!pushed_)
     {
-        graphics.setColor(0xff444444);
+        graphics.setRectColor(0xff444444);
         graphics.drawFillRect(box);
 
         graphics.setColor(0xff888888);
@@ -47,7 +47,7 @@ void Button::draw(Graphics& graphics)
     }
     else
     {
-        graphics.setColor(0xff444444);
+        graphics.setRectColor(0xff444444);
         graphics.drawFillRect(box);
 
         graphics.setColor(0xff222222);

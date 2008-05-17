@@ -5,10 +5,10 @@
 
 #include "ListBox.h"
 #include "Graphics.hpp"
+#include <boost/foreach.hpp>
 #include <algorithm>
 
-#undef min
-#undef max
+#define foreach BOOST_FOREACH
 
 BEGIN_NAMESPACE_NYANCO_GUI
 
@@ -21,7 +21,10 @@ ListBox::Ptr ListBox::Create(
     p->m_arg = arg;
     p->setLocation(Rect(0, 0, 0, arg.m_height));
 
-    p->m_scrollBar = ScrollBar::Create(-1, ScrollBar::Arg().owner(p).type(ScrollBar::Vertical));
+    p->createScrollBar(
+        p,
+        &ScrollBar::Arg().disable(false),
+        &ScrollBar::Arg().disable(true));
 
     return p;
 }
@@ -68,42 +71,43 @@ ListBox::Item& ListBox::getItem(
 }
 
 // ----------------------------------------------------------------------------
+sint32 ListBox::getSelectedIndex() const
+{
+    return m_selectedIndex;
+}
+
+// ----------------------------------------------------------------------------
+void ListBox::setSelectedIndex(sint32 index)
+{
+    m_selectedIndex = index;
+}
+
+// ----------------------------------------------------------------------------
 void ListBox::draw(Graphics& graphics)
 {
+    ComponentGraphics g(graphics);
+
     Rect region = location_;
+    Rect client;
+    getScrolledClientRect(client);
 
     // bound line
-    graphics.setColor(0xff222222);
-    graphics.drawLine(Point(region.left, region.top), Point(region.right, region.top));
-    graphics.drawLine(Point(region.left, region.top), Point(region.left, region.bottom-1));
-
-    graphics.setColor(0xff888888);
-    graphics.drawLine(Point(region.right, region.top+1), Point(region.right, region.bottom));
-    graphics.drawLine(Point(region.left, region.bottom), Point(region.right, region.bottom));
+    g.drawEdit(region);
 
     // column label
-    graphics.setRectColor(0xff777777, 0xff777777, 0xff333333, 0xff333333);
-    int columnX = 1;
+    int columnX = 0;
     for (int i = 0; i < m_columnLabels.size(); ++i)
     {
         bool breakFlag = false;
-        int right = region.left + columnX + m_columnLabels[i].width;
-        if (right > (region.right - m_scrollBar->getWidth() - 1))
+        int right = client.left + columnX + m_columnLabels[i].width;
+        if (right >= (client.right))
         {
-            right = location_.right - m_scrollBar->getWidth() - 1;
+            right = client.right;
             breakFlag = true;
         }
 
-        Rect column(region.left + columnX, region.top+1, right-1, region.top+1+18);
-        graphics.drawFillRect(column);
-
-        graphics.setColor(0xff888888);
-        graphics.drawLine(Point(region.left + columnX, region.top+1), Point(right-1, region.top+1));
-        graphics.drawLine(Point(region.left + columnX, region.top+1), Point(region.left + columnX, region.top+18-1));
-
-        graphics.setColor(0xff222222);
-        graphics.drawLine(Point(right-1, region.top+2), Point(right-1, region.top+18+1));
-        graphics.drawLine(Point(region.left + columnX, region.top+18+1), Point(right-1, region.top+18+1));
+        Rect column(client.left + columnX, client.top-Column::Height, right, client.top);
+        g.drawFrame(column, true, true);
 
         Rect clip = column;
         clip.right -= 2;
@@ -113,9 +117,9 @@ void ListBox::draw(Graphics& graphics)
         if (breakFlag) break;
         else
         {
-            int height = getClientWidth() - 20;
+            int height = client.getHeight() - 20;
             graphics.setColor(0xff333333);
-            graphics.drawLine(Point(right-1, region.top + 19), Point(right-1, region.bottom - 1));
+            graphics.drawLine(Point(right-1, region.top+1+Column::Height), Point(right-1, region.bottom-1));
         }
 
         columnX += m_columnLabels[i].width;
@@ -124,32 +128,36 @@ void ListBox::draw(Graphics& graphics)
     // client
     if (m_items.size() == 0) return;
 
-    int clientY = region.top + 19;
-    int clientX = region.left + 1;
-    int scrollBarWidth = m_scrollBar->getWidth();
-    Rect clientRegion(clientX, clientY, region.right-1-scrollBarWidth, region.bottom-1);
-    int beginRow = getScrollBarOffset() / 18;
-    int restY = getScrollBarOffset() % 18;
+    Size clientWzScrollBar;
+    getClientSizeWithScrollBar(clientWzScrollBar);
+
+    int clientY = client.top;
+    int clientX = client.left;
+    int beginRow = getScrollBar(ScrollBar::Vertical)->getContentOffset() / 18;
+    int restY = getScrollBar(ScrollBar::Vertical)->getContentOffset() % 18;
     clientY -= restY;
-    int endRow = beginRow + getClientWidth() / 18 + 1;
+    int endRow = std::min(beginRow + (clientWzScrollBar.height+restY) / 18+1, static_cast<int>(m_items.size()));
 
     ItemMatrix::const_iterator it = m_items.begin();
     for (int i = 0; i < beginRow; ++i) ++it;
     for (int i = beginRow; i < endRow; ++i, ++it)
     {
-        clientX = region.left + 1;
+        clientX = client.left;
         for (int j = 0; j < m_columnLabels.size(); ++j)
         {
             bool breakFlag = false;
             int right = clientX + m_columnLabels[j].width;
-            if (right > (region.right - m_scrollBar->getWidth() - 1))
+            if (right >= client.left + clientWzScrollBar.width)
             {
-                right = location_.right - m_scrollBar->getWidth() - 1;
+                right = client.left + clientWzScrollBar.width;
                 breakFlag = true;
             }
-            int columnY = (clientY < region.top+19)? clientY+restY+2: clientY;
-            Rect column(clientX, columnY, right-3, clientY+1+18);
-            if (clientY+18 > region.bottom) column.bottom = region.bottom - 1;
+            // è„ã´äE
+            int columnY = (clientY < client.top)? clientY+restY: clientY;
+            Rect column(clientX, columnY, right, clientY+18);
+            // â∫ã´äE
+            if (clientY+18 >= client.top + clientWzScrollBar.height)
+                column.bottom = client.top + clientWzScrollBar.height;
 
             std::string str = (*it)[j].get<std::string>();
             graphics.drawText(Point(clientX + 2, clientY + 2), str, 0xffeeeeee, column);
@@ -159,21 +167,19 @@ void ListBox::draw(Graphics& graphics)
         }
         // line
         clientY += 18;
+        if (clientY >= client.top + clientWzScrollBar.height) break;
         graphics.setColor(0xff333333);
-        graphics.drawLine(Point(clientRegion.left, clientY), Point(clientRegion.right, clientY));
+        graphics.drawLine(Point(client.left, clientY-1), Point(client.right-1, clientY-1));
     }
+
     // scroll bar
-    m_scrollBar->draw(graphics);
+    drawScrollBar(graphics);
 }
 
 // ----------------------------------------------------------------------------
 void ListBox::update()
 {
-    m_scrollBar->setX(location_.right - 11);
-    m_scrollBar->setY(location_.top + 20);
-
-    m_scrollBar->update();
-
+    updateScrollBar();
     Component::update();
 }
 
@@ -184,45 +190,108 @@ int ListBox::getHeight() const
 }
 
 // ----------------------------------------------------------------------------
-sint32 ListBox::getClientWidth()
+sint32 ListBox::calcClientWidth() const
 {
-    // height
-    int height = location_.getHeight() - 20;
-    return height;
+    sint32 width = 0;
+    foreach (Column const& label, m_columnLabels)
+    {
+        width += label.width;
+    }
+    return width;
 }
 
 // ----------------------------------------------------------------------------
-sint32 ListBox::getContentWidth()
+void ListBox::getScrolledClientRect(Rect& rect) const
 {
-    // height
-    int numRows = m_items.size();
-    int height = numRows * 18;
-    return height;
+    rect = location_;
+    rect.left   += 1;
+    rect.top    += Column::Height + 1;
+    rect.right  -= 1;
+    rect.bottom -= 1;
 }
 
 // ----------------------------------------------------------------------------
-sint32 ListBox::getOneContentSize()
+void ListBox::getScrolledContentSize(Size& size) const
 {
-    return 18;
+    size.width  = calcClientWidth();
+    size.height = m_items.size() * 18;
 }
 
 // ----------------------------------------------------------------------------
-sint32 ListBox::getNumContents()
+void ListBox::getScrolledUnitInclementSize(Size& size) const
 {
-    return m_items.size();
+    size.width  = 18;
+    size.height = 18;
 }
+
+#if 0
+
+// ----------------------------------------------------------------------------
+sint32 ListBox::getClientSize(ScrollBar::Type type) const
+{
+    sint32 size;
+    if (type == ScrollBar::Vertical)
+    {
+        ScrollBar::Ptr bar = getScrollBar(ScrollBar::Horizontal);
+        size = location_.getHeight()-Column::Height-2-(bar->isVisible()? bar->getHeight(): 0);
+    }
+    else if (type == ScrollBar::Horizontal)
+    {
+        ScrollBar::Ptr bar = getScrollBar(ScrollBar::Vertical);
+        size = location_.getWidth()-2-(bar->isVisible()? bar->getWidth(): 0);
+    }
+    else assert(0);
+
+    return size;
+}
+
+// ----------------------------------------------------------------------------
+sint32 ListBox::getContentSize(ScrollBar::Type type) const
+{
+    sint32 size;
+    if (type == ScrollBar::Vertical)
+        size = m_items.size() * 18;
+    else if (type == ScrollBar::Horizontal)
+        size = calcClientWidth();
+    else assert(0);
+
+    return size;
+}
+
+// ----------------------------------------------------------------------------
+sint32 ListBox::getUnitInclementSize(ScrollBar::Type type) const
+{
+    if (type == ScrollBar::Vertical)
+        return 18;
+    else if (type == ScrollBar::Horizontal)
+        return 18;
+    else assert(0);
+}
+
+// ----------------------------------------------------------------------------
+bool ListBox::isVHScrollEnabled() const
+{
+    return getScrollBar(ScrollBar::Horizontal)->isVisible() &&
+           getScrollBar(ScrollBar::Vertical)->isVisible();
+}
+
+#endif
 
 // ----------------------------------------------------------------------------
 bool ListBox::onMouseProcess(MouseCommand const& mouse)
 {
-    if (m_scrollBar->onMouseProcess(mouse))
+    if (onScrollBarMouseProcess(mouse))
     {
         return true;
     }
     return false;
 }
 
-
+// ----------------------------------------------------------------------------
+bool ListBox::onKeyboardProcess(KeyboardCommand const& keyboard)
+{
+    return false;
+}
 
 BEGIN_NO_NAMESPACE
 

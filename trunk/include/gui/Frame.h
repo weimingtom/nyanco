@@ -69,6 +69,7 @@ public:
     void drawDockable(Graphics& graphics);
     void onDock();
     void onUndock();
+    void onUpdate() { update(); }
 
 private:
     void relocateChildren();

@@ -89,6 +89,12 @@ void Component::setWidth(int width)
 }
 
 // ----------------------------------------------------------------------------
+void Component::setHeight(int height)
+{
+    location_.bottom = location_.top + height;
+}
+
+// ----------------------------------------------------------------------------
 int Component::getHeight() const
 {
     return location_.bottom - location_.top;

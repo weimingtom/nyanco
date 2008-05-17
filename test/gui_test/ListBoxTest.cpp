@@ -64,7 +64,8 @@ class MyApplication : public Application
     void onInitialize()
     {
         WindowManager& manager = WindowManager::GetInterface();
-        manager.attach(MyFrame::Create(-1, Frame<>::Arg().caption("Test ListBox").width(280)));
+        //manager.attach(MyFrame::Create(-1, Frame<>::Arg().caption("Test ListBox").width(280)));
+        manager.dock(MyFrame::Create(-1, Frame<>::Arg().caption("Test ListBox").width(280)), Dock::Left);
     }
 };
 

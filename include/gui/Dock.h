@@ -33,6 +33,7 @@ protected:
 private:
     virtual void drawDockable(Graphics& graphics) = 0;
 
+    virtual void onUpdate() {}
     virtual void onDock() {}
     virtual void onUndock() {}
 

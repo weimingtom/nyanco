@@ -28,6 +28,7 @@ BEGIN_NAMESPACE_NYANCO_GUI
 typedef uint32                      Color;
 typedef sint32                      WindowId;
 typedef sint32                      ComponentId;
+ComponentId const                   NonspecificId = -1;
 
 // ----------------------------------------------------------------------------
 class Point
@@ -60,6 +61,9 @@ public:
     void setHeight(int height) { bottom = top + height; }
     void setLeft(int left_) { right = left_ + getWidth(); left = left_; }
     void setTop(int top_) { bottom = top_ + getHeight(); top = top_; }
+
+    void extend(int size) { left -= size; top -= size; right += size; bottom += size; }
+
     int getWidth() const { return right - left; }
     int getHeight() const { return bottom - top; }
     bool isInnerPoint(int x, int y)

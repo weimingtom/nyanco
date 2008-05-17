@@ -204,7 +204,7 @@ void Graphics::drawLine(
     GuiVertex v[2] =
     {
         { p1.x,     p1.y,   0.f,    1.f,    color_ },
-        { p2.x,     p2.y,   0.f,    1.f,    color_ },
+        { p2.x,   p2.y,   0.f,    1.f,    color_ },
     };
 
     device_.SetFVF(GuiVertex::Fvf);
@@ -262,3 +262,61 @@ Graphics::~Graphics()
 }
 
 END_NAMESPACE_NYANCO_GUI_IMPL
+
+BEGIN_NAMESPACE_NYANCO_GUI
+
+// ----------------------------------------------------------------------------
+void ComponentGraphics::drawEdit(Rect const& rect)
+{
+    Rect a    = rect;
+    a.right  -= 1;
+    a.bottom -= 1;
+
+    m_g.setRectColor(0xff444444);
+    m_g.drawFillRect(a);
+
+    m_g.setColor(0xff222222);
+    m_g.drawLine(Point(a.left, a.top), Point(a.left, a.bottom-1));
+    m_g.drawLine(Point(a.left, a.top), Point(a.right, a.top));
+
+    m_g.setColor(0xff888888);
+    m_g.drawLine(Point(a.right, a.top+1), Point(a.right, a.bottom));
+    m_g.drawLine(Point(a.left, a.bottom), Point(a.right, a.bottom));
+}
+
+// ----------------------------------------------------------------------------
+void ComponentGraphics::drawButton(Rect const& rect, bool pushed)
+{
+    Rect a    = rect;
+    a.right  -= 1;
+    a.bottom -= 1;
+}
+
+// ----------------------------------------------------------------------------
+void ComponentGraphics::drawFrame(Rect const& rect, bool rise, bool gradation)
+{
+    Rect a    = rect;
+    a.right  -= 1;
+    a.bottom -= 1;
+
+    if (gradation)
+        m_g.setRectColor(0xff777777, 0xff777777, 0xff333333, 0xff333333);
+    else
+        m_g.setRectColor(0xff444444);
+    m_g.drawFillRect(a);
+
+    typedef std::pair<Color, Color> ColorPair;
+    ColorPair col = rise?
+        ColorPair(0xff888888, 0xff222222): ColorPair(0xff222222, 0xff888888);
+
+    m_g.setColor(col.first);
+    m_g.drawLine(Point(a.left, a.top), Point(a.left, a.bottom-1));
+    m_g.drawLine(Point(a.left, a.top), Point(a.right, a.top));
+
+    m_g.setColor(col.second);
+    m_g.drawLine(Point(a.right, a.top+1), Point(a.right, a.bottom));
+    m_g.drawLine(Point(a.left, a.bottom), Point(a.right+1, a.bottom));
+}
+
+END_NAMESPACE_NYANCO_GUI
+

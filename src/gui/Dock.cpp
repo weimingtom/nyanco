@@ -100,7 +100,10 @@ void Dock::update()
 
     m_dockee->setDockableRect(rect);
     m_parent->m_dockee->setDockableRect(parentRect);
-    
+
+    m_dockee->onUpdate();
+    m_parent->m_dockee->onUpdate();
+
     foreach (Dock::Ptr dock, m_docks)
     {
         dock->update();

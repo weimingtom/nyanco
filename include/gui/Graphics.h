@@ -51,4 +51,17 @@ public:
         Point const&                p3) = 0;
 };
 
+class ComponentGraphics
+{
+public:
+    ComponentGraphics(Graphics& g) : m_g(g) {}
+
+    void drawEdit(Rect const& rect);
+    void drawButton(Rect const& rect, bool pushed);
+    void drawFrame(Rect const& rect, bool rise = true, bool gradation = false);
+
+private:
+    Graphics&                           m_g;
+};
+
 END_NAMESPACE_NYANCO_GUI

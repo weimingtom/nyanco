@@ -58,6 +58,7 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual void setContextMenu(ContextMenu::Ptr menu);
 
     virtual Rect const& getClientRect() const { return m_clientRect; }
+    virtual Rect const& getViewRect() const { return m_windowRect; }
 
     virtual Dock::Ptr dock(
         Frame<>::Ptr                    dockable,

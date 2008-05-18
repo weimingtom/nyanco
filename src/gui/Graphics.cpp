@@ -250,6 +250,7 @@ Graphics::Graphics(
       color_(0xffffffff)
 {
     fontTexture_ = createFontTexture(devicePtr, fontInfo_);
+
     device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     device_.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     device_.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -272,7 +273,7 @@ void ComponentGraphics::drawEdit(Rect const& rect)
     a.right  -= 1;
     a.bottom -= 1;
 
-    m_g.setRectColor(0xff444444);
+    m_g.setRectColor(0x44444488);
     m_g.drawFillRect(a);
 
     m_g.setColor(0xff222222);

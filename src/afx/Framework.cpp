@@ -110,8 +110,13 @@ void Framework::run()
                 keyboard.clear();
             }
 
-            device.clear();
+            d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff000000, 1.f, 0);
+
             d3dDevice->BeginScene();
+
+            D3DRECT rect;
+            guiPtr_->getClientRect(rect.x1, rect.y1, rect.x2, rect.y2);
+            d3dDevice->Clear(1, &rect, D3DCLEAR_TARGET, 0xff000088, 1.f, 0);
 
             appPtr_->onDraw();
             // TEST: GUI ‚Ì•`‰æ

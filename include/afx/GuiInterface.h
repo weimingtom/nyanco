@@ -35,6 +35,7 @@ namespace nyanco
         virtual void onUpdate()     {}
         virtual void onDraw()       {}
         virtual void setClientRect(sint32 left, sint32 top, sint32 right, sint32 bottom) {}
+        virtual void getClientRect(sint32& left, sint32& top, sint32& right, sint32& bottom) {}
 
         static  void Implement();
         static Factory                  Factory_;

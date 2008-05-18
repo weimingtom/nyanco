@@ -119,6 +119,9 @@ void ScrollBar::draw(Graphics& graphics)
     {
         Rect slider;
         calcSliderRect(slider);
+        sint32 size = getClientSize();
+        if (m_arg.m_type == Vertical) slider.bottom = std::min(slider.bottom, location_.top+size-10);
+        else if (m_arg.m_type == Horizontal) slider.right = std::min(slider.right, location_.left+size-10);
         g.drawFrame(slider);
         Rect inner = slider;
         inner.extend(-2);
@@ -183,47 +186,39 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
     Owner::Ptr owner = m_owner.lock();
     if (!owner) return false;
 
-    Rect client;
-    owner->getScrolledClientRect(client);
+    sint32 barLength = getClientSize() - 20;
 
     if (mouse.onPushLeft)
     {
         if (isPointInner(Point(mouse.posX, mouse.posY)))
         {
+            Rect button[2];
+            calcButtonRect(button[0], button[1]);
             // up button
-            Rect closeRegion = location_;
-            closeRegion.bottom = closeRegion.top + 10;
-            if (closeRegion.isInnerPoint(mouse.posX, mouse.posY))
+            if (button[0].isInnerPoint(mouse.posX, mouse.posY))
             {
                 m_scrollOffset -= m_scrollSize;
                 if (m_scrollOffset < 0) m_scrollOffset = 0;
                 return true;
             }
             // down button
-            closeRegion = location_;
-            closeRegion.bottom -= 1;
-            closeRegion.top = closeRegion.bottom - 10;
-            if (closeRegion.isInnerPoint(mouse.posX, mouse.posY))
+            if (button[1].isInnerPoint(mouse.posX, mouse.posY))
             {
                 m_scrollOffset += m_scrollSize;
-                if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > location_.getHeight()-20)
-                    m_scrollOffset = location_.getHeight()-20-m_sliderSize;
+                if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > barLength)
+                    m_scrollOffset = barLength-m_sliderSize;
                 return true;
             }
 
             // slider
             int clientHeight = getClientSize();
             int contentHeight = getContentSize();
-            int barLength = location_.getHeight() - 20;
 
             float32 per = static_cast<float32>(clientHeight) / contentHeight;
             sint32 sliderLength = static_cast<sint32>(barLength * per);
 
-            Rect slider = location_;
-            slider.top += 10;
-            slider.bottom -= 10;
-            slider.top += static_cast<sint32>(m_scrollOffset);
-            slider.bottom = slider.top + sliderLength;
+            Rect slider;
+            calcSliderRect(slider);
             if (slider.isInnerPoint(mouse.posX, mouse.posY))
             {
                 m_sliderDown = true;
@@ -231,17 +226,32 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
             }
 
             // bar スライダー外の領域
-            if (mouse.posY < slider.top)
+            if (m_arg.m_type == Vertical)
             {
-                m_scrollOffset -= sliderLength;
+                if (mouse.posY < slider.top)
+                {
+                    m_scrollOffset -= sliderLength;
+                }
+                else if (mouse.posY >= slider.bottom)
+                {
+                    m_scrollOffset += sliderLength;
+                }
             }
-            else if (mouse.posY > slider.bottom)
+            else if (m_arg.m_type == Horizontal)
             {
-                m_scrollOffset += sliderLength;
+                if (mouse.posX < slider.left)
+                {
+                    m_scrollOffset -= sliderLength;
+                }
+                else if (mouse.posX >= slider.right)
+                {
+                    m_scrollOffset += sliderLength;
+                }
             }
+
             if (m_scrollOffset < 0) m_scrollOffset = 0;
-            if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > location_.getHeight()-20)
-                m_scrollOffset = location_.getHeight()-20-m_sliderSize;
+            if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > barLength)
+                m_scrollOffset = barLength-m_sliderSize;
 
             return true;
         }
@@ -256,35 +266,62 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
         {
             int clientHeight = getClientSize();
             int contentHeight = getContentSize();
-            int barLength = location_.getHeight()-20;
 
             float32 per = static_cast<float32>(clientHeight) / contentHeight;
             sint32 sliderLength = static_cast<sint32>(barLength * per);
 
-            Rect slider = client;
-            slider.top += 10;
-            slider.bottom -= 10;
-            slider.top += m_scrollOffset;
-            slider.bottom = slider.top + sliderLength;
+            Rect slider;
+            calcSliderRect(slider);
 
-            if (mouse.posY < location_.top+10)
+            if (m_arg.m_type == Vertical)
             {
-                m_scrollOffset = 0.f;
+                if (mouse.posY < location_.top+10)
+                {
+                    m_scrollOffset = 0.f;
+                }
+                else if (mouse.posY >= location_.bottom-10)
+                {
+                    m_scrollOffset = barLength-m_sliderSize;
+                }
+                else
+                {
+                    float32 move = static_cast<float32>(contentHeight) / barLength;
+                    if (m_arg.m_type == Vertical)
+                        m_scrollOffset += mouse.moveY;
+                    else if (m_arg.m_type == Horizontal)
+                        m_scrollOffset += mouse.moveX;
+
+                    if (m_scrollOffset < 0) m_scrollOffset = 0;
+                    if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > barLength)
+                        m_scrollOffset = barLength-m_sliderSize;
+                }
+                return true;
             }
-            else if (mouse.posY >= location_.bottom-10)
+            else if (m_arg.m_type == Horizontal)
             {
-                m_scrollOffset = location_.getHeight()-20-m_sliderSize;
-            }
-            else
-            {
-                float32 move = static_cast<float32>(contentHeight) / barLength;
-                m_scrollOffset += mouse.moveY;
-                if (m_scrollOffset < 0) m_scrollOffset = 0;
-                if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > location_.getHeight()-20)
-                    m_scrollOffset = location_.getHeight()-20-m_sliderSize;
+                if (mouse.posX < location_.left+10)
+                {
+                    m_scrollOffset = 0.f;
+                }
+                else if (mouse.posX >= location_.right-10)
+                {
+                    m_scrollOffset = barLength-m_sliderSize;
+                }
+                else
+                {
+                    float32 move = static_cast<float32>(contentHeight) / barLength;
+                    if (m_arg.m_type == Vertical)
+                        m_scrollOffset += mouse.moveY;
+                    else if (m_arg.m_type == Horizontal)
+                        m_scrollOffset += mouse.moveX;
+
+                    if (m_scrollOffset < 0) m_scrollOffset = 0;
+                    if (static_cast<sint32>(m_scrollOffset + m_sliderSize) > barLength)
+                        m_scrollOffset = barLength-m_sliderSize;
+                }
+                return true;
             }
         }
-        return true;
     }
     return false;
 }
@@ -398,13 +435,13 @@ void ScrollBar::calcSliderRect(Rect& slider) const
     {
         slider.top += 10;
         slider.top += m_scrollOffset;
-        slider.bottom = slider.top + static_cast<sint32>(m_sliderSize)+1;
+        slider.bottom = slider.top + static_cast<sint32>(m_sliderSize) + 1;
     }
     else if (m_arg.m_type == Horizontal)
     {
         slider.left += 10;
         slider.left += m_scrollOffset;
-        slider.right = slider.left + static_cast<sint32>(m_sliderSize);
+        slider.right = slider.left + static_cast<sint32>(m_sliderSize) + 1;
     }
     else assert(0);
 }

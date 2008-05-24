@@ -14,7 +14,7 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 template <int Num_>
-class SplitPanel : public Component
+class SplitPanel : public MultiComponent
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(typename SplitPanel<Num_>);
@@ -29,6 +29,48 @@ public:
     {
         for (int i = 0; i < Num_; ++i)
             m_panels[i]->setEventServer(server);
+    }
+
+    Component::Ptr getFirstComponent() const
+    {
+        return m_panels[0];
+    }
+
+    Component::Ptr getLastComponent() const
+    {
+        return m_panels[Num_-1];
+    }
+
+    Component::Ptr getNextComponent(Component::ConstPtr component) const
+    {
+        Panel::ConstPtr panel = boost::shared_dynamic_cast<Panel const>(component);
+        if (panel)
+        {
+            for (int i = 0; i < Num_-1; ++i)
+            {
+                if (panel == m_panels[i])
+                {
+                    return m_panels[i+1];
+                }
+            }
+        }
+        return Component::Ptr();
+    }
+
+    Component::Ptr getPrevComponent(Component::ConstPtr component) const
+    {
+        Panel::ConstPtr panel = boost::shared_dynamic_cast<Panel const>(component);
+        if (panel)
+        {
+            for (int i = Num_-1; 0 < i; --i)
+            {
+                if (panel == m_panels[i])
+                {
+                    return m_panels[i-1];
+                }
+            }
+        }
+        return Component::Ptr();
     }
 
 private:

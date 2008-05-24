@@ -5,7 +5,7 @@
     @author dasyprocta
  */
 
-#include "Container.h"
+#include "Panel.h"
 #include "Event.h"
 #include "Dock.h"
 #include <boost/iterator_adaptors.hpp>
@@ -36,39 +36,19 @@ public:
 
     bool isPointInner(Point const& point) const;
 
-    struct iterator : boost::iterator_adaptor<
-        iterator,
-        std::list<Component::Ptr>::iterator,
-        Component::Ptr,
-        boost::bidirectional_traversal_tag>
-    {
-        iterator(std::list<Component::Ptr>::iterator it)
-            : boost::iterator_adaptor<
-                iterator,
-                std::list<Component::Ptr>::iterator,
-                Component::Ptr,
-                boost::bidirectional_traversal_tag>(it) {}
-
-        void increment()
-        {
-
-        }
-
-        void decrement()
-        {
-
-        }
-
-        Component::Ptr dereference() const
-        {
-
-        }
-    };
+    void focusToNext();
 
 protected:
+    Component::Ptr getNextComponent(Component::Ptr comp);
     void setId(WindowId id)         { m_id = id; }
     Rect& getLocation()             { return m_location; }
     Rect const& getLocation() const { return m_location; }
+
+    Container::Ptr getRootContainer() const { return m_panel; }
+    //! ルートコンテナ
+    Container::Ptr                      m_panel;
+
+    Window() : m_panel(Panel::Create(-1)) {}
 
 private:
     //! リターンキーを優先的にキャプチャするコンポーネント

@@ -11,7 +11,7 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ============================================================================
-class Container : public Component
+class Container : public Component, public ComponentIterator
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Container);
@@ -32,8 +32,10 @@ public:
 
     virtual Component::Ptr searchById(int id);
 
-    std::list<Component::Ptr>::iterator begin() { return componentList_.begin(); }
-    std::list<Component::Ptr>::iterator end() { return componentList_.end(); }
+    Component::Ptr getFirstComponent() const;
+    Component::Ptr getLastComponent() const;
+    Component::Ptr getNextComponent(Component::Ptr component) const;
+    Component::Ptr getPrevComponent(Component::Ptr component) const;
 
 protected:
     sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);

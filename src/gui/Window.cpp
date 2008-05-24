@@ -68,4 +68,45 @@ bool Window::isPointInner(Point const& point) const
             m_location.top  <= point.y && point.y < m_location.bottom);
 }
 
+// ----------------------------------------------------------------------------
+void Window::focusToNext()
+{
+    Component::Ptr current = m_focusedComponent.lock();
+    if (!current)
+    {
+        // TODO: ルートコンテナの最初のコンポーネントにフォーカス
+        return;
+    }
+
+    Component::Ptr next;
+    while ((next = getNextComponent(current))->enableFocus())
+    {
+        focus(next);
+    }
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Window::getNextComponent(Component::Ptr comp)
+{
+    if (ComponentIterator::Ptr it = boost::shared_dynamic_cast<ComponentIterator>(comp))
+    {
+        if (Component::Ptr first = it->getFirstComponent())
+        {
+            return first;
+        }
+
+        if (Component::Ptr next = it->getNextComponent(comp))
+        {
+            return next;
+        }
+    }
+
+    if (Component::Ptr parent = comp->getParent())
+    {
+        return (boost::shared_dynamic_cast<ComponentIterator>(parent))->getNextComponent(comp);
+    }
+
+    return Component::Ptr();
+}
+
 END_NAMESPACE_NYANCO_GUI

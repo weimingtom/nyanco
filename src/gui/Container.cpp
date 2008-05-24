@@ -114,4 +114,42 @@ void Container::setEventServer(EventServer* server)
     }
 }
 
+// ----------------------------------------------------------------------------
+Component::Ptr Container::getFirstComponent() const
+{
+    if (componentList_.empty()) return Component::Ptr();
+    return *componentList_.begin();
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Container::getLastComponent() const
+{
+    if (componentList_.empty()) return Component::Ptr();
+    return *(componentList_.end()--);
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Container::getNextComponent(Component::Ptr component) const
+{
+    ComponentList::const_iterator it =
+        std::find(componentList_.begin(), componentList_.end(), component);
+
+    if (it == componentList_.end()) return Component::Ptr();
+    if (++it == componentList_.end()) return Component::Ptr();
+
+    return *it;
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Container::getPrevComponent(Component::Ptr component) const
+{
+    ComponentList::const_iterator it =
+        std::find(componentList_.begin(), componentList_.end(), component);
+
+    if (it == componentList_.end()) return Component::Ptr();
+    if (it == componentList_.begin()) return Component::Ptr();
+
+    return *(--it);
+}
+
 END_NAMESPACE_NYANCO_GUI

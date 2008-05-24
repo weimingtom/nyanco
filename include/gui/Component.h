@@ -65,6 +65,8 @@ public:
     void attachParent(ComponentPtr parent);
     void detachParent();
 
+    Component::Ptr getParent() const { return parent_; }
+
 protected:
     EventServer* getEventServer() const;
     ComponentPtr getTopLevelContainer() const;
@@ -80,6 +82,23 @@ protected:
     friend ContextMenu;
     friend Container;
     friend impl::WindowManager;
+};
+
+class ComponentIterator
+{
+public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(ComponentIterator);
+
+    virtual Component::Ptr getFirstComponent() const = 0;
+    virtual Component::Ptr getLastComponent() const = 0;
+    virtual Component::Ptr getNextComponent(Component::ConstPtr component) const = 0;
+    virtual Component::Ptr getPrevComponent(Component::ConstPtr component) const = 0;
+};
+
+class MultiComponent : public Component, public ComponentIterator
+{
+public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(MultiComponent);
 };
 
 END_NAMESPACE_NYANCO_GUI

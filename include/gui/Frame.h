@@ -69,12 +69,9 @@ private:
 
 protected:
     TitleBar::Ptr                       m_titleBar;
-    Panel::Ptr                          m_panel;
 
     Rect                                margin_;
     Rect                                m_prevLocation;
-
-    Frame() : m_panel(Panel::Create(-1)) {}
 
     friend impl::WindowManager;
 };

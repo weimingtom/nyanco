@@ -5,8 +5,7 @@
     @author dasyprocta
  */
 
-#include "gui_base.h"
-#include "Frame.h"
+#include "Window.h"
 #include "ContextMenu.h"
 #include "Dock.h"
 #include <d3d9.h>
@@ -25,33 +24,40 @@ public:
         Color                       color) = 0;
 
     virtual void attach(
-        Frame<>::Ptr                framePtr) = 0;
+        Window::Ptr                framePtr) = 0;
 
     virtual void detach(
-        Frame<>::Ptr                framePtr) = 0;
+        Window::Ptr                framePtr) = 0;
 
     virtual void detach(
         ComponentId                 id) = 0;
 
-    virtual Frame<>::Ptr search(
+    virtual Window::Ptr search(
         ComponentId                 id) = 0;
 
     virtual void activate(
-        Frame<>::Ptr                framePtr) = 0;
+        Window::Ptr                framePtr) = 0;
 
-    virtual Frame<>::Ptr getActiveWindow() const = 0;
+    virtual Window::Ptr getActiveWindow() const = 0;
 
     virtual ContextMenu::Ptr getContextMenu() const = 0;
     virtual void setContextMenu(ContextMenu::Ptr menu) = 0;
 
     virtual Rect const& getClientRect() const = 0;
 
+    virtual Dock::Ptr getRootDock() const = 0;
+
     virtual Dock::Ptr dock(
-        Frame<>::Ptr                    dockable,
+        DockableWindow::Ptr             wnd,
         Dock::Type                      type) = 0;
 
+    virtual Dock::Ptr dock(
+        DockableWindow::Ptr             wnd,
+        Dock::Type                      type,
+        Dock::Ptr                       dock) = 0;
+
     virtual void undock(
-        Frame<>::Ptr                    dockable) = 0;
+        DockableWindow::Ptr             wnd) = 0;
 
     static WindowManager& GetInterface();
 };

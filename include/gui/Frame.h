@@ -5,10 +5,9 @@
     @author dasyprocta
  */
 
-#include "gui_base.h"
+#include "Window.h"
 #include "TitleBar.h"
 #include "Panel.h"
-#include "Event.h"
 #include "Dock.h"
 #include <vector>
 #include <boost/tuple/tuple.hpp>
@@ -24,9 +23,7 @@ namespace impl { class WindowManager; }
 // ============================================================================
 template <>
 class Frame<void>
-    : public EventServer,
-      public Component,
-      public Dockable
+    : public DockableWindow
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Frame<void>);
@@ -54,14 +51,8 @@ public:
     void draw(Graphics& graphics);
     void update();
 
-    void focus(sint32 componentId);
-    void focus(Component::Ptr component);
-    void defocus();
-
-    void attach(Component::Ptr component) { m_panel->attach(component); }
-    void detach(Component::Ptr component) { m_panel->detach(component); }
-
-    Component::Ptr getFocusedComponent();
+    void attach(Component::Ptr component);
+    void detach(Component::Ptr component);
 
     // Dockable インターフェース実装
     void getDockableRect(Rect& rect);
@@ -74,10 +65,9 @@ public:
 private:
     void relocateChildren();
     void relocateY();
-    ComponentPtr getHitComponent(int x, int y);
+    Component::Ptr getHitComponent(int x, int y);
 
 protected:
-    Component::WeakPtr                  m_focusedComponent;
     TitleBar::Ptr                       m_titleBar;
     Panel::Ptr                          m_panel;
 

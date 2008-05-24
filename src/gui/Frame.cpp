@@ -26,17 +26,16 @@ void Frame<>::create(
     uint32                              width,
     uint32                              height)
 {
-    frame->m_id                     = id;
+    frame->setId(id);
 
     m_titleBar = TitleBar::Create(-1, caption, frame);
     m_titleBar->setCaption(caption);
 
-    m_panel->attachParent(frame);
-
     {
-        frame->location_.left = frame->location_.top = 0;
-        frame->location_.right          = width;
-        frame->location_.bottom         = height;
+        Rect& location = frame->getLocation();
+        location.left = location.top = 0;
+        location.right          = width;
+        location.bottom         = height;
     }
 
     {
@@ -50,66 +49,49 @@ void Frame<>::create(
 // ----------------------------------------------------------------------------
 void Frame<>::moveTo(int x, int y)
 {
-    location_.right     = x + location_.getWidth();
-    location_.bottom    = y + location_.getHeight();
-    location_.left      = x;
-    location_.top       = y;
+    Rect& location = getLocation();
+    location.right     = x + location.getWidth();
+    location.bottom    = y + location.getHeight();
+    location.left      = x;
+    location.top       = y;
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::move(int x, int y)
 {
-    location_.left  += x;
-    location_.right += x;
-    location_.top   += y;
-    location_.bottom += y;
+    Rect& location = getLocation();
+    location.left  += x;
+    location.right += x;
+    location.top   += y;
+    location.bottom += y;
 
     m_titleBar->move(x, y);
     static_cast<Component::Ptr>(m_panel)->move(x, y);
-    //std::for_each(componentList_.begin(), componentList_.end(), bind(&Component::move, _1, x, y));
 }
 
 // ----------------------------------------------------------------------------
-void Frame<>::focus(sint32 componentId)
+void Frame<>::attach(Component::Ptr component)
 {
-    focus(searchById(componentId));
+    component->setEventServer(this);
+    m_panel->attach(component);
 }
 
 // ----------------------------------------------------------------------------
-void Frame<>::focus(Component::Ptr component)
+void Frame<>::detach(Component::Ptr component)
 {
-    if (Component::Ptr comp = m_focusedComponent.lock()) comp->defocus();
-    m_focusedComponent = component;
-    if (Component::Ptr comp = m_focusedComponent.lock()) comp->focus();
-}
-
-// ----------------------------------------------------------------------------
-void Frame<>::defocus()
-{
-    if (Component::Ptr comp = m_focusedComponent.lock()) comp->defocus();
-    m_focusedComponent.reset();
-}
-
-// ----------------------------------------------------------------------------
-Component::Ptr Frame<>::getFocusedComponent()
-{
-    return m_focusedComponent.lock();
+    component->setEventServer(0);
+    m_panel->detach(component);
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::draw(
     Graphics&                       graphics)
 {
-    graphics.setRectColor(0xcc444444);
-    graphics.drawFillRect(location_);
+    ComponentGraphics g(graphics);
 
-    graphics.setColor(0xcc888888);
-    graphics.drawLine(Point(location_.left, location_.top), Point(location_.right, location_.top));
-    graphics.drawLine(Point(location_.left, location_.top), Point(location_.left, location_.bottom-1));
+    Rect const& location = getLocation();
 
-    graphics.setColor(0xcc222222);
-    graphics.drawLine(Point(location_.right, location_.top+1), Point(location_.right, location_.bottom));
-    graphics.drawLine(Point(location_.left, location_.bottom), Point(location_.right, location_.bottom));
+    g.drawFrame(location);
 
     // title bar
     static_cast<Component::Ptr>(m_titleBar)->draw(graphics);
@@ -129,30 +111,17 @@ void Frame<>::update()
 // ----------------------------------------------------------------------------
 void Frame<>::relocateChildren()
 {
+    Rect& location = getLocation();
+
     // title bar
-    int locationY = location_.top + margin_.top;
-    m_titleBar->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+    int locationY = location.top + margin_.top;
+    m_titleBar->relocate(location.left + margin_.left, location.getWidth() - margin_.left * 2, locationY);
     // component
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
-    static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+    static_cast<Component::Ptr>(m_panel)->relocate(location.left + margin_.left, location.getWidth() - margin_.left * 2, locationY);
 
-    location_.bottom = locationY + static_cast<Component::Ptr>(m_panel)->getHeight() + margin_.bottom;;
+    location.bottom = locationY + static_cast<Component::Ptr>(m_panel)->getHeight() + margin_.bottom;;
 }
-
-#if 0
-// ----------------------------------------------------------------------------
-void Frame<>::relocateY()
-{
-    int locationY = location_.top + margin_.top;
-    foreach (ComponentPtr p, componentList_)
-    {
-        int height = p->getHeight();
-        p->setY(locationY);
-        locationY += height + margin_.top;
-    }
-    location_.bottom = locationY + margin_.bottom;
-}
-#endif
 
 // ----------------------------------------------------------------------------
 ComponentPtr Frame<>::getHitComponent(int x, int y)
@@ -173,31 +142,31 @@ ComponentPtr Frame<>::getHitComponent(int x, int y)
 // ----------------------------------------------------------------------------
 void Frame<>::getDockableRect(Rect& rect)
 {
-    rect = location_;
+    rect = getLocation();
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::setDockableRect(Rect const& rect)
 {
-    location_ = rect;
+    getLocation() = rect;
     // title bar
-    int locationY = location_.top + margin_.top;
-    m_titleBar->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+    int locationY = rect.top + margin_.top;
+    m_titleBar->relocate(rect.left + margin_.left, rect.getWidth() - margin_.left * 2, locationY);
     // component
     locationY += static_cast<Component::Ptr>(m_titleBar)->getHeight() + margin_.top;
-    static_cast<Component::Ptr>(m_panel)->relocate(location_.left + margin_.left, location_.getWidth() - margin_.left * 2, locationY);
+    static_cast<Component::Ptr>(m_panel)->relocate(rect.left + margin_.left, rect.getWidth() - margin_.left * 2, locationY);
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::onDock()
 {
-    m_prevLocation = location_;
+    m_prevLocation = getLocation();
 }
 
 // ----------------------------------------------------------------------------
 void Frame<>::onUndock()
 {
-    location_ = m_prevLocation;
+    getLocation() = m_prevLocation;
     relocateChildren();
 }
 

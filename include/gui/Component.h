@@ -6,6 +6,7 @@
  */
 
 #include "gui_base.h"
+#include "Event.h"
 #include <string>
 #include <boost/weak_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -23,7 +24,9 @@ namespace impl { class WindowManager; }
 
 typedef boost::shared_ptr<Component> ComponentPtr;
 
-class Component : public boost::enable_shared_from_this<Component>
+class Component
+    : public EventClient,
+      public boost::enable_shared_from_this<Component>
 {
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Component);

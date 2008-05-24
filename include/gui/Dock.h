@@ -63,12 +63,14 @@ private:
     bool onMouseProcess(MouseCommand const& command);
     bool isPointInner(Point const& point);
     Dock::Ptr getDock(Point const& point);
+    void invokeHandler();
 
     std::vector<Dock::Ptr>              m_docks;
     Dock::Ptr                           m_parent;
     Dock::Type                          m_type;
 
     Dockable::Ptr                       m_dockee;
+    Rect                                m_spliter;
 
     friend DockManager;
 };

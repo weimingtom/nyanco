@@ -48,7 +48,7 @@ void TextField::draw(Graphics& graphics)
 // ----------------------------------------------------------------------------
 bool TextField::onMouseProcess(MouseCommand const& command)
 {
-    if (command.onPushLeft)
+    if (location_.isInnerPoint(command.posX, command.posY) && command.onPushLeft)
     {
         setCaret(command.posX, command.posY);
         m_timer = boost::timer();
@@ -60,7 +60,7 @@ bool TextField::onMouseProcess(MouseCommand const& command)
 bool TextField::onKeyboardProcess(KeyboardCommand const& command)
 {
     if (!isFocused()) return false;
-    if (command.ascii < 0) return true;
+    if (command.ascii <= 0) return false;
 
     if (command.code == KeyCode::Left)
     {
@@ -74,7 +74,7 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
     }
     else if (command.code == KeyCode::BackSpace)
     {
-        if (m_caret == 0) return true;
+        if (m_caret == 0) return false;
         m_text.erase(--m_caret, 1);
         m_timer = boost::timer();
     }
@@ -83,7 +83,7 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
         m_text.insert(m_caret++, 1, command.ascii);
         m_timer = boost::timer();
     }
-    return true;
+    return false;
 }
 
 // ----------------------------------------------------------------------------

@@ -13,6 +13,8 @@ BEGIN_NAMESPACE_NYANCO_GUI
 
 BEGIN_NO_NAMESPACE
 
+sint32 const MinDockeeSize = 64;
+
 sint32 const SplitSize = 5;
 sint32 const splitSize = SplitSize;
 
@@ -50,6 +52,30 @@ void calcBottom(Rect& rect, Rect& parent)
     parent.setHeight(parent.getHeight() - rect.getHeight() - splitSize);
 }
 
+void calcLeftSpliter(Rect& rect)
+{
+    rect.left = rect.right;
+    rect.setWidth(5);
+}
+
+void calcTopSpliter(Rect& rect)
+{
+    rect.top = rect.bottom;
+    rect.setHeight(5);
+}
+
+void calcRightSpliter(Rect& rect)
+{
+    rect.left = rect.left - 5;
+    rect.setWidth(5);
+}
+
+void calcBottomSpliter(Rect& rect)
+{
+    rect.top = rect.top - 5;
+    rect.setHeight(5);
+}
+
 END_NO_NAMESPACE
 
 // ----------------------------------------------------------------------------
@@ -59,9 +85,12 @@ Dock::Ptr Dock::dock(Dockable::Ptr dockee, Dock::Type type)
     p->m_parent = boost::shared_static_cast<Dock>(shared_from_this());
     p->m_type   = type;
     p->m_dockee = dockee;
+
     dockee->m_isDocked = true;
     dockee->onDock();
+
     m_docks.push_back(p);
+
     return p;
 }
 
@@ -98,6 +127,14 @@ void Dock::update()
     };
     calcLocation[m_type](rect, parentRect);
 
+    m_spliter = rect;
+    typedef void (*SpliterMaker)(Rect&);
+    static SpliterMaker calcSpliter[] =
+    {
+        calcLeftSpliter, calcTopSpliter, calcRightSpliter, calcBottomSpliter,
+    };
+    calcSpliter[m_type](m_spliter);
+
     m_dockee->setDockableRect(rect);
     m_parent->m_dockee->setDockableRect(parentRect);
 
@@ -114,23 +151,18 @@ void Dock::update()
 void Dock::draw(Graphics& graphics)
 {
     // UNDONE: スプリッタの描画
-    Rect rect;
-    m_dockee->getDockableRect(rect);
+    Rect rect = m_spliter;
     if (m_type == Dock::Left)
     {
-        rect.left = rect.left + rect.getWidth()+1;
-        rect.setWidth(4);
         graphics.setColor(0xff444444);
         graphics.drawFillRect(rect);
         graphics.setColor(0xff888888);
-        graphics.drawLine(Point(rect.left, rect.top), Point(rect.left, rect.bottom));
+        graphics.drawLine(Point(rect.left, rect.top), Point(rect.left, rect.bottom-1));
         graphics.setColor(0xff222222);
-        graphics.drawLine(Point(rect.right-1, rect.top), Point(rect.right-1, rect.bottom));
+        graphics.drawLine(Point(rect.right-1, rect.top), Point(rect.right-1, rect.bottom-1));
     }
     else if (m_type == Dock::Bottom)
     {
-        rect.top -= 4;
-        rect.setHeight(4);
         graphics.setColor(0xff444444);
         graphics.drawFillRect(rect);
         graphics.setColor(0xff888888);
@@ -140,6 +172,7 @@ void Dock::draw(Graphics& graphics)
     }
 
     m_dockee->drawDockable(graphics);
+
     foreach (Dock::Ptr dock, m_docks)
     {
         dock->draw(graphics);
@@ -151,14 +184,8 @@ bool Dock::isPointInner(Point const& point)
 {
     Rect rect;
     m_dockee->getDockableRect(rect);
-    switch (m_type)
-    {
-    case Dock::Left:    rect.right  += 4; break;
-    case Dock::Top:     rect.bottom += 4; break;
-    case Dock::Right:   rect.left   -= 4; break;
-    case Dock::Bottom:  rect.top    -= 4; break;
-    }
-    return rect.isInnerPoint(point.x, point.y);
+    return rect.isInnerPoint(point.x, point.y) ||
+           m_spliter.isInnerPoint(point.x, point.y);
 }
 
 // ----------------------------------------------------------------------------
@@ -197,9 +224,9 @@ bool Dock::onMouseProcess(MouseCommand const& command)
     if (!command.onDownLeft && !moving) return false;
     if (command.onUpLeft) moving = false;
 
-static sint32 const SplitSize = 5;
+    static sint32 const SplitSize = 5;
     sint32 splitSize = m_parent->m_type == Dock::Root? 0: SplitSize;
-    
+
     Rect rect, parentRect;
     m_dockee->getDockableRect(rect);
     m_parent->m_dockee->getDockableRect(parentRect);
@@ -207,12 +234,26 @@ static sint32 const SplitSize = 5;
     switch (m_type)
     {
     case Dock::Left:
-        rect.right += command.moveX;
-        rect.setHeight(parentRect.getHeight());
-        rect.setLeft(parentRect.left);
-        rect.setTop(parentRect.top);
-        parentRect.setLeft(rect.left + rect.getWidth() + splitSize);
-        parentRect.setWidth(parentRect.getWidth() - rect.getWidth() - splitSize);
+        if (((0 <= command.moveX) && (rect.right + 5 <= command.posX)) ||
+            ((command.moveX < 0)  && (command.posX < rect.right)))
+            rect.right += command.moveX;
+        // 境界チェック
+        if (rect.getWidth() < MinDockeeSize)
+            rect.setWidth(MinDockeeSize);
+        else if (parentRect.right < rect.right + MinDockeeSize + splitSize)
+            rect.right = parentRect.right - MinDockeeSize - splitSize;
+        calcLeft(rect, parentRect);
+        break;
+
+    case Dock::Top:
+        if (((0 <= command.moveY) && (rect.bottom + 5 <= command.posY)) ||
+            ((command.moveY < 0) && (command.posY < rect.bottom)))
+            rect.bottom += command.moveY;
+        if (rect.getHeight() < MinDockeeSize)
+            rect.setHeight(MinDockeeSize);
+        else if (parentRect.bottom < rect.bottom + MinDockeeSize + splitSize)
+            rect.bottom = parentRect.bottom - MinDockeeSize - splitSize;
+        calcTop(rect, parentRect);
         break;
 
     case Dock::Right:
@@ -221,15 +262,6 @@ static sint32 const SplitSize = 5;
         rect.setLeft(parentRect.left + parentRect.getWidth() - rect.getWidth() + splitSize);
         rect.setTop(parentRect.top);
         parentRect.setWidth(parentRect.getWidth() - rect.getWidth() - splitSize);
-        break;
-
-    case Dock::Top:
-        rect.bottom += command.moveY;
-        rect.setWidth(parentRect.getWidth());
-        rect.setLeft(parentRect.left);
-        rect.setTop(parentRect.top);
-        parentRect.setTop(rect.top + rect.getHeight() + splitSize);
-        parentRect.setHeight(parentRect.getHeight() - rect.getHeight() - splitSize);
         break;
 
     case Dock::Bottom:

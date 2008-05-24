@@ -47,7 +47,7 @@ namespace nyanco { namespace impl
 
         char8 getAsciiCode() const
         {
-            return static_cast<char8>(m_key);
+            return static_cast<char8>(m_ascii);
         }
 
         void setVirtualKey(uint8 key)
@@ -55,9 +55,15 @@ namespace nyanco { namespace impl
             m_key = mapFromVirtualKey(key);
         }
 
+        void setAscii(sint8 ascii)
+        {
+            m_ascii = ascii;
+        }
+
         void clear()
         {
-            m_key = KeyCode::Unknown;
+            m_key   = KeyCode::Unknown;
+            m_ascii = 0;
         }
 
 #if 0
@@ -102,6 +108,7 @@ namespace nyanco { namespace impl
         uint32                          current_; // 0 or 1;
 
         KeyCode::Type                   m_key;
+        sint8                           m_ascii;
 
 //        std::deque<char8>               m_asciiQueue;
     };

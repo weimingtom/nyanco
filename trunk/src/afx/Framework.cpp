@@ -266,6 +266,14 @@ LRESULT Framework::messageProcedure(
         }
         break;
 
+    case WM_CHAR:
+        {
+            impl::InputDevice& device   = impl::InputDevice::GetImplement();
+            impl::Keyboard& keyboard    = device.getImplKeyboard();
+            keyboard.setAscii(static_cast<sint8>(wparam));
+        }
+        break;
+
     case WM_SETFOCUS:
         {
             impl::InputDevice& device = impl::InputDevice::GetImplement();

@@ -23,7 +23,7 @@ class FrameFinder
 {
 public:
     FrameFinder(ComponentId id) : m_id(id) {}
-    bool operator()(Frame<>::Ptr framePtr) const
+    bool operator()(Window::Ptr framePtr) const
     {
         return framePtr->getId() == m_id;
     }
@@ -44,57 +44,85 @@ void WindowManager::drawText(
 
 // ------------------------------------------------------------------------
 void WindowManager::attach(
-    Frame<>::Ptr                        framePtr)
+    Window::Ptr                        framePtr)
 {
-    if (!isExistFrame(framePtr))
+    if (!isWindowExist(framePtr))
     {
-        m_frameList.push_front(framePtr);
-        m_eventServerList.push_back(framePtr);
+        setFloatingWindow(framePtr);
     }
 }
 
 // ------------------------------------------------------------------------
 void WindowManager::detach(
-    Frame<>::Ptr                        framePtr)
+    Window::Ptr                        framePtr)
 {
-    killedFramePtrList_.push_back(framePtr);
+    WindowList::iterator it = std::find(m_windowList.begin(), m_windowList.end(), framePtr);
+    if (it != m_windowList.end())
+    {
+        m_killedWindowList.push_back(*it);
+
+        WindowList::iterator it2 = std::find(m_dockingWindowList.begin(), m_dockingWindowList.end(), *it);
+        if (it2 != m_dockingWindowList.end())
+        {
+            m_dockManager->getRoot()->undock(boost::shared_static_cast<DockableWindow>(*it2));
+            m_dockingWindowList.remove(*it);
+        }
+        else m_floatingWindowList.remove(*it);
+    }
 }
 
 // ------------------------------------------------------------------------
 void WindowManager::detach(
     ComponentId                         id)
 {
-    FramePtrList::iterator it = std::find_if(
-        m_frameList.begin(), m_frameList.end(), FrameFinder(id));
-    if (it != m_frameList.end()) killedFramePtrList_.push_back(*it);
+    WindowList::iterator it = std::find_if(m_windowList.begin(), m_windowList.end(), FrameFinder(id));
+    if (it != m_windowList.end())
+    {
+        m_killedWindowList.push_back(*it);
+
+        WindowList::iterator it2 = std::find(m_dockingWindowList.begin(), m_dockingWindowList.end(), *it);
+        if (it2 != m_dockingWindowList.end())
+        {
+            m_dockManager->getRoot()->undock(boost::shared_static_cast<DockableWindow>(*it2));
+            m_dockingWindowList.remove(*it);
+        }
+        else m_floatingWindowList.remove(*it);
+    }
 }
 
 // ------------------------------------------------------------------------
-Frame<>::Ptr WindowManager::search(
+Window::Ptr WindowManager::search(
     ComponentId                         id)
 {
-    FramePtrList::iterator it = std::find_if(
-        m_frameList.begin(), m_frameList.end(), FrameFinder(id));
-    return (it != m_frameList.end())? *it: Frame<>::Ptr();
+    WindowList::iterator it = std::find_if(m_windowList.begin(), m_windowList.end(), FrameFinder(id));
+    return (it != m_windowList.end())? *it: Window::Ptr();
 }
 
 // ------------------------------------------------------------------------
 void WindowManager::activate(
-    Frame<>::Ptr                        framePtr)
+    Window::Ptr                        framePtr)
 {
-    FramePtrList::const_iterator it = std::find(m_frameList.begin(), m_frameList.end(), framePtr);
-    if (it != m_frameList.end())
+    WindowList::const_iterator it = std::find(m_windowList.begin(), m_windowList.end(), framePtr);
+    if (it != m_windowList.end())
     {
-        m_frameList.remove(framePtr);
-        m_frameList.push_front(framePtr);
+        if (Window::Ptr active = m_activeWindow.lock())
+            active->defocus();
+
+        // ドッキングされてなければ一番手前に移動
+        WindowList::iterator it2 = std::find(m_dockingWindowList.begin(), m_dockingWindowList.end(), *it);
+        if (it2 == m_dockingWindowList.end())
+        {
+            m_floatingWindowList.remove(framePtr);
+            m_floatingWindowList.push_front(framePtr);
+        }
+        m_activeWindow = framePtr;
     }
-    m_activeFrame = framePtr;
 }
 
 // ------------------------------------------------------------------------
-Frame<>::Ptr WindowManager::getActiveWindow() const
+Window::Ptr WindowManager::getActiveWindow() const
 {
-    return m_activeFrame.lock();
+    return m_activeWindow.lock();
 }
 
 // ------------------------------------------------------------------------
@@ -111,31 +139,41 @@ void WindowManager::setContextMenu(ContextMenu::Ptr menu)
 
 // ----------------------------------------------------------------------------
 Dock::Ptr WindowManager::dock(
-    Frame<>::Ptr                        dockable,
+    DockableWindow::Ptr                 wnd,
     Dock::Type                          type)
 {
-    FramePtrList::const_iterator it =
-        std::find(m_frameList.begin(), m_frameList.end(), dockable);
-    if (it != m_frameList.end())
+    return dock(wnd, type, m_dockManager->getRoot());
+}
+
+// ----------------------------------------------------------------------------
+Dock::Ptr WindowManager::dock(
+    DockableWindow::Ptr                 wnd,
+    Dock::Type                          type,
+    Dock::Ptr                           dock)
+{
+    if (isDockingWindow(wnd))
     {
-        m_frameList.remove(dockable);
+        // UNDONE: ウィンドウのドックを返すようにする
+        return Dock::Ptr();
+    }
+
+    if (isWindowExist(wnd))
+    {
+        m_floatingWindowList.remove(wnd);
     }
     else
     {
-        m_eventServerList.push_back(dockable);
+        m_windowList.push_back(wnd);
     }
-    return m_dockManager->getRoot()->dock(dockable, type);
+    m_dockingWindowList.push_back(wnd);
+    return dock->dock(wnd, type);
 }
 
 // ----------------------------------------------------------------------------
 void WindowManager::undock(
-    Frame<>::Ptr                        dockable)
+    DockableWindow::Ptr                 wnd)
 {
-    if (m_dockManager->isDockableExist(dockable))
-    {
-        m_dockManager->getRoot()->undock(dockable);
-        attach(dockable);
-    }
+    // TODO:
 }
 
 // ------------------------------------------------------------------------
@@ -155,8 +193,8 @@ void WindowManager::draw()
 
     // draw frame list
     std::for_each(
-        m_frameList.rbegin(), m_frameList.rend(),
-        bind(&Frame<>::draw, _1, ref(*graphics_)));
+        m_floatingWindowList.rbegin(), m_floatingWindowList.rend(),
+        bind(&Window::draw, _1, ref(*graphics_)));
 
     // draw context menu
     contextMenu_->draw(*graphics_);
@@ -166,7 +204,7 @@ void WindowManager::draw()
 void WindowManager::update()
 {
     // invoke event
-    std::for_each(m_eventServerList.begin(), m_eventServerList.end(), bind(&EventServer::invokeHandler, _1));
+    std::for_each(m_windowList.begin(), m_windowList.end(), bind(&Window::invokeHandler, _1));
     
     // input
     {
@@ -176,16 +214,15 @@ void WindowManager::update()
 
     // update
     m_dockManager->update(m_clientRect, m_windowRect);
-    std::for_each(m_frameList.begin(), m_frameList.end(), bind(&Frame<>::update, _1));
+    std::for_each(m_windowList.begin(), m_windowList.end(), bind(&Window::update, _1));
     contextMenu_->update();
 
     // kill frames
-    foreach (Frame<>::Ptr frame, killedFramePtrList_)
+    foreach (Window::Ptr frame, m_killedWindowList)
     {
-        m_frameList.remove(frame);
-        m_eventServerList.remove(frame);
+        m_windowList.remove(frame);
     }
-    killedFramePtrList_.clear();
+    m_killedWindowList.clear();
 }
 
 // ------------------------------------------------------------------------
@@ -223,7 +260,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     // システムキーボード操作
     else
     {
-        Frame<>::Ptr frame = getActiveWindow();
+        Window::Ptr frame = getActiveWindow();
         if (frame.get() != 0)
         {
             if (Component::Ptr p = frame->getFocusedComponent())
@@ -250,10 +287,10 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     {
         Point point(mouseCommand.posX, mouseCommand.posY);
 
-        Frame<>::Ptr    hitFrame;
+        Window::Ptr     hitFrame;
         Component::Ptr  hitComponent;
         // 浮動フレームのヒットチェック
-        foreach (Frame<>::Ptr frame, m_frameList)
+        foreach (Window::Ptr frame, m_floatingWindowList)
         {
             if (frame->isPointInner(point))
             {
@@ -279,11 +316,17 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
         // フレームヒット時処理
         if (mouseCommand.onPushLeft)
         {
+            // ヒットコンポーネントが存在
             if (hitComponent.get() == 0 && hitFrame.get() != 0 )
             {
                 hitComponent = hitFrame->getHitComponent(point.x, point.y);
                 activate(hitFrame);
                 hitFrame->focus(hitComponent);
+            }
+            // 存在しない
+            else if (hitFrame && !hitComponent)
+            {
+                hitFrame->revertFocus();
             }
 
             if (hitComponent.get() != 0 && hitComponent->onMouseProcess(mouseCommand))
@@ -295,8 +338,8 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
 
         if (!hitFrame.get() && mouseCommand.onButtonDown)
         {
-            m_activeFrame.reset();
-            foreach (Frame<>::Ptr frame, m_frameList)
+            m_activeWindow.reset();
+            foreach (Window::Ptr frame, m_windowList)
             {
                 frame->defocus();
             }

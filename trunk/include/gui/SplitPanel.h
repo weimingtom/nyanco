@@ -25,6 +25,12 @@ public:
     template <int Index_>
     Panel::Ptr get() { return m_panels[Index_]; }
 
+    void setEventServer(EventServer* server)
+    {
+        for (int i = 0; i < Num_; ++i)
+            m_panels[i]->setEventServer(server);
+    }
+
 private:
     virtual sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);
     virtual void draw(Graphics& graphics);

@@ -77,7 +77,9 @@ class MyApplication : public Application
     void onInitialize()
     {
         WindowManager& manager = WindowManager::GetInterface();
-        manager.attach(MyFrame::Create(-1, Frame<>::Arg().caption("Test Dock").width(480)));
+        Dock::Ptr dock = manager.dock(MyFrame::Create(-1, Frame<>::Arg().caption("Test Dock").width(280)), Dock::Left);
+        manager.dock(MyFrame::Create(-1, Frame<>::Arg().caption("Inner Dock").width(350)), Dock::Bottom, dock);
+        manager.dock(MyFrame::Create(-1, Frame<>::Arg().caption("Bottom Dock").width(240)), Dock::Bottom);
     }
 };
 

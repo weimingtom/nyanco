@@ -28,6 +28,11 @@ void Container::attach(
     }
     componentPtr->attachParent(shared_from_this());
     componentList_.push_back(componentPtr);
+
+    if (getEventServer() != 0)
+    {
+        componentPtr->setEventServer(getEventServer());
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -98,6 +103,15 @@ Component::Ptr Container::searchById(int id)
         if (find != 0) return find;
     }
     return Component::searchById(id);
+}
+
+// ----------------------------------------------------------------------------
+void Container::setEventServer(EventServer* server)
+{
+    foreach (Component::Ptr comp, componentList_)
+    {
+        comp->setEventServer(server);
+    }
 }
 
 END_NAMESPACE_NYANCO_GUI

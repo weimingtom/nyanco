@@ -38,21 +38,21 @@ class WindowManager : public nyanco::gui::WindowManager
         Color                       color);
 
     virtual void attach(
-        nyanco::gui::Frame<>::Ptr   framePtr);
+        nyanco::gui::Window::Ptr        framePtr);
 
     virtual void detach(
-        Frame<>::Ptr                framePtr);
+        Window::Ptr                     framePtr);
 
     virtual void detach(
-        ComponentId                 id);
+        ComponentId                     id);
 
-    virtual Frame<>::Ptr search(
-        ComponentId                 id);
+    virtual Window::Ptr search(
+        ComponentId                     id);
 
     virtual void activate(
-        Frame<>::Ptr                framePtr);
+        Window::Ptr                     framePtr);
 
-    virtual Frame<>::Ptr getActiveWindow() const;
+    virtual Window::Ptr getActiveWindow() const;
 
     virtual ContextMenuPtr getContextMenu() const;
     virtual void setContextMenu(ContextMenu::Ptr menu);
@@ -60,15 +60,22 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual Rect const& getClientRect() const { return m_clientRect; }
     virtual Rect const& getViewRect() const { return m_windowRect; }
 
+    Dock::Ptr getRootDock() const { return m_dockManager->getRoot(); }
+
     virtual Dock::Ptr dock(
-        Frame<>::Ptr                    dockable,
+        DockableWindow::Ptr             wnd,
         Dock::Type                      type);
 
+    virtual Dock::Ptr dock(
+        DockableWindow::Ptr             wnd,
+        Dock::Type                      type,
+        Dock::Ptr                       dock);
+
     virtual void undock(
-        Frame<>::Ptr                    dockable);
+        DockableWindow::Ptr             wnd);
 
     void initialize(
-        LPDIRECT3DDEVICE9           devicePtr);
+        LPDIRECT3DDEVICE9               devicePtr);
 
     void finalize();
 
@@ -109,22 +116,16 @@ private:
         Color                       color_;
     };
 
-    typedef std::list<Frame<>::Ptr> FramePtrList;
-    typedef std::list<EventServer::Ptr> EventServerList;
+    typedef std::list<Window::Ptr>  WindowList;
     typedef std::vector<Text>       TextList;
 
-    //! フレームリスト
-    FramePtrList                    m_frameList;
-    bool isExistFrame(Frame<>::Ptr frame)
-    {
-        FramePtrList::iterator it = std::find(m_frameList.begin(), m_frameList.end(), frame);
-        if (it != m_frameList.end()) return true;
-
-        return m_dockManager->isDockableExist(frame);
-    }
-
-    Frame<>::WeakPtr                m_activeFrame;
-    EventServerList                 m_eventServerList;
+    //! 全ウィンドウリスト
+    WindowList                      m_windowList;
+    Window::WeakPtr                 m_activeWindow;
+    //! 浮動ウィンドウリスト
+    WindowList                      m_floatingWindowList;
+    //! ドッキングウィンドウリスト
+    WindowList                      m_dockingWindowList;
 
     //! テキスト
     TextList                        textList_;
@@ -134,7 +135,7 @@ private:
     Component::WeakPtr              m_capturedMouse;
     Component::WeakPtr              m_capturedKeyboard;
 
-    FramePtrList                    killedFramePtrList_;
+    WindowList                      m_killedWindowList;
 
     Rect                            m_windowRect;
     Rect                            m_clientRect;
@@ -147,6 +148,36 @@ private:
 
     friend Interface;
     friend nyanco::gui::WindowManager;
+
+    bool isWindowExist(Window::Ptr frame) const
+    {
+        WindowList::const_iterator it = std::find(m_windowList.begin(), m_windowList.end(), frame);
+        return it != m_windowList.end();
+    }
+
+    bool isFloatingWindow(Window::Ptr window) const
+    {
+        WindowList::const_iterator it = std::find(m_floatingWindowList.begin(), m_floatingWindowList.end(), window);
+        return it != m_floatingWindowList.end();
+    }
+
+    bool isDockingWindow(Window::Ptr window) const
+    {
+        WindowList::const_iterator it = std::find(m_dockingWindowList.begin(), m_dockingWindowList.end(), window);
+        return it != m_dockingWindowList.end();
+    }
+
+    void setFloatingWindow(Window::Ptr window)
+    {
+        m_windowList.push_front(window);
+        m_floatingWindowList.push_front(window);
+    }
+
+    void setDockableWindow(DockableWindow::Ptr window)
+    {
+        m_windowList.push_back(window);
+        m_dockingWindowList.push_back(window);
+    }
 };
 
 END_NAMESPACE_NYANCO_GUI_IMPL

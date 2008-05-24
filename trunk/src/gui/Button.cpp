@@ -84,13 +84,9 @@ bool Button::onMouseProcess(MouseCommand const& command)
         pushed_ = false;
         if (location_.isInnerPoint(command.posX, command.posY))
         {
-            EventServer* es = getEventServer();
-            if (es != 0)
-            {
-                Ptr this_ = boost::shared_dynamic_cast<Button>(shared_from_this());
-                NAMESPACE_NYANCO_GUI::Event<Button> event(this_, Event::Click);
-                es->queueEvent(getId(), event);
-            }
+            Ptr this_ = boost::shared_static_cast<Button>(shared_from_this());
+            NAMESPACE_NYANCO_GUI::Event<Button> event(this_, Event::Click);
+            queueEvent(getId(), event);
         }
     }
     return pushed_;

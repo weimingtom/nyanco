@@ -28,13 +28,19 @@ public:
     void detach(
         ComponentPtr                componentPtr);
 
+    void setEventServer(EventServer* server);
+
+    virtual Component::Ptr searchById(int id);
+
+    std::list<Component::Ptr>::iterator begin() { return componentList_.begin(); }
+    std::list<Component::Ptr>::iterator end() { return componentList_.end(); }
+
 protected:
     sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);
     void move(int x, int y);
 
     virtual void draw(Graphics& graphcis) = 0;
     virtual Component::Ptr checkHit(int x, int y);
-    virtual Component::Ptr searchById(int id);
 //    virtual void resize(int parentWidth);
     void setMargin(Rect const& margin);
 

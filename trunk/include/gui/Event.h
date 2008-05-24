@@ -106,7 +106,7 @@ class EventServer
     };
 
 public:
-    typedef boost::shared_ptr<EventServer> Ptr;
+    NYANCO_GUI_COMPONENT_TYPEDEF(EventServer);
 
     // register member function
     template <typename Type_, typename Event_>
@@ -157,7 +157,34 @@ private:
 // event client
 class EventClient
 {
-    
+public:
+    virtual void setEventServer(EventServer* server)
+    {
+        m_server = server;
+    }
+
+    EventServer* getEventServer() const
+    {
+        return m_server;
+    }
+
+    template <typename Component_>
+    void queueEvent(int id, Event<Component_> const& event)
+    {
+        if (m_server != 0)
+        {
+            m_server->queueEvent(id, event);
+        }
+    }
+
+protected:
+    EventClient() : m_server(0) {}
+
+private:
+    // EventServer 継承クラスのコンストラクタ内で
+    // setEventServer を呼び出すことがあるため
+    // shared_ptr は使用しない
+    EventServer*                        m_server;
 };
 
 END_NAMESPACE_NYANCO_GUI

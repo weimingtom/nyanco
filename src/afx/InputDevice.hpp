@@ -153,6 +153,11 @@ namespace nyanco { namespace impl
             y = position_[prev_].y;
         }
 
+        KeyCode::Type getKeyCode() const
+        {
+            return m_key;
+        }
+
         void swap()
         {
             current_ = (current_ == 0? 1: 0);
@@ -166,6 +171,16 @@ namespace nyanco { namespace impl
             std::memcpy(&position_[current_], &position, sizeof(POINT));
         }
 
+        void setVirtualKey(uint8 key)
+        {
+            m_key = mapFromVirtualKey(key);
+        }
+
+        void clear()
+        {
+            m_key = KeyCode::Unknown;
+        }
+
         Mouse()
         {
             std::memset(buffer_, 0, sizeof(buffer_));
@@ -177,6 +192,8 @@ namespace nyanco { namespace impl
         DIMOUSESTATE2                   buffer_[2];
         POINT                           position_[2];
         uint32                          current_; // 0 or 1;
+
+        KeyCode::Type                   m_key;
     };
 
     // ========================================================================
@@ -195,6 +212,11 @@ namespace nyanco { namespace impl
         Keyboard& getImplKeyboard() const
         {
             return *keyboardPtr_;
+        }
+
+        Mouse& getImplMouse() const
+        {
+            return *mousePtr_;
         }
 
         bool create(

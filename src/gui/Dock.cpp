@@ -97,6 +97,7 @@ Dock::Ptr Dock::dock(Dockable::Ptr dockee, Dock::Type type)
 // ----------------------------------------------------------------------------
 void Dock::undock(Dockable::Ptr dockee)
 {
+    // UNDONE: 子ドックの親への付け替え
     std::vector<Dock::Ptr>::iterator it = m_docks.begin();
     for (; it != m_docks.end(); ++it)
     {
@@ -152,24 +153,25 @@ void Dock::draw(Graphics& graphics)
 {
     // UNDONE: スプリッタの描画
     Rect rect = m_spliter;
-    if (m_type == Dock::Left)
+
+    graphics.setRectColor(0xff444444);
+    graphics.drawFillRect(rect);
+
+    if (m_type == Dock::Left || m_type == Dock::Right)
     {
-        graphics.setColor(0xff444444);
-        graphics.drawFillRect(rect);
         graphics.setColor(0xff888888);
         graphics.drawLine(Point(rect.left, rect.top), Point(rect.left, rect.bottom-1));
         graphics.setColor(0xff222222);
         graphics.drawLine(Point(rect.right-1, rect.top), Point(rect.right-1, rect.bottom-1));
     }
-    else if (m_type == Dock::Bottom)
+    else if (m_type == Dock::Bottom || m_type == Dock::Top)
     {
-        graphics.setColor(0xff444444);
-        graphics.drawFillRect(rect);
         graphics.setColor(0xff888888);
         graphics.drawLine(Point(rect.left, rect.top), Point(rect.right, rect.top));
         graphics.setColor(0xff222222);
         graphics.drawLine(Point(rect.left, rect.bottom-1), Point(rect.right, rect.bottom-1));
     }
+    else assert(0);
 
     m_dockee->drawDockable(graphics);
 
@@ -199,6 +201,21 @@ Dock::Ptr Dock::getDock(Point const& point)
         if (Dock::Ptr p = dock->getDock(point))
             return p;
     }
+    return Dock::Ptr();
+}
+
+// ----------------------------------------------------------------------------
+Dock::Ptr Dock::search(Dockable::Ptr dockable) const
+{
+    if (dockable == m_dockee)
+        return boost::const_pointer_cast<Dock>(boost::static_pointer_cast<Dock const>(shared_from_this()));
+
+    foreach (Dock::Ptr dock, m_docks)
+    {
+        if (Dock::Ptr searched = dock->search(dockable))
+            return searched;
+    }
+
     return Dock::Ptr();
 }
 
@@ -325,6 +342,12 @@ Dock::Ptr DockManager::getDock(Point const& point) const
             return p;
     }
     return Dock::Ptr();
+}
+
+// ----------------------------------------------------------------------------
+Dock::Ptr DockManager::searchDock(Dockable::Ptr dockable) const
+{
+    return m_root->search(dockable);
 }
 
 // ----------------------------------------------------------------------------

@@ -29,6 +29,7 @@ private:
     virtual int getHeight() const;
 
     bool onMouseProcess(MouseCommand const& command);
+    bool onKeyboardProcess(KeyboardCommand const& command);
 
     std::string                     caption_;
     bool                            pushed_;

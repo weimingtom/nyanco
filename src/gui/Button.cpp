@@ -64,6 +64,15 @@ void Button::draw(Graphics& graphics)
     size_t textWidth = caption_.size() * 6;
     size_t left = (box.getWidth() - textWidth) / 2;
     graphics.drawText(Point(box.left + left, box.top + 2), caption_, 0xffeeeeee, clip);
+
+    if (isFocused())
+    {
+        graphics.setColor(0xffaaaaaa);
+        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
+        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
+        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -90,6 +99,18 @@ bool Button::onMouseProcess(MouseCommand const& command)
         }
     }
     return pushed_;
+}
+
+// ----------------------------------------------------------------------------
+bool Button::onKeyboardProcess(KeyboardCommand const& command)
+{
+    if (command.code == KeyCode::Return)
+    {
+        Ptr this_ = boost::shared_static_cast<Button>(shared_from_this());
+        NAMESPACE_NYANCO_GUI::Event<Button> event(this_, Event::Click);
+        queueEvent(getId(), event);
+    }
+    return false;
 }
 
 END_NAMESPACE_NYANCO_GUI

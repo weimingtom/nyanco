@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gui\LabeledEdit.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\gui\ListBox.cpp"
 				>
 			</File>
@@ -228,6 +232,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\gui\ScrollBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\gui\Slider.cpp"
 				>
 			</File>
 			<File
@@ -305,6 +313,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\gui\LabeledEdit.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\gui\ListBox.h"
 				>
 			</File>
@@ -318,6 +330,10 @@
 			</File>
 			<File
 				RelativePath="..\..\include\gui\ScrollBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\gui\Slider.h"
 				>
 			</File>
 			<File

@@ -72,16 +72,28 @@ bool Window::isPointInner(Point const& point) const
 void Window::focusToNext()
 {
     Component::Ptr current = m_focusedComponent.lock();
-    if (!current)
+    if (current)
     {
-        // TODO: ルートコンテナの最初のコンポーネントにフォーカス
-        return;
+        Component::Ptr next = current;
+        while (next = getNextComponent(next))
+        {
+            if (next->enableFocus())
+            {
+                focus(next);
+                return;
+            }
+        }
     }
 
-    Component::Ptr next;
-    while ((next = getNextComponent(current))->enableFocus())
+    Component::Ptr first = getRootContainer()->getFirstComponent();
+    while (first)
     {
-        focus(next);
+        if (first->enableFocus())
+        {
+            focus(first);
+            break;
+        }
+        first = getNextComponent(first);
     }
 }
 
@@ -101,9 +113,16 @@ Component::Ptr Window::getNextComponent(Component::Ptr comp)
         }
     }
 
-    if (Component::Ptr parent = comp->getParent())
+    Component::Ptr parent  = comp->getParent();
+    Component::Ptr current = comp;
+    while (parent)
     {
-        return (boost::shared_dynamic_cast<ComponentIterator>(parent))->getNextComponent(comp);
+        if (Component::Ptr next = (boost::shared_dynamic_cast<ComponentIterator>(parent))->getNextComponent(current))
+        {
+            return next;
+        }
+        current = parent;
+        parent  = parent->getParent();
     }
 
     return Component::Ptr();

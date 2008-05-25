@@ -54,8 +54,10 @@ public:
     Dock::Ptr dock(Dockable::Ptr frame, Dock::Type type);
     void undock(Dockable::Ptr frame);
 
+    Dock::Ptr search(Dockable::Ptr dockable) const;
     bool isDockableExist(Dockable::Ptr dockable) const;
     Dockable::Ptr getDockee() const { return m_dockee; }
+    Dock::Ptr getParent() const { return m_parent; }
 
 private:
     void draw(Graphics& graphics);
@@ -85,6 +87,7 @@ public:
     void draw(Graphics& graphics);
 
     Dock::Ptr getDock(Point const& point) const;
+    Dock::Ptr searchDock(Dockable::Ptr dockable) const;
     bool isDockableExist(Dockable::Ptr dockable) const;
 
     DockManager();

@@ -33,6 +33,7 @@ void TextField::draw(Graphics& graphics)
 
     if (isFocused())
     {
+        // キャレット
         if (m_timer.elapsed() > 1.0)
         {
             m_timer = boost::timer();
@@ -42,6 +43,12 @@ void TextField::draw(Graphics& graphics)
             graphics.setColor(0xffeeeeee);
             graphics.drawLine(Point(box.left+2+(6*m_caret), box.top+2), Point(box.left+2+(6*m_caret), box.bottom-2));
         }
+        // フォーカス
+        graphics.setColor(0xffaaaaaa);
+        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
+        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
+        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
     }
 }
 
@@ -60,7 +67,6 @@ bool TextField::onMouseProcess(MouseCommand const& command)
 bool TextField::onKeyboardProcess(KeyboardCommand const& command)
 {
     if (!isFocused()) return false;
-    if (command.ascii <= 0) return false;
 
     if (command.code == KeyCode::Left)
     {
@@ -78,7 +84,17 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
         m_text.erase(--m_caret, 1);
         m_timer = boost::timer();
     }
-    else
+    else if (command.code == KeyCode::Delete)
+    {
+        if (m_caret > m_text.size()) return false;
+        m_text.erase(m_caret, 1);
+        m_timer = boost::timer();
+    }
+    else if (command.code == KeyCode::Return)
+    {
+        
+    }
+    else if (0x20 <= command.ascii && command.ascii < 0x7F)
     {
         m_text.insert(m_caret++, 1, command.ascii);
         m_timer = boost::timer();

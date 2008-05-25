@@ -34,8 +34,8 @@ public:
 
     Component::Ptr getFirstComponent() const;
     Component::Ptr getLastComponent() const;
-    Component::Ptr getNextComponent(Component::Ptr component) const;
-    Component::Ptr getPrevComponent(Component::Ptr component) const;
+    Component::Ptr getNextComponent(Component::ConstPtr component) const;
+    Component::Ptr getPrevComponent(Component::ConstPtr component) const;
 
 protected:
     sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);

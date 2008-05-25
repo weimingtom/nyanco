@@ -41,6 +41,8 @@ public:
     virtual int getHeight() const;
     virtual int getWidth() const;
 
+    Rect& getLocation() { return location_; }
+    Rect const& getLocation() const { return location_; }
     virtual void setLocation(Rect const& location);
     //void setPosition(int x, int y);
     virtual void setX(int x);
@@ -68,6 +70,7 @@ public:
     Component::Ptr getParent() const { return parent_; }
 
 protected:
+    void setId(ComponentId id) { m_id = id; }
     EventServer* getEventServer() const;
     ComponentPtr getTopLevelContainer() const;
 

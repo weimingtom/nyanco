@@ -107,7 +107,9 @@ void Framework::run()
                 appPtr_->onUpdate();
                 impl::InputDevice& device = impl::InputDevice::GetImplement();
                 impl::Keyboard& keyboard    = device.getImplKeyboard();
+                impl::Mouse& mouse          = device.getImplMouse();
                 keyboard.clear();
+                mouse.clear();
             }
 
             d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff000000, 1.f, 0);
@@ -261,8 +263,8 @@ LRESULT Framework::messageProcedure(
         {
             impl::InputDevice& device   = impl::InputDevice::GetImplement();
             impl::Keyboard& keyboard    = device.getImplKeyboard();
+
             keyboard.setVirtualKey(static_cast<uint8>(wparam));
-            //keyboard.pushAsciiCode(static_cast<char8>(wparam));
         }
         break;
 
@@ -271,6 +273,15 @@ LRESULT Framework::messageProcedure(
             impl::InputDevice& device   = impl::InputDevice::GetImplement();
             impl::Keyboard& keyboard    = device.getImplKeyboard();
             keyboard.setAscii(static_cast<sint8>(wparam));
+        }
+        break;
+
+    case WM_LBUTTONDOWN:
+        // TEST: マウスのキーリピートは取れない？
+        {
+            impl::InputDevice& device   = impl::InputDevice::GetImplement();
+            impl::Mouse&    mouse       = device.getImplMouse();
+            mouse.setVirtualKey(VK_LBUTTON);
         }
         break;
 

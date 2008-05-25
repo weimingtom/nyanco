@@ -38,7 +38,7 @@ public:
         splitPanel2->get<1>()->attach(Button::Create(-1, "Button 8"));
         splitPanel->get<1>()->attach(splitPanel2);
 
-        Rollup::Ptr rollup = Rollup::Create(-1, "Rollup");
+        Rollup::Ptr rollup = Rollup::Create(Rollup::Arg<>().label("Rollup"));
         splitPanel->get<1>()->attach(rollup);
         rollup->attach(Button::Create(-1, "Button 9"));
         rollup->attach(Button::Create(-1, "Button 10"));

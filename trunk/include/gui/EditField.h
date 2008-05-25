@@ -22,16 +22,14 @@ class TextField : public EditField
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(TextField);
 
-    struct Arg
-    {
-        sint32                          m_maxLength;
-        std::string                     m_initial;
-        std::string                     m_invalidChara;
-
-        Arg& maxLength(sint32 maxLength)         { m_maxLength = maxLength; return *this; }
-        Arg& initial(std::string const& initial) { m_initial = initial; return *this; }
-        Arg& invalidChara(std::string const& invalid) { m_invalidChara = invalid; return *this; }
-    };
+    NYANCO_GUI_ARG_DEF_BEGIN(TextField)
+#define PARAM_SEQ                           \
+        ((sint32,       maxLength))         \
+        ((std::string,  initial))           \
+        ((std::string,  invalidChara))
+        NYANCO_GUI_ARG_PARAMS(PARAM_SEQ)
+#undef PARAM_SEQ
+    NYANCO_GUI_ARG_DEF_END(TextField)
 
     static TextField::Ptr Create(
         ComponentId                     id);

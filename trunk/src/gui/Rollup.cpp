@@ -14,12 +14,12 @@ BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
 Rollup::Ptr Rollup::Create(
-    ComponentId                         id,
-    std::string const&                  label)
+    Arg<> const&                        arg,
+    ComponentId                         id)
 {
     Ptr p(new Rollup);
     p->setMargin(Rect(4, 18, 4, 4));
-    p->m_label = label;
+    p->m_arg = arg;
     return p;
 }
 
@@ -33,7 +33,10 @@ void Rollup::draw(Graphics& graphics)
     box.bottom   = box.top + 14;
 
     //graphics.setColor(0xff444444);
-    graphics.setRectColor(0xff777777, 0xff777777, 0xff333333, 0xff333333);
+    if (!isFocused())
+        graphics.setRectColor(0xff777777, 0xff777777, 0xff333333, 0xff333333);
+    else
+        graphics.setRectColor(0xffaaaaaa, 0xffaaaaaa, 0xff666666, 0xff666666);
     graphics.drawFillRect(box);
 
     graphics.setColor(0xff888888);
@@ -46,12 +49,12 @@ void Rollup::draw(Graphics& graphics)
 
     Rect clip = location_;
     clip.left += 2; clip.right -= 2;
-    size_t textWidth = m_label.size() * 6;
+    size_t textWidth = m_arg.m_label.size() * 6;
     size_t left = (box.getWidth() - textWidth) / 2;
-    graphics.drawText(Point(box.left + left, box.top + 2), m_label, 0xffeeeeee, clip);
+    graphics.drawText(Point(box.left + 2, box.top + 2), m_arg.m_label, 0xffeeeeee, clip);
 
     impl::FontInfo const& font = dynamic_cast<impl::Graphics&>(graphics).getFontInfo();
-    sint32 const labelWidth  = font.charaWidth * m_label.size();
+    sint32 const labelWidth  = font.charaWidth * m_arg.m_label.size();
     sint32 const labelHeight = font.charaHeight;
     sint32 const labelHalfHeight = labelHeight / 2;
 
@@ -114,6 +117,37 @@ bool Rollup::onMouseProcess(MouseCommand const& command)
         location_.bottom = location_.top + getHeight();
     }
     return false;
+}
+
+// ----------------------------------------------------------------------------
+bool Rollup::onKeyboardProcess(KeyboardCommand const& command)
+{
+    if (command.code == KeyCode::Return)
+    {
+        m_collapsed = !m_collapsed;
+        location_.bottom = location_.top + getHeight();
+    }
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Rollup::getFirstComponent() const
+{
+    if (m_collapsed)
+    {
+        return Component::Ptr();
+    }
+    return Container::getFirstComponent();
+}
+
+// ----------------------------------------------------------------------------
+Component::Ptr Rollup::getNextComponent(Component::ConstPtr component) const
+{
+    if (m_collapsed)
+    {
+        return (boost::dynamic_pointer_cast<ComponentIterator>(getParent()))->getNextComponent(component);
+    }
+    return Container::getNextComponent(component);
 }
 
 // TODO: Container::checkHit のオーバーライド

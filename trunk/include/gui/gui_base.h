@@ -11,6 +11,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/preprocessor.hpp>
+#include <boost/call_traits.hpp>
 
 #define BEGIN_NAMESPACE_NYANCO_GUI  namespace nyanco { namespace gui {
 #define END_NAMESPACE_NYANCO_GUI    }}
@@ -21,7 +23,31 @@
     typedef boost::shared_ptr<Component_ const> ConstPtr;       \
     typedef boost::weak_ptr<Component_>         WeakPtr;        \
     typedef boost::weak_ptr<Component_ const>   ConstWeakPtr;   \
-    typedef boost::scoped_ptr<Component_>       ScopedPtr;      \
+    typedef boost::scoped_ptr<Component_>       ScopedPtr;
+
+#define NYANCO_GUI_ARG_DEF_BEGIN(Name_)                         \
+    template <typename T_ = Name_>                              \
+    struct Arg                                                  \
+    {
+
+#define NYANCO_GUI_ARG_DEF_MIXIN1_BEGIN(Name_, Mix1_)           \
+    template <typename T_ = Name_>                              \
+    struct Arg : public Mix1_::Arg<T_>                          \
+    {
+
+#define NYANCO_GUI_ARG_DEF_MIXIN2_BEGIN(Name_, Mix1_, Mix2_)    \
+    template <typename T_ = Name_>                              \
+    struct Arg : public Mix1_::Arg<T_>, public Mix2_::Arg<T_>   \
+    {
+
+#define NYANCO_GUI_ARG_DEF_END(Name_)           };
+
+#define NYANCO_GUI_MAKE_PARAM(Depth_, Class_, Seq_)             \
+    BOOST_PP_TUPLE_ELEM(2, 0, Seq_) BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(2, 1, Seq_)); \
+    typename Class_::Arg<Class_>& BOOST_PP_TUPLE_ELEM(2, 1, Seq_) BOOST_PP_LPAREN() boost::call_traits<BOOST_PP_TUPLE_ELEM(2, 0, Seq_)>::param_type param BOOST_PP_RPAREN() \
+    { BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(2, 1, Seq_)) = param; return *static_cast<typename Class_::Arg<Class_>*>(this); }
+
+#define NYANCO_GUI_ARG_PARAMS(Seq_) BOOST_PP_SEQ_FOR_EACH(NYANCO_GUI_MAKE_PARAM, T_, Seq_)
 
 BEGIN_NAMESPACE_NYANCO_GUI
 

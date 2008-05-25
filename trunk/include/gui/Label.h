@@ -14,14 +14,12 @@ class Label : public Component
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Label);
 
-    template <typename Class_ = Label>
-    struct Arg
-    {
-        typedef Class_ Class;
-        typename Class::Arg<Class>& text(std::string const& text) { m_text = text; return *static_cast<typename Class::Arg<Class>*>(this); }
-
-        std::string                     m_text;
-    };
+    NYANCO_GUI_ARG_DEF_BEGIN(Label)
+#define PARAM_SEQ \
+        ((std::string,  text))
+        NYANCO_GUI_ARG_PARAMS(PARAM_SEQ)
+#undef PARAM_SEQ
+    NYANCO_GUI_ARG_DEF_END(Label)
 
     static Ptr Create(Arg<> const& arg, ComponentId id = NonspecificId);
 

@@ -17,11 +17,9 @@ class LabeledTextEdit : public Component, public EventServer
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(LabeledTextEdit);
 
-    template <typename Class_ = LabeledTextEdit>
-    struct Arg : public TextField::Arg, public Label::Arg<Class_>
-    {
+    NYANCO_GUI_ARG_DEF_MIXIN2_BEGIN(LabeledTextEdit, TextField, Label)
         // TODO: ラベルとエディットの画面割合とかどっちのサイズを固定するとか
-    };
+    NYANCO_GUI_ARG_DEF_END(LabeledTextEdit)
 
     static Ptr Create(Arg<> const& arg, ComponentId id = NonspecificId);
 

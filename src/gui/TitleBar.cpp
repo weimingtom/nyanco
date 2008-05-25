@@ -50,9 +50,9 @@ void TitleBar::draw(Graphics& graphics)
 
     WindowManager& wm = WindowManager::GetInterface();
     if (wm.getActiveWindow() != owner_)
-        graphics.setRectColor(0xff4444aa, 0xff444466, 0xff4444aa, 0xff444466);
+        graphics.setRectColor(0xff7777dd, 0xff777799, 0xff4444aa, 0xff444466);
     else
-        graphics.setRectColor(0xff0000aa, 0xff000066, 0xff0000aa, 0xff000066);
+        graphics.setRectColor(0xff3333dd, 0xff333399, 0xff0000aa, 0xff000066);
     graphics.drawFillRect(caption);
 
     Rect clip = location_;

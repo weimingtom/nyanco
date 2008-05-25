@@ -18,6 +18,7 @@ public:
         ComponentId                     id);
 
 private:
+    virtual bool enableFocus() const { return false; }
     virtual void draw(Graphics& graphics);
     virtual int getHeight() const;
 };

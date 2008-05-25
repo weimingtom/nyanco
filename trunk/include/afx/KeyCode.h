@@ -78,6 +78,7 @@ struct KeyCode
         Escape,
         Space,
         BackSpace,
+        Delete,
         Tab,
 
         BracketL,
@@ -105,6 +106,10 @@ struct KeyCode
         Numpad8,
         Numpad9,
         NumpadEnter,
+
+        MouseButtonLeft,
+        MouseButtonRight,
+        MouseButtonMiddle,
     };
 };
 

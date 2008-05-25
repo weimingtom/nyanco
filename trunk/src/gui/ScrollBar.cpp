@@ -188,7 +188,7 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
 
     sint32 barLength = getClientSize() - 20;
 
-    if (mouse.onPushLeft)
+    if (mouse.code == KeyCode::MouseButtonLeft)
     {
         if (isPointInner(Point(mouse.posX, mouse.posY)))
         {

@@ -18,6 +18,7 @@
 #include "EditField.h"
 #include "ListBox.h"
 #include "SplitPanel.h"
+#include "LabeledEdit.h"
 
 // Container
 #include "Panel.h"

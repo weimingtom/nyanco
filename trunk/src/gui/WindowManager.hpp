@@ -105,9 +105,9 @@ private:
             Color                   color)
             : point_(point), text_(text), color_(color) {}
 
-        void draw(Graphics& graphics)
+        void draw(Graphics& graphics, Rect const& clip)
         {
-//            graphics.drawText(point_, text_, color_);
+            graphics.drawText(point_, text_, color_, clip);
         }
 
     private:

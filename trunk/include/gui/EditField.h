@@ -26,9 +26,11 @@ public:
     {
         sint32                          m_maxLength;
         std::string                     m_initial;
+        std::string                     m_invalidChara;
 
-        Arg& maxLength(sint32 maxLength)    { m_maxLength = maxLength; return *this; }
+        Arg& maxLength(sint32 maxLength)         { m_maxLength = maxLength; return *this; }
         Arg& initial(std::string const& initial) { m_initial = initial; return *this; }
+        Arg& invalidChara(std::string const& invalid) { m_invalidChara = invalid; return *this; }
     };
 
     static TextField::Ptr Create(
@@ -37,13 +39,13 @@ public:
     std::string const& get() const      { return m_text; }
     void set(std::string const& text)   { m_text = text; }
 
-private:
     virtual void draw(Graphics& graphics);
     virtual int getHeight() const;
 
     bool onMouseProcess(MouseCommand const& command);
     bool onKeyboardProcess(KeyboardCommand const& command);
 
+private:
     void setCaret(sint32 x, sint32 y);
 
     std::string                         m_text;
@@ -51,7 +53,7 @@ private:
     bool                                m_edit;
     boost::timer                        m_timer;
 
-    TextField() : m_edit(false), m_caret(-1) {}
+    TextField() : m_edit(false), m_caret(0) {}
 };
 
 // ============================================================================

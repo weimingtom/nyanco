@@ -191,6 +191,11 @@ SysCode const& setupVkMap()
     table[VK_UP]            = KeyCode::Up;
     table[VK_RIGHT]         = KeyCode::Right;
     table[VK_DOWN]          = KeyCode::Down;
+    table[VK_DELETE]        = KeyCode::Delete;
+
+    table[VK_LBUTTON]       = KeyCode::MouseButtonLeft;
+    table[VK_RBUTTON]       = KeyCode::MouseButtonRight;
+    table[VK_MBUTTON]       = KeyCode::MouseButtonMiddle;
 
     for (char c = '0', i = 0; c <= '9'; ++c, ++i)
         table[c] = KeyCode::Num0 + i;

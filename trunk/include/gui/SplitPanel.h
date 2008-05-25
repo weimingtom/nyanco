@@ -73,7 +73,7 @@ public:
         return Component::Ptr();
     }
 
-private:
+    virtual bool enableFocus() const { return false; }
     virtual sint32 relocate(sint32 parentLeft, sint32 parentWidth, sint32 locationY);
     virtual void draw(Graphics& graphics);
     virtual int getHeight() const;
@@ -81,6 +81,7 @@ private:
     virtual Component::Ptr searchById(sint32 id);
     virtual Component::Ptr checkHit(int x, int y);
 
+private:
     boost::array<Panel::Ptr, Num_>      m_panels;
     sint32                              m_splitWidth;
 };

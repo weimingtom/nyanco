@@ -47,6 +47,8 @@ public:
     virtual void getPreviousPosition(
         int&                        x,
         int&                        y) const = 0;
+
+    virtual KeyCode::Type getKeyCode() const = 0;
 };
 
 // ========================================================================

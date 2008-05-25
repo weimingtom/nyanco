@@ -129,7 +129,7 @@ Component::Ptr Container::getLastComponent() const
 }
 
 // ----------------------------------------------------------------------------
-Component::Ptr Container::getNextComponent(Component::Ptr component) const
+Component::Ptr Container::getNextComponent(Component::ConstPtr component) const
 {
     ComponentList::const_iterator it =
         std::find(componentList_.begin(), componentList_.end(), component);
@@ -141,7 +141,7 @@ Component::Ptr Container::getNextComponent(Component::Ptr component) const
 }
 
 // ----------------------------------------------------------------------------
-Component::Ptr Container::getPrevComponent(Component::Ptr component) const
+Component::Ptr Container::getPrevComponent(Component::ConstPtr component) const
 {
     ComponentList::const_iterator it =
         std::find(componentList_.begin(), componentList_.end(), component);

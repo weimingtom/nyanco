@@ -12,6 +12,7 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #define foreach BOOST_FOREACH
 
@@ -173,7 +174,13 @@ Dock::Ptr WindowManager::dock(
 void WindowManager::undock(
     DockableWindow::Ptr                 wnd)
 {
-    // TODO:
+    Dock::Ptr dock = m_dockManager->searchDock(wnd);
+    if (dock)
+    {
+        dock->getParent()->undock(wnd);
+        m_dockingWindowList.remove(wnd);
+        m_floatingWindowList.push_back(wnd);
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -185,8 +192,7 @@ void WindowManager::draw()
     // draw text list
     std::for_each(
         textList_.begin(), textList_.end(),
-        bind(&Text::draw, _1, ref(*graphics_)));
-    textList_.clear();
+        bind(&Text::draw, _1, ref(*graphics_), m_windowRect));
 
     // draw dock
     m_dockManager->draw(*graphics_);
@@ -203,6 +209,8 @@ void WindowManager::draw()
 // ------------------------------------------------------------------------
 void WindowManager::update()
 {
+    textList_.clear();
+
     // invoke event
     std::for_each(m_windowList.begin(), m_windowList.end(), bind(&Window::invokeHandler, _1));
     
@@ -223,6 +231,12 @@ void WindowManager::update()
         m_windowList.remove(frame);
     }
     m_killedWindowList.clear();
+
+    {
+        char buf[32];
+        sprintf(buf, "%d x %d", m_windowRect.getWidth(), m_windowRect.getHeight());
+        textList_.push_back(Text(Point(m_windowRect.left + 0, m_windowRect.top), std::string(buf), 0xffcccccc));
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -249,6 +263,15 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     MouseCommand mouseCommand;
     MouseCommand::Create(mouseCommand, mouse);
 
+    // システムキーボード操作
+    if (keyboardCommand.code == KeyCode::Tab)
+    {
+        if (Window::Ptr wnd = m_activeWindow.lock())
+        {
+            wnd->focusToNext();
+        }
+    }
+
     // キーボードキャプチャコンポーネントが存在
     if (Component::Ptr p = m_capturedKeyboard.lock())
     {
@@ -257,7 +280,6 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
             m_capturedKeyboard.reset();
         }
     }
-    // システムキーボード操作
     else
     {
         Window::Ptr frame = getActiveWindow();
@@ -286,57 +308,63 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     else
     {
         Point point(mouseCommand.posX, mouseCommand.posY);
-
         Window::Ptr     hitFrame;
         Component::Ptr  hitComponent;
-        // 浮動フレームのヒットチェック
-        foreach (Window::Ptr frame, m_floatingWindowList)
-        {
-            if (frame->isPointInner(point))
-            {
-                hitFrame = frame;
-                break;
-            }
-        }
-        // ドックのヒットチェック
-        if (hitFrame.get() == 0)
-        {
-            Dock::Ptr dock = m_dockManager->getDock(point);
-            if (dock.get() != 0)
-            {
-                Dockable::Ptr p = dock->getDockee();
-                Rect rect;
-                p->getDockableRect(rect);
-                if (rect.isInnerPoint(point.x, point.y))
-                    hitFrame = boost::shared_static_cast<Frame<> >(p);
-                else
-                    hitComponent = dock;
-            }
-        }
+        bool hitDockFrame = false;
+
         // フレームヒット時処理
         if (mouseCommand.onPushLeft)
         {
-            // ヒットコンポーネントが存在
-            if (hitComponent.get() == 0 && hitFrame.get() != 0 )
+            // 浮動フレームのヒットチェック
+            foreach (Window::Ptr frame, m_floatingWindowList)
             {
-                hitComponent = hitFrame->getHitComponent(point.x, point.y);
-                activate(hitFrame);
-                hitFrame->focus(hitComponent);
+                if (frame->isPointInner(point))
+                {
+                    hitFrame = frame;
+                    break;
+                }
             }
-            // 存在しない
-            else if (hitFrame && !hitComponent)
+            // ドックのヒットチェック
+            if (hitFrame.get() == 0)
             {
-                hitFrame->revertFocus();
+                Dock::Ptr dock = m_dockManager->getDock(point);
+                if (dock.get() != 0)
+                {
+                    Dockable::Ptr p = dock->getDockee();
+                    Rect rect;
+                    p->getDockableRect(rect);
+                    if (rect.isInnerPoint(point.x, point.y))
+                        hitFrame = boost::shared_static_cast<Frame<> >(p);
+                    else
+                    {
+                        hitComponent = dock;
+                        hitDockFrame = true;
+                    }
+                }
             }
 
-            if (hitComponent.get() != 0 && hitComponent->onMouseProcess(mouseCommand))
+            // ヒットフレームが存在
+            if (hitFrame)
+            {
+                activate(hitFrame);
+                if (hitComponent = hitFrame->getHitComponent(point.x, point.y))
+                {
+                    hitFrame->focus(hitComponent);
+                }
+                else
+                {
+                    hitFrame->revertFocus();
+                }
+            }
+
+            if (hitComponent && hitComponent->onMouseProcess(mouseCommand))
             {
                 // キャプチャを設定
                 m_capturedMouse = hitComponent;
             }
         }
 
-        if (!hitFrame.get() && mouseCommand.onButtonDown)
+        if (!hitFrame.get() && mouseCommand.onButtonPush && !hitDockFrame)
         {
             m_activeWindow.reset();
             foreach (Window::Ptr frame, m_windowList)

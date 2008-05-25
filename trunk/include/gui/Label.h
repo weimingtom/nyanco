@@ -7,22 +7,29 @@
 
 #include "Component.h"
 
-namespace nyanco { namespace gui
+BEGIN_NAMESPACE_NYANCO_GUI
+
+class Label : public Component
 {
+public:
+    NYANCO_GUI_COMPONENT_TYPEDEF(Label);
 
-    class Label : public Component
+    template <typename Class_ = Label>
+    struct Arg
     {
-    public:
-        static boost::shared_ptr<Label> Create(
-            std::string const&          text);
+        typedef Class_ Class;
+        typename Class::Arg<Class>& text(std::string const& text) { m_text = text; return *static_cast<typename Class::Arg<Class>*>(this); }
 
-    private:
-        virtual void draw(Graphics& graphics);
-        virtual int getHeight() const;
-
-        std::string                     text_;
+        std::string                     m_text;
     };
 
-    typedef boost::shared_ptr<Label> LabelPtr;
+    static Ptr Create(Arg<> const& arg, ComponentId id = NonspecificId);
 
-} } // namespace nyanco::gui
+private:
+    virtual void draw(Graphics& graphics);
+    virtual int getHeight() const;
+
+    Arg<>                               m_arg;
+};
+
+END_NAMESPACE_NYANCO_GUI

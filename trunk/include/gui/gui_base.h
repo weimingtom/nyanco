@@ -99,7 +99,10 @@ public:
     int                             moveX;
     int                             moveY;
 
+    bool                            onButtonPush;
     bool                            onButtonDown;
+
+    KeyCode::Type                   code;
 
     static void Create(MouseCommand& command, Mouse const& mouse)
     {
@@ -117,8 +120,12 @@ public:
         command.moveX = command.posX - x;
         command.moveY = command.posY - y;
 
+        command.onButtonPush = command.onPushLeft || command.onPushRight;
+
         command.onButtonDown = command.onPushLeft || command.onPushRight ||
                                command.onDownLeft || command.onDownRight;
+
+        command.code = mouse.getKeyCode();
     }
 };
 

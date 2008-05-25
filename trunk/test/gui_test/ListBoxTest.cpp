@@ -41,6 +41,8 @@ public:
         attach(Button::Create(AddButtonId, "Add"));
         attach(Button::Create(DeleteButtonId, "Delete"));
 
+        attach(LabeledTextEdit::Create(LabeledTextEdit::Arg<>().text("Test LabeledEdit")));
+
         registerHandler(AddButtonId, &MyFrame::onAddButtonEvent);
         registerHandler(DeleteButtonId, &MyFrame::onDeleteButtonEvent);
 

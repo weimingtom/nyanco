@@ -61,8 +61,8 @@ void Button::draw(Graphics& graphics)
 
     Rect clip = location_;
     clip.left += 2; clip.right -= 2;
-    size_t textWidth = caption_.size() * 6;
-    size_t left = (box.getWidth() - textWidth) / 2;
+    sint32 textWidth = static_cast<sint32>(caption_.size()) * 6;
+    sint32 left = (box.getWidth() - textWidth) / 2;
     graphics.drawText(Point(box.left + left, box.top + 2), caption_, 0xffeeeeee, clip);
 
     if (isFocused())

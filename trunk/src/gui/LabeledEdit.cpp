@@ -13,10 +13,10 @@ LabeledTextEdit::Ptr LabeledTextEdit::Create(Arg<> const& arg, ComponentId id)
     Ptr p(new LabeledTextEdit);
 
     p->m_label      = Label::Create(Label::Arg<>().text(arg.m_text));
-    p->m_textField  = TextField::Create(-1);
+    p->m_textEdit  = TextEdit::Create(-1);
 
     p->m_splitPanel->get<0>()->attach(p->m_label);
-    p->m_splitPanel->get<1>()->attach(p->m_textField);
+    p->m_splitPanel->get<1>()->attach(p->m_textEdit);
     p->m_splitPanel->setEventServer(p.get());
 
     p->getLocation() = Rect(0, 0, 0, p->m_splitPanel->getHeight());
@@ -63,22 +63,22 @@ void LabeledTextEdit::move(int x, int y)
 void LabeledTextEdit::focus()
 {
     Component::focus();
-    m_textField->focus();
+    m_textEdit->focus();
 }
 
 // ----------------------------------------------------------------------------
 void LabeledTextEdit::defocus()
 {
     Component::defocus();
-    m_textField->defocus();
+    m_textEdit->defocus();
 }
 
 // ----------------------------------------------------------------------------
 bool LabeledTextEdit::onMouseProcess(MouseCommand const& command)
 {
-    if (m_textField->isPointInner(Point(command.posX, command.posY)))
+    if (m_textEdit->isPointInner(Point(command.posX, command.posY)))
     {
-        return m_textField->onMouseProcess(command);
+        return m_textEdit->onMouseProcess(command);
     }
     return false;
 }
@@ -86,9 +86,9 @@ bool LabeledTextEdit::onMouseProcess(MouseCommand const& command)
 // ----------------------------------------------------------------------------
 bool LabeledTextEdit::onKeyboardProcess(KeyboardCommand const& command)
 {
-    if (m_textField->isFocused())
+    if (m_textEdit->isFocused())
     {
-        return m_textField->onKeyboardProcess(command);
+        return m_textEdit->onKeyboardProcess(command);
     }
     return false;
 }

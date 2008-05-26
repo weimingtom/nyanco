@@ -16,7 +16,7 @@ public:
 
     NYANCO_GUI_ARG_DEF_BEGIN(Label)
 #define PARAM_SEQ \
-        ((std::string,  text))
+        ((std::string,  text,   ""))
         NYANCO_GUI_ARG_PARAMS(PARAM_SEQ)
 #undef PARAM_SEQ
     NYANCO_GUI_ARG_DEF_END(Label)

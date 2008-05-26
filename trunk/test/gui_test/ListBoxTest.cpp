@@ -37,7 +37,7 @@ public:
         }
 
         attach(listBox);
-        attach(TextField::Create(-1));
+        attach(TextEdit::Create(-1));
         attach(Button::Create(AddButtonId, "Add"));
         attach(Button::Create(DeleteButtonId, "Delete"));
 

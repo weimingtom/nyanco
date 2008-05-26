@@ -9,15 +9,15 @@
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
-TextField::Ptr TextField::Create(ComponentId id)
+TextEdit::Ptr TextEdit::Create(ComponentId id)
 {
-    TextField* p = new TextField;
+    TextEdit* p = new TextEdit;
     p->setLocation(Rect(0, 0, 0, p->getHeight()));
     return Ptr(p);
 }
 
 // ----------------------------------------------------------------------------
-void TextField::draw(Graphics& graphics)
+void TextEdit::draw(Graphics& graphics)
 {
     ComponentGraphics g(graphics);
 
@@ -53,7 +53,7 @@ void TextField::draw(Graphics& graphics)
 }
 
 // ----------------------------------------------------------------------------
-bool TextField::onMouseProcess(MouseCommand const& command)
+bool TextEdit::onMouseProcess(MouseCommand const& command)
 {
     if (location_.isInnerPoint(command.posX, command.posY) && command.onPushLeft)
     {
@@ -64,7 +64,7 @@ bool TextField::onMouseProcess(MouseCommand const& command)
 }
 
 // ----------------------------------------------------------------------------
-bool TextField::onKeyboardProcess(KeyboardCommand const& command)
+bool TextEdit::onKeyboardProcess(KeyboardCommand const& command)
 {
     if (!isFocused()) return false;
 
@@ -75,7 +75,8 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
     }
     else if (command.code == KeyCode::Right)
     {
-        if (++m_caret > m_text.size()) m_caret = m_text.size();
+        sint32 size = static_cast<sint32>(m_text.size());
+        if (++m_caret > size) m_caret = size;
         m_timer = boost::timer();
     }
     else if (command.code == KeyCode::BackSpace)
@@ -86,7 +87,7 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
     }
     else if (command.code == KeyCode::Delete)
     {
-        if (m_caret > m_text.size()) return false;
+        if (m_caret > static_cast<sint32>(m_text.size())) return false;
         m_text.erase(m_caret, 1);
         m_timer = boost::timer();
     }
@@ -103,18 +104,19 @@ bool TextField::onKeyboardProcess(KeyboardCommand const& command)
 }
 
 // ----------------------------------------------------------------------------
-int TextField::getHeight() const
+int TextEdit::getHeight() const
 {
     return 18;
 }
 
 // ----------------------------------------------------------------------------
-void TextField::setCaret(sint32 x, sint32 y)
+void TextEdit::setCaret(sint32 x, sint32 y)
 {
     sint32 leftOffset = x - (location_.left+2);
     m_caret = leftOffset / 6;
+    sint32 size = static_cast<sint32>(m_text.size());
     if      (m_caret < 0) m_caret = 0;
-    else if (m_caret > m_text.size()) m_caret = m_text.size();
+    else if (m_caret > size) m_caret = size;
 }
 
 END_NAMESPACE_NYANCO_GUI

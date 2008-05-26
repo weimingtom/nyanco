@@ -20,7 +20,7 @@ class MyFrame : public Frame<MyFrame>
 public:
     MyFrame()
     {
-        attach(TextField::Create(TextEditId));
+        attach(TextEdit::Create(TextEditId));
     }
 
     void onAddButtonEvent(Event<Button> const& e)

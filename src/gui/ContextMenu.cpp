@@ -42,7 +42,7 @@ void MenuItem::draw(Graphics& g)
 // ----------------------------------------------------------------------------
 int MenuItem::getTextWidth() const
 {
-    return text_.size() * 6;
+    return static_cast<sint32>(text_.size()) * 6;
 }
 
 // ----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void SubMenuItem::draw(Graphics& g)
 // ----------------------------------------------------------------------------
 int SubMenuItem::getTextWidth() const
 {
-    return text_.size() * 6;
+    return static_cast<sint32>(text_.size()) * 6;
 }
 
 // ----------------------------------------------------------------------------

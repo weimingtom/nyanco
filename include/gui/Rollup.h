@@ -16,7 +16,7 @@ public:
 
     NYANCO_GUI_ARG_DEF_BEGIN(Rollup)
 #define PARAM_SEQ               \
-        ((std::string,  label))
+        ((std::string,  label,  ""))
         NYANCO_GUI_ARG_PARAMS(PARAM_SEQ)
 #undef PARAM_SEQ
     NYANCO_GUI_ARG_DEF_END(Rollup)

@@ -71,11 +71,11 @@ void Graphics::drawText(
     static float du = ((float)fontInfo_.charaWidth) / ((float)fontInfo_.texWidth);
     static float dv = ((float)fontInfo_.charaHeight) / ((float)fontInfo_.texHeight);
 
-    uint32 vsize = text.size() * 4;
+    sint32 vsize = static_cast<sint32>(text.size()) * 4;
     FontVertex* v = new FontVertex[vsize];
     std::memset(v, 0, sizeof(FontVertex) * vsize);
 
-    uint32 isize = text.size() * 6;
+    sint32 isize = static_cast<sint32>(text.size()) * 6;
     uint16* indices = new uint16[isize];
     for (int i = 0, j = 0; i < isize; i += 6, j += 4)
     {
@@ -93,10 +93,10 @@ void Graphics::drawText(
 
         v[i].rhw = v[i+1].rhw = v[i+2].rhw = v[i+3].rhw = 1.f;
         v[i].color = v[i+1].color = v[i+2].color = v[i+3].color = color;
-        v[i].x    = (point.x) + (count * fontInfo_.charaWidth);
-        v[i].y    = (point.y);
-        v[i].tu   = (float)(code % 16 * fontInfo_.charaWidth + 0.5f) / fontInfo_.texWidth;//(code % 16) * du;
-        v[i].tv   = (float)(code / 16 * fontInfo_.charaHeight + 0.5f) / fontInfo_.texHeight;//(code / 16) * dv;
+        v[i].x    = static_cast<float32>((point.x) + (count * fontInfo_.charaWidth));
+        v[i].y    = static_cast<float32>(point.y);
+        v[i].tu   = static_cast<float32>((code % 16 * fontInfo_.charaWidth + 0.5f) / fontInfo_.texWidth);
+        v[i].tv   = static_cast<float32>((code / 16 * fontInfo_.charaHeight + 0.5f) / fontInfo_.texHeight);
 
         // スペース入れ忘れのためアドホック
         if (text[count] == 0x20)

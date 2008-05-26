@@ -43,11 +43,16 @@
 #define NYANCO_GUI_ARG_DEF_END(Name_)           };
 
 #define NYANCO_GUI_MAKE_PARAM(Depth_, Class_, Seq_)             \
-    BOOST_PP_TUPLE_ELEM(2, 0, Seq_) BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(2, 1, Seq_)); \
-    typename Class_::Arg<Class_>& BOOST_PP_TUPLE_ELEM(2, 1, Seq_) BOOST_PP_LPAREN() boost::call_traits<BOOST_PP_TUPLE_ELEM(2, 0, Seq_)>::param_type param BOOST_PP_RPAREN() \
-    { BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(2, 1, Seq_)) = param; return *static_cast<typename Class_::Arg<Class_>*>(this); }
+    BOOST_PP_TUPLE_ELEM(3, 0, Seq_) BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(3, 1, Seq_)); \
+    typename Class_::Arg<Class_>& BOOST_PP_TUPLE_ELEM(3, 1, Seq_) BOOST_PP_LPAREN() boost::call_traits<BOOST_PP_TUPLE_ELEM(3, 0, Seq_)>::param_type param BOOST_PP_RPAREN() \
+    { BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(3, 1, Seq_)) = param; return *static_cast<typename Class_::Arg<Class_>*>(this); }
 
-#define NYANCO_GUI_ARG_PARAMS(Seq_) BOOST_PP_SEQ_FOR_EACH(NYANCO_GUI_MAKE_PARAM, T_, Seq_)
+#define NYANCO_GUI_INIT_PARAM(Depth_, Class_, Seq_)             \
+    BOOST_PP_CAT(m_, BOOST_PP_TUPLE_ELEM(3, 1, Seq_)) = BOOST_PP_TUPLE_ELEM(3, 2, Seq_);
+
+#define NYANCO_GUI_ARG_PARAMS(Seq_)                             \
+    BOOST_PP_SEQ_FOR_EACH(NYANCO_GUI_MAKE_PARAM, T_, Seq_);     \
+    Arg() { BOOST_PP_SEQ_FOR_EACH(NYANCO_GUI_INIT_PARAM, dummy, Seq_) };
 
 BEGIN_NAMESPACE_NYANCO_GUI
 

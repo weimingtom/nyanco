@@ -17,7 +17,7 @@ class LabeledTextEdit : public Component, public EventServer
 public:
     NYANCO_GUI_COMPONENT_TYPEDEF(LabeledTextEdit);
 
-    NYANCO_GUI_ARG_DEF_MIXIN2_BEGIN(LabeledTextEdit, TextField, Label)
+    NYANCO_GUI_ARG_DEF_MIXIN2_BEGIN(LabeledTextEdit, TextEdit, Label)
         // TODO: ラベルとエディットの画面割合とかどっちのサイズを固定するとか
     NYANCO_GUI_ARG_DEF_END(LabeledTextEdit)
 
@@ -39,7 +39,7 @@ private:
 
     SplitPanel<2>::Ptr                  m_splitPanel;
     Label::Ptr                          m_label;
-    TextField::Ptr                      m_textField;
+    TextEdit::Ptr                      m_textEdit;
 };
 
 END_NAMESPACE_NYANCO_GUI

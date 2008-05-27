@@ -44,12 +44,12 @@ protected:
     virtual void draw(Graphics& graphcis) = 0;
     virtual Component::Ptr checkHit(int x, int y);
 //    virtual void resize(int parentWidth);
-    void setMargin(Rect const& margin);
+    void setMargin(Rect<sint32> const& margin);
 
 protected:
     virtual void update();
 
-    Rect                            margin_;
+    Rect<sint32>                            margin_;
     Layout                          m_layout;
 
     typedef std::list<ComponentPtr> ComponentList;

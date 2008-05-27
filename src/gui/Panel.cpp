@@ -15,7 +15,7 @@ BEGIN_NAMESPACE_NYANCO_GUI
 Panel::Ptr Panel::Create(ComponentId id)
 {
     Panel* p = new Panel;
-    p->setMargin(Rect(0, 0, 0, 0));
+    p->setMargin(Rect<sint32>(0, 0, 0, 0));
     return Ptr(p);
 }
 

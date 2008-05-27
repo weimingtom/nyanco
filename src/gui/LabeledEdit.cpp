@@ -19,7 +19,7 @@ LabeledTextEdit::Ptr LabeledTextEdit::Create(Arg<> const& arg, ComponentId id)
     p->m_splitPanel->get<1>()->attach(p->m_textEdit);
     p->m_splitPanel->setEventServer(p.get());
 
-    p->getLocation() = Rect(0, 0, 0, p->m_splitPanel->getHeight());
+    p->getLocation() = Rect<sint32>(0, 0, 0, p->m_splitPanel->getHeight());
 
     p->setId(id);
 
@@ -76,7 +76,7 @@ void LabeledTextEdit::defocus()
 // ----------------------------------------------------------------------------
 bool LabeledTextEdit::onMouseProcess(MouseCommand const& command)
 {
-    if (m_textEdit->isPointInner(Point(command.posX, command.posY)))
+    if (m_textEdit->isPointInner(Point<sint32>(command.posX, command.posY)))
     {
         return m_textEdit->onMouseProcess(command);
     }

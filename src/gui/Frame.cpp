@@ -32,7 +32,7 @@ void Frame<>::create(
     m_titleBar->setCaption(caption);
 
     {
-        Rect& location = frame->getLocation();
+        Rect<sint32>& location = frame->getLocation();
         location.left = location.top = 0;
         location.right          = width;
         location.bottom         = height;
@@ -49,7 +49,7 @@ void Frame<>::create(
 // ----------------------------------------------------------------------------
 void Frame<>::moveTo(int x, int y)
 {
-    Rect& location = getLocation();
+    Rect<sint32>& location = getLocation();
     location.right     = x + location.getWidth();
     location.bottom    = y + location.getHeight();
     location.left      = x;
@@ -59,7 +59,7 @@ void Frame<>::moveTo(int x, int y)
 // ----------------------------------------------------------------------------
 void Frame<>::move(int x, int y)
 {
-    Rect& location = getLocation();
+    Rect<sint32>& location = getLocation();
     location.left  += x;
     location.right += x;
     location.top   += y;
@@ -89,7 +89,7 @@ void Frame<>::draw(
 {
     ComponentGraphics g(graphics);
 
-    Rect const& location = getLocation();
+    Rect<sint32> const& location = getLocation();
 
     g.drawFrame(location);
 
@@ -111,7 +111,7 @@ void Frame<>::update()
 // ----------------------------------------------------------------------------
 void Frame<>::relocateChildren()
 {
-    Rect& location = getLocation();
+    Rect<sint32>& location = getLocation();
 
     // title bar
     int locationY = location.top + margin_.top;
@@ -126,10 +126,10 @@ void Frame<>::relocateChildren()
 // ----------------------------------------------------------------------------
 ComponentPtr Frame<>::getHitComponent(int x, int y)
 {
-    if (isPointInner(Point(x, y)))
+    if (isPointInner(Point<sint32>(x, y)))
     {
         // title bar
-        if (m_titleBar->isPointInner(Point(x, y)))
+        if (m_titleBar->isPointInner(Point<sint32>(x, y)))
             return m_titleBar;
 
         // 子コンポーネントにヒット
@@ -140,13 +140,13 @@ ComponentPtr Frame<>::getHitComponent(int x, int y)
 }
 
 // ----------------------------------------------------------------------------
-void Frame<>::getDockableRect(Rect& rect)
+void Frame<>::getDockableRect(Rect<sint32>& rect)
 {
     rect = getLocation();
 }
 
 // ----------------------------------------------------------------------------
-void Frame<>::setDockableRect(Rect const& rect)
+void Frame<>::setDockableRect(Rect<sint32> const& rect)
 {
     getLocation() = rect;
     // title bar

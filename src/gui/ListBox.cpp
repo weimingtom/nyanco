@@ -19,7 +19,7 @@ ListBox::Ptr ListBox::Create(
 {
     ListBox::Ptr p(new ListBox);
     p->m_arg = arg;
-    p->setLocation(Rect(0, 0, 0, arg.m_height));
+    p->setLocation(Rect<sint32>(0, 0, 0, arg.m_height));
 
     p->createScrollBar(
         p,
@@ -87,8 +87,8 @@ void ListBox::draw(Graphics& graphics)
 {
     ComponentGraphics g(graphics);
 
-    Rect region = location_;
-    Rect client;
+    Rect<sint32> region = location_;
+    Rect<sint32> client;
     getScrolledClientRect(client);
 
     // bound line
@@ -106,20 +106,20 @@ void ListBox::draw(Graphics& graphics)
             breakFlag = true;
         }
 
-        Rect column(client.left + columnX, client.top-Column::Height, right, client.top);
+        Rect<sint32> column(client.left + columnX, client.top-Column::Height, right, client.top);
         g.drawFrame(column, true, true);
 
-        Rect clip = column;
+        Rect<sint32> clip = column;
         clip.right -= 2;
         graphics.drawText(
-            Point(region.left + columnX + 3, region.top + 3),
+            Point<sint32>(region.left + columnX + 3, region.top + 3),
             m_columnLabels[i].label, 0xffeeeeee, clip);
         if (breakFlag) break;
         else
         {
             int height = client.getHeight() - 20;
             graphics.setColor(0xff333333);
-            graphics.drawLine(Point(right-1, region.top+1+Column::Height), Point(right-1, region.bottom-1));
+            graphics.drawLine(Point<sint32>(right-1, region.top+1+Column::Height), Point<sint32>(right-1, region.bottom-1));
         }
 
         columnX += m_columnLabels[i].width;
@@ -154,13 +154,13 @@ void ListBox::draw(Graphics& graphics)
             }
             // è„ã´äE
             int columnY = (clientY < client.top)? clientY+restY: clientY;
-            Rect column(clientX, columnY, right, clientY+18);
+            Rect<sint32> column(clientX, columnY, right, clientY+18);
             // â∫ã´äE
             if (clientY+18 >= client.top + clientWzScrollBar.height)
                 column.bottom = client.top + clientWzScrollBar.height;
 
             std::string str = (*it)[j].get<std::string>();
-            graphics.drawText(Point(clientX + 2, clientY + 2), str, 0xffeeeeee, column);
+            graphics.drawText(Point<sint32>(clientX + 2, clientY + 2), str, 0xffeeeeee, column);
 
             clientX += m_columnLabels[j].width;
             if (breakFlag) break;
@@ -169,7 +169,7 @@ void ListBox::draw(Graphics& graphics)
         clientY += 18;
         if (clientY >= client.top + clientWzScrollBar.height) break;
         graphics.setColor(0xff333333);
-        graphics.drawLine(Point(client.left, clientY-1), Point(client.right-1, clientY-1));
+        graphics.drawLine(Point<sint32>(client.left, clientY-1), Point<sint32>(client.right-1, clientY-1));
     }
 
     // scroll bar
@@ -201,7 +201,7 @@ sint32 ListBox::calcClientWidth() const
 }
 
 // ----------------------------------------------------------------------------
-void ListBox::getScrolledClientRect(Rect& rect) const
+void ListBox::getScrolledClientRect(Rect<sint32>& rect) const
 {
     rect = location_;
     rect.left   += 1;

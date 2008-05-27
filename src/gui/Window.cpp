@@ -62,7 +62,7 @@ Component::Ptr Window::getFocusedComponent() const
 }
 
 // ----------------------------------------------------------------------------
-bool Window::isPointInner(Point const& point) const
+bool Window::isPointInner(Point<sint32> const& point) const
 {
     return (m_location.left <= point.x && point.x < m_location.right &&
             m_location.top  <= point.y && point.y < m_location.bottom);

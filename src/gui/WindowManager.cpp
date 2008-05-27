@@ -35,12 +35,12 @@ private:
 
 // ------------------------------------------------------------------------
 void WindowManager::drawText(
-    Point const&                    point,
+    Point<sint32> const&                    point,
     std::string const&              text,
     Color                           color)
 {
     FontInfo const& fontInfo = graphics_->getFontInfo();
-    textList_.push_back(Text(Point(point.x * fontInfo.charaWidth, point.y * fontInfo.charaHeight), text, color));
+    textList_.push_back(Text(Point<sint32>(point.x * fontInfo.charaWidth, point.y * fontInfo.charaHeight), text, color));
 }
 
 // ------------------------------------------------------------------------
@@ -235,7 +235,7 @@ void WindowManager::update()
     {
         char buf[32];
         sprintf(buf, "%d x %d", m_windowRect.getWidth(), m_windowRect.getHeight());
-        textList_.push_back(Text(Point(m_windowRect.left + 0, m_windowRect.top), std::string(buf), 0xffcccccc));
+        textList_.push_back(Text(Point<sint32>(m_windowRect.left + 0, m_windowRect.top), std::string(buf), 0xffcccccc));
     }
 }
 
@@ -307,7 +307,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
     // システムマウス操作
     else
     {
-        Point point(mouseCommand.posX, mouseCommand.posY);
+        Point<sint32> point(mouseCommand.posX, mouseCommand.posY);
         Window::Ptr     hitFrame;
         Component::Ptr  hitComponent;
         bool hitDockFrame = false;
@@ -331,7 +331,7 @@ void WindowManager::onInputProcess(Keyboard const& keyboard, Mouse const& mouse)
                 if (dock.get() != 0)
                 {
                     Dockable::Ptr p = dock->getDockee();
-                    Rect rect;
+                    Rect<sint32> rect;
                     p->getDockableRect(rect);
                     if (rect.isInnerPoint(point.x, point.y))
                         hitFrame = boost::shared_static_cast<Frame<> >(p);

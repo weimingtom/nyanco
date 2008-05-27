@@ -27,7 +27,7 @@ public:
     {
         NYANCO_GUI_COMPONENT_TYPEDEF(Owner);
 
-        virtual void getScrolledClientRect(Rect& rect) const = 0;
+        virtual void getScrolledClientRect(Rect<sint32>& rect) const = 0;
         virtual void getScrolledContentSize(Size& size) const = 0;
         virtual void getScrolledUnitInclementSize(Size& size) const = 0;
 
@@ -101,8 +101,8 @@ private:
     sint32 getClientSize() const;
     sint32 getContentSize() const;
     sint32 getUnitInclementSize() const;
-    void calcButtonRect(Rect& b1, Rect& b2) const;
-    void calcSliderRect(Rect& s) const;
+    void calcButtonRect(Rect<sint32>& b1, Rect<sint32>& b2) const;
+    void calcSliderRect(Rect<sint32>& s) const;
 };
 
 END_NAMESPACE_NYANCO_GUI

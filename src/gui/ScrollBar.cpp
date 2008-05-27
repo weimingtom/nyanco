@@ -54,7 +54,7 @@ bool ScrollBar::Owner::onScrollBarMouseProcess(MouseCommand const& mouse)
 // ----------------------------------------------------------------------------
 void ScrollBar::Owner::getClientSizeWithScrollBar(Size& size) const
 {
-    Rect client;
+    Rect<sint32> client;
     getScrolledClientRect(client);
     size.width  = client.getWidth() - (m_scrollBar[0]->isVisible()? m_scrollBar[0]->getWidth(): 0);
     size.height = client.getHeight() - (m_scrollBar[1]->isVisible()? m_scrollBar[1]->getHeight(): 0);
@@ -74,11 +74,11 @@ ScrollBar::Ptr ScrollBar::Create(
 
     if (p->m_arg.m_type == Vertical)
     {
-        p->setLocation(Rect(0, 0, 10, 0));
+        p->setLocation(Rect<sint32>(0, 0, 10, 0));
     }
     else if (p->m_arg.m_type == Horizontal)
     {
-        p->setLocation(Rect(0, 0, 0, 10));
+        p->setLocation(Rect<sint32>(0, 0, 0, 10));
     }
     else assert(0);
 
@@ -92,10 +92,10 @@ void ScrollBar::draw(Graphics& graphics)
 {
     ComponentGraphics g(graphics);
 
-    Rect rect = location_;
-    graphics.drawFillRect(Rect(rect.left, rect.top, rect.right, rect.bottom-1));
+    Rect<sint32> rect = location_;
+    graphics.drawFillRect(Rect<sint32>(rect.left, rect.top, rect.right, rect.bottom-1));
 
-    Rect button[2];
+    Rect<sint32> button[2];
     calcButtonRect(button[0], button[1]);
 
     // close button
@@ -103,7 +103,7 @@ void ScrollBar::draw(Graphics& graphics)
         g.drawFrame(button[0]);
         graphics.setColor(0xffeeeeee);
         sint32 half = (button[0].right - button[0].left - 2) / 2;
-//        graphics.drawTriangle(Point(button[0].left+half, button[0].top+2), Point(button[0].right-1, button[0].bottom-1), Point(button[0].left+2, button[0].bottom-1));
+//        graphics.drawTriangle(Point<sint32>(button[0].left+half, button[0].top+2), Point<sint32>(button[0].right-1, button[0].bottom-1), Point<sint32>(button[0].left+2, button[0].bottom-1));
     }
 
     // close button
@@ -111,19 +111,19 @@ void ScrollBar::draw(Graphics& graphics)
         g.drawFrame(button[1]);
         graphics.setColor(0xffeeeeee);
         sint32 half = (button[1].right - button[1].left) / 2;
-//        graphics.drawTriangle(Point(button[1].left+half, button[1].bottom-1), Point(button[1].left+2, button[1].top+2), Point(button[1].right-1, button[1].top+2));
+//        graphics.drawTriangle(Point<sint32>(button[1].left+half, button[1].bottom-1), Point<sint32>(button[1].left+2, button[1].top+2), Point<sint32>(button[1].right-1, button[1].top+2));
     }
 
     // scroll
     if (m_enableScroll)
     {
-        Rect slider;
+        Rect<sint32> slider;
         calcSliderRect(slider);
         sint32 size = getClientSize();
         if (m_arg.m_type == Vertical) slider.bottom = std::min(slider.bottom, location_.top+size-10);
         else if (m_arg.m_type == Horizontal) slider.right = std::min(slider.right, location_.left+size-10);
         g.drawFrame(slider);
-        Rect inner = slider;
+        Rect<sint32> inner = slider;
         inner.extend(-2);
         g.drawFrame(inner, false);
     }
@@ -135,7 +135,7 @@ void ScrollBar::update()
     Owner::Ptr owner = m_owner.lock();
     if (!owner) return;
 
-    Rect client;
+    Rect<sint32> client;
     owner->getScrolledClientRect(client);
 
     float32 const contentSize       = getContentSize();
@@ -190,9 +190,9 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
 
     if (mouse.code == KeyCode::MouseButtonLeft)
     {
-        if (isPointInner(Point(mouse.posX, mouse.posY)))
+        if (isPointInner(Point<sint32>(mouse.posX, mouse.posY)))
         {
-            Rect button[2];
+            Rect<sint32> button[2];
             calcButtonRect(button[0], button[1]);
             // up button
             if (button[0].isInnerPoint(mouse.posX, mouse.posY))
@@ -217,7 +217,7 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
             float32 per = static_cast<float32>(clientHeight) / contentHeight;
             sint32 sliderLength = static_cast<sint32>(barLength * per);
 
-            Rect slider;
+            Rect<sint32> slider;
             calcSliderRect(slider);
             if (slider.isInnerPoint(mouse.posX, mouse.posY))
             {
@@ -270,7 +270,7 @@ bool ScrollBar::onMouseProcess(MouseCommand const& mouse)
             float32 per = static_cast<float32>(clientHeight) / contentHeight;
             sint32 sliderLength = static_cast<sint32>(barLength * per);
 
-            Rect slider;
+            Rect<sint32> slider;
             calcSliderRect(slider);
 
             if (m_arg.m_type == Vertical)
@@ -349,7 +349,7 @@ sint32 ScrollBar::getClientSize() const
 {
     Owner::Ptr owner = m_owner.lock();
 
-    Rect clientRect;
+    Rect<sint32> clientRect;
     owner->getScrolledClientRect(clientRect);
 
     sint32 size;
@@ -411,7 +411,7 @@ sint32 ScrollBar::getUnitInclementSize() const
 }
 
 // ----------------------------------------------------------------------------
-void ScrollBar::calcButtonRect(Rect& b1, Rect& b2) const
+void ScrollBar::calcButtonRect(Rect<sint32>& b1, Rect<sint32>& b2) const
 {
     b1 = b2 = location_;
     if (m_arg.m_type == Vertical)
@@ -428,7 +428,7 @@ void ScrollBar::calcButtonRect(Rect& b1, Rect& b2) const
 }
 
 // ----------------------------------------------------------------------------
-void ScrollBar::calcSliderRect(Rect& slider) const
+void ScrollBar::calcSliderRect(Rect<sint32>& slider) const
 {
     slider = location_;
     if (m_arg.m_type == Vertical)

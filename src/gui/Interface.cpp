@@ -47,13 +47,13 @@ namespace gui
     void Interface::setClientRect(sint32 left, sint32 top, sint32 right, sint32 bottom)
     {
         impl::WindowManager& manager = impl::WindowManager::GetImplement();
-        manager.setClientRect(Rect(left, top, right, bottom));
+        manager.setClientRect(Rect<sint32>(left, top, right, bottom));
     }
 
     void Interface::getClientRect(sint32& left, sint32& top, sint32& right, sint32& bottom)
     {
         impl::WindowManager& manager = impl::WindowManager::GetImplement();
-        Rect const& rect = manager.getViewRect();
+        Rect<sint32> const& rect = manager.getViewRect();
         left    = rect.left;
         top     = rect.top;
         right   = rect.right;

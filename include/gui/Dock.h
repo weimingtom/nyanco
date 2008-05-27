@@ -24,8 +24,8 @@ public:
     NYANCO_GUI_COMPONENT_TYPEDEF(Dockable);
     bool isDocked() const { return m_isDocked; }
 
-    virtual void getDockableRect(Rect& rect) = 0;
-    virtual void setDockableRect(Rect const& rect) = 0;
+    virtual void getDockableRect(Rect<sint32>& rect) = 0;
+    virtual void setDockableRect(Rect<sint32> const& rect) = 0;
 
 protected:
     Dockable() : m_isDocked(false) {}
@@ -63,8 +63,8 @@ private:
     void draw(Graphics& graphics);
     void update();
     bool onMouseProcess(MouseCommand const& command);
-    bool isPointInner(Point const& point);
-    Dock::Ptr getDock(Point const& point);
+    bool isPointInner(Point<sint32> const& point);
+    Dock::Ptr getDock(Point<sint32> const& point);
     void invokeHandler();
 
     std::vector<Dock::Ptr>              m_docks;
@@ -72,7 +72,7 @@ private:
     Dock::Type                          m_type;
 
     Dockable::Ptr                       m_dockee;
-    Rect                                m_spliter;
+    Rect<sint32>                                m_spliter;
 
     friend DockManager;
 };
@@ -83,10 +83,10 @@ class DockManager
 public:
     Dock::Ptr getRoot() const { return m_root; }
 
-    void update(Rect const& windowRect, Rect& clientRect);
+    void update(Rect<sint32> const& windowRect, Rect<sint32>& clientRect);
     void draw(Graphics& graphics);
 
-    Dock::Ptr getDock(Point const& point) const;
+    Dock::Ptr getDock(Point<sint32> const& point) const;
     Dock::Ptr searchDock(Dockable::Ptr dockable) const;
     bool isDockableExist(Dockable::Ptr dockable) const;
 

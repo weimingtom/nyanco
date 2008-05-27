@@ -164,7 +164,7 @@ Component::Ptr SplitPanel<Num_>::searchById(sint32 id)
 template <int Num_>
 Component::Ptr SplitPanel<Num_>::checkHit(int x, int y)
 {
-    if (isPointInner(Point(x, y)))
+    if (isPointInner(Point<sint32>(x, y)))
     {
         for (int i = 0; i < Num_; ++i)
         {

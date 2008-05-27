@@ -254,6 +254,10 @@
 				RelativePath="..\..\src\gui\WindowManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\gui\WindowManager.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="ヘッダー ファイル"

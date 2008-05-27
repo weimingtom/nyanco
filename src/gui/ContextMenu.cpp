@@ -21,7 +21,7 @@ MenuItemPtr MenuItem::Create(
 
     item->m_id = componentId;
     item->text_ = text;
-    item->setLocation(Rect(0, 0, 0, 14));
+    item->setLocation(Rect<sint32>(0, 0, 0, 14));
 
     return MenuItemPtr(item);
 }
@@ -31,11 +31,11 @@ void MenuItem::draw(Graphics& g)
 {
     if (isFocused())
     {
-//        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//        g.drawText(Point<sint32>(location_.left+3, location_.top+1), text_, 0xffeeeeee);
     }
     else
     {
-//        g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//        g.drawText(Point<sint32>(location_.left+3, location_.top+1), text_, 0xffeeeeee);
     }
 }
 
@@ -60,7 +60,7 @@ SubMenuItemPtr SubMenuItem::Create(
 
     item->m_id = componentId;
     item->text_ = text;
-    item->setLocation(Rect(0, 0, 0, 14));
+    item->setLocation(Rect<sint32>(0, 0, 0, 14));
 
     return SubMenuItemPtr(item);
 }
@@ -68,7 +68,7 @@ SubMenuItemPtr SubMenuItem::Create(
 // ----------------------------------------------------------------------------
 void SubMenuItem::draw(Graphics& g)
 {
-//    g.drawText(Point(location_.left+3, location_.top+1), text_, 0xffeeeeee);
+//    g.drawText(Point<sint32>(location_.left+3, location_.top+1), text_, 0xffeeeeee);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ MenuSeparatorPtr MenuSeparator::Create()
 {
     MenuSeparator* item = new MenuSeparator;
 
-    item->setLocation(Rect(0, 0, 0, 4));
+    item->setLocation(Rect<sint32>(0, 0, 0, 4));
 
     return MenuSeparatorPtr(item);
 }
@@ -101,10 +101,10 @@ MenuSeparatorPtr MenuSeparator::Create()
 void MenuSeparator::draw(Graphics& g)
 {
     g.setColor(0xff222222);
-    g.drawLine(Point(location_.left+2, location_.top), Point(location_.right-2, location_.top));
+    g.drawLine(Point<sint32>(location_.left+2, location_.top), Point<sint32>(location_.right-2, location_.top));
 
     g.setColor(0xff888888);
-    g.drawLine(Point(location_.left+2, location_.top+1), Point(location_.right-2, location_.top+1));
+    g.drawLine(Point<sint32>(location_.left+2, location_.top+1), Point<sint32>(location_.right-2, location_.top+1));
 }
 
 // ----------------------------------------------------------------------------
@@ -132,12 +132,12 @@ void ContextMenu::draw(Graphics& graphics)
     graphics.drawFillRect(location_);
 
     graphics.setColor(0xff888888);
-    graphics.drawLine(Point(location_.left, location_.top), Point(location_.right, location_.top));
-    graphics.drawLine(Point(location_.left, location_.top), Point(location_.left, location_.bottom-1));
+    graphics.drawLine(Point<sint32>(location_.left, location_.top), Point<sint32>(location_.right, location_.top));
+    graphics.drawLine(Point<sint32>(location_.left, location_.top), Point<sint32>(location_.left, location_.bottom-1));
 
     graphics.setColor(0xff222222);
-    graphics.drawLine(Point(location_.right, location_.top+1), Point(location_.right, location_.bottom));
-    graphics.drawLine(Point(location_.left, location_.bottom), Point(location_.right, location_.bottom));
+    graphics.drawLine(Point<sint32>(location_.right, location_.top+1), Point<sint32>(location_.right, location_.bottom));
+    graphics.drawLine(Point<sint32>(location_.left, location_.bottom), Point<sint32>(location_.right, location_.bottom));
 
     using boost::bind;
     using boost::ref;

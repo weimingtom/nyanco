@@ -27,28 +27,28 @@ public:
         Color                       rightBottom) = 0;
 
     virtual void drawText(
-        Point const&                point,
+        Point<sint32> const&                point,
         std::string const&          text,
         Color                       color,
-        Rect const&                 region) = 0;
+        Rect<sint32> const&                 region) = 0;
 
     virtual void drawRect(
-        Rect const&                 rect) = 0;
+        Rect<sint32> const&                 rect) = 0;
 
     virtual void drawFillRect(
-        Rect const&                 rect) = 0;
+        Rect<sint32> const&                 rect) = 0;
 
     virtual void drawLine(
-        Point const&                p1,
-        Point const&                p2) = 0;
+        Point<sint32> const&                p1,
+        Point<sint32> const&                p2) = 0;
 
     virtual void drawIbeamCursor(
-        Point const&                p) = 0;
+        Point<sint32> const&                p) = 0;
 
     virtual void drawTriangle(
-        Point const&                p1,
-        Point const&                p2,
-        Point const&                p3) = 0;
+        Point<sint32> const&                p1,
+        Point<sint32> const&                p2,
+        Point<sint32> const&                p3) = 0;
 };
 
 class ComponentGraphics
@@ -56,9 +56,9 @@ class ComponentGraphics
 public:
     ComponentGraphics(Graphics& g) : m_g(g) {}
 
-    void drawEdit(Rect const& rect);
-    void drawButton(Rect const& rect, bool pushed);
-    void drawFrame(Rect const& rect, bool rise = true, bool gradation = false);
+    void drawEdit(Rect<sint32> const& rect);
+    void drawButton(Rect<sint32> const& rect, bool pushed);
+    void drawFrame(Rect<sint32> const& rect, bool rise = true, bool gradation = false);
 
 private:
     Graphics&                           m_g;

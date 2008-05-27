@@ -14,7 +14,7 @@ Label::Ptr Label::Create(Arg<> const& arg, ComponentId id)
     Label* p = new Label;
 
     p->m_arg = arg;
-    p->setLocation(Rect(0, 0, 0, 14));
+    p->setLocation(Rect<sint32>(0, 0, 0, 14));
 
     return Ptr(p);
 }
@@ -22,10 +22,10 @@ Label::Ptr Label::Create(Arg<> const& arg, ComponentId id)
 // ----------------------------------------------------------------------------
 void Label::draw(Graphics& graphics)
 {
-    Rect caption = location_;
+    Rect<sint32> caption = location_;
     caption.bottom = caption.top + 14;
-    Rect clip = getLocation();
-    graphics.drawText(Point(caption.left+1, caption.top+1), m_arg.m_text, 0xffeeeeee, clip);
+    Rect<sint32> clip = getLocation();
+    graphics.drawText(Point<sint32>(caption.left+1, caption.top+1), m_arg.m_text, 0xffeeeeee, clip);
 }
 
 // ----------------------------------------------------------------------------

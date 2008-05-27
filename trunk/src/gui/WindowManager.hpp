@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_NYANCO_GUI_IMPL
 class WindowManager : public nyanco::gui::WindowManager
 {
     virtual void drawText(
-        Point const&                point,
+        Point<sint32> const&                point,
         std::string const&          text,
         Color                       color);
 
@@ -57,8 +57,8 @@ class WindowManager : public nyanco::gui::WindowManager
     virtual ContextMenuPtr getContextMenu() const;
     virtual void setContextMenu(ContextMenu::Ptr menu);
 
-    virtual Rect const& getClientRect() const { return m_clientRect; }
-    virtual Rect const& getViewRect() const { return m_windowRect; }
+    virtual Rect<sint32> const& getClientRect() const { return m_clientRect; }
+    virtual Rect<sint32> const& getViewRect() const { return m_windowRect; }
 
     Dock::Ptr getRootDock() const { return m_dockManager->getRoot(); }
 
@@ -83,7 +83,7 @@ class WindowManager : public nyanco::gui::WindowManager
 
     void draw();
 
-    void setClientRect(Rect const& rect) { m_clientRect = rect; }
+    void setClientRect(Rect<sint32> const& rect) { m_clientRect = rect; }
 
     static WindowManager& GetImplement();
 
@@ -93,25 +93,25 @@ private:
     class InputState
     {
     private:
-        Point                       clickPoint_;
+        Point<sint32>                       clickPoint_;
     };
 
     class Text
     {
     public:
         Text(
-            Point const&            point,
+            Point<sint32> const&            point,
             std::string const&      text,
             Color                   color)
             : point_(point), text_(text), color_(color) {}
 
-        void draw(Graphics& graphics, Rect const& clip)
+        void draw(Graphics& graphics, Rect<sint32> const& clip)
         {
             graphics.drawText(point_, text_, color_, clip);
         }
 
     private:
-        Point                       point_;
+        Point<sint32>                       point_;
         std::string                 text_;
         Color                       color_;
     };
@@ -137,8 +137,8 @@ private:
 
     WindowList                      m_killedWindowList;
 
-    Rect                            m_windowRect;
-    Rect                            m_clientRect;
+    Rect<sint32>                            m_windowRect;
+    Rect<sint32>                            m_clientRect;
 
     boost::scoped_ptr<DockManager>  m_dockManager;
 

@@ -18,7 +18,7 @@ sint32 const MinDockeeSize = 64;
 sint32 const SplitSize = 5;
 sint32 const splitSize = SplitSize;
 
-void calcLeft(Rect& rect, Rect& parent)
+void calcLeft(Rect<sint32>& rect, Rect<sint32>& parent)
 {
     rect.setHeight(parent.getHeight());
     rect.setLeft(parent.left);
@@ -27,7 +27,7 @@ void calcLeft(Rect& rect, Rect& parent)
     parent.setWidth(parent.getWidth() - rect.getWidth() - splitSize);
 }
 
-void calcRight(Rect& rect, Rect& parent)
+void calcRight(Rect<sint32>& rect, Rect<sint32>& parent)
 {
     rect.setHeight(parent.getHeight());
     rect.setLeft(parent.left + parent.getWidth() - rect.getWidth());
@@ -35,7 +35,7 @@ void calcRight(Rect& rect, Rect& parent)
     parent.setWidth(parent.getWidth() - rect.getWidth() - splitSize);
 }
 
-void calcTop(Rect& rect, Rect& parent)
+void calcTop(Rect<sint32>& rect, Rect<sint32>& parent)
 {
     rect.setWidth(parent.getWidth());
     rect.setLeft(parent.left);
@@ -44,7 +44,7 @@ void calcTop(Rect& rect, Rect& parent)
     parent.setHeight(parent.getHeight() - rect.getHeight() - splitSize);
 }
 
-void calcBottom(Rect& rect, Rect& parent)
+void calcBottom(Rect<sint32>& rect, Rect<sint32>& parent)
 {
     rect.setWidth(parent.getWidth());
     rect.setLeft(parent.left);
@@ -52,25 +52,25 @@ void calcBottom(Rect& rect, Rect& parent)
     parent.setHeight(parent.getHeight() - rect.getHeight() - splitSize);
 }
 
-void calcLeftSpliter(Rect& rect)
+void calcLeftSpliter(Rect<sint32>& rect)
 {
     rect.left = rect.right;
     rect.setWidth(5);
 }
 
-void calcTopSpliter(Rect& rect)
+void calcTopSpliter(Rect<sint32>& rect)
 {
     rect.top = rect.bottom;
     rect.setHeight(5);
 }
 
-void calcRightSpliter(Rect& rect)
+void calcRightSpliter(Rect<sint32>& rect)
 {
     rect.left = rect.left - 5;
     rect.setWidth(5);
 }
 
-void calcBottomSpliter(Rect& rect)
+void calcBottomSpliter(Rect<sint32>& rect)
 {
     rect.top = rect.top - 5;
     rect.setHeight(5);
@@ -116,12 +116,12 @@ void Dock::undock(Dockable::Ptr dockee)
 // ----------------------------------------------------------------------------
 void Dock::update()
 {
-    Rect rect, parentRect;
+    Rect<sint32> rect, parentRect;
     m_dockee->getDockableRect(rect);
     m_parent->m_dockee->getDockableRect(parentRect);
 
     // UNDONE: 境界チェック
-    typedef void (*Callback)(Rect&, Rect&);
+    typedef void (*Callback)(Rect<sint32>&, Rect<sint32>&);
     static Callback calcLocation[] =
     {
         calcLeft, calcTop, calcRight, calcBottom,
@@ -129,7 +129,7 @@ void Dock::update()
     calcLocation[m_type](rect, parentRect);
 
     m_spliter = rect;
-    typedef void (*SpliterMaker)(Rect&);
+    typedef void (*SpliterMaker)(Rect<sint32>&);
     static SpliterMaker calcSpliter[] =
     {
         calcLeftSpliter, calcTopSpliter, calcRightSpliter, calcBottomSpliter,
@@ -152,7 +152,7 @@ void Dock::update()
 void Dock::draw(Graphics& graphics)
 {
     // UNDONE: スプリッタの描画
-    Rect rect = m_spliter;
+    Rect<sint32> rect = m_spliter;
 
     graphics.setRectColor(0xff444444);
     graphics.drawFillRect(rect);
@@ -160,16 +160,16 @@ void Dock::draw(Graphics& graphics)
     if (m_type == Dock::Left || m_type == Dock::Right)
     {
         graphics.setColor(0xff888888);
-        graphics.drawLine(Point(rect.left, rect.top), Point(rect.left, rect.bottom-1));
+        graphics.drawLine(Point<sint32>(rect.left, rect.top), Point<sint32>(rect.left, rect.bottom-1));
         graphics.setColor(0xff222222);
-        graphics.drawLine(Point(rect.right-1, rect.top), Point(rect.right-1, rect.bottom-1));
+        graphics.drawLine(Point<sint32>(rect.right-1, rect.top), Point<sint32>(rect.right-1, rect.bottom-1));
     }
     else if (m_type == Dock::Bottom || m_type == Dock::Top)
     {
         graphics.setColor(0xff888888);
-        graphics.drawLine(Point(rect.left, rect.top), Point(rect.right, rect.top));
+        graphics.drawLine(Point<sint32>(rect.left, rect.top), Point<sint32>(rect.right, rect.top));
         graphics.setColor(0xff222222);
-        graphics.drawLine(Point(rect.left, rect.bottom-1), Point(rect.right, rect.bottom-1));
+        graphics.drawLine(Point<sint32>(rect.left, rect.bottom-1), Point<sint32>(rect.right, rect.bottom-1));
     }
     else assert(0);
 
@@ -182,16 +182,16 @@ void Dock::draw(Graphics& graphics)
 }
 
 // ----------------------------------------------------------------------------
-bool Dock::isPointInner(Point const& point)
+bool Dock::isPointInner(Point<sint32> const& point)
 {
-    Rect rect;
+    Rect<sint32> rect;
     m_dockee->getDockableRect(rect);
     return rect.isInnerPoint(point.x, point.y) ||
            m_spliter.isInnerPoint(point.x, point.y);
 }
 
 // ----------------------------------------------------------------------------
-Dock::Ptr Dock::getDock(Point const& point)
+Dock::Ptr Dock::getDock(Point<sint32> const& point)
 {
     if (isPointInner(point))
         return boost::shared_static_cast<Dock>(shared_from_this());
@@ -244,7 +244,7 @@ bool Dock::onMouseProcess(MouseCommand const& command)
     static sint32 const SplitSize = 5;
     sint32 splitSize = m_parent->m_type == Dock::Root? 0: SplitSize;
 
-    Rect rect, parentRect;
+    Rect<sint32> rect, parentRect;
     m_dockee->getDockableRect(rect);
     m_parent->m_dockee->getDockableRect(parentRect);
 
@@ -302,17 +302,17 @@ DockManager::DockManager()
 {
     struct RootDockee : public Dockable
     {
-        void getDockableRect(Rect& rect) { rect = m_clientRect; }
-        void setDockableRect(Rect const& rect) { m_clientRect = rect; }
+        void getDockableRect(Rect<sint32>& rect) { rect = m_clientRect; }
+        void setDockableRect(Rect<sint32> const& rect) { m_clientRect = rect; }
         void drawDockable(Graphics&) {}
-        Rect                            m_clientRect;
+        Rect<sint32>                            m_clientRect;
     };
     m_root->m_dockee = Dockable::Ptr(new RootDockee);
     m_root->m_type   = Dock::Root;
 }
 
 // ----------------------------------------------------------------------------
-void DockManager::update(Rect const& windowRect, Rect& clientRect)
+void DockManager::update(Rect<sint32> const& windowRect, Rect<sint32>& clientRect)
 {
     m_root->m_dockee->setDockableRect(windowRect);
 
@@ -334,7 +334,7 @@ void DockManager::draw(Graphics& graphics)
 }
 
 // ----------------------------------------------------------------------------
-Dock::Ptr DockManager::getDock(Point const& point) const
+Dock::Ptr DockManager::getDock(Point<sint32> const& point) const
 {
     foreach (Dock::Ptr dock, m_root->m_docks)
     {

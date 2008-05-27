@@ -38,12 +38,15 @@ public:
     virtual bool isFocused() const;
     virtual bool enableFocus() const { return true; }
 
+    virtual bool isEnabled() const { return m_enabled; }
+    void enable(bool flag) { m_enabled = flag; }
+
     virtual int getHeight() const;
     virtual int getWidth() const;
 
-    Rect& getLocation() { return location_; }
-    Rect const& getLocation() const { return location_; }
-    virtual void setLocation(Rect const& location);
+    Rect<sint32>& getLocation() { return location_; }
+    Rect<sint32> const& getLocation() const { return location_; }
+    virtual void setLocation(Rect<sint32> const& location);
     //void setPosition(int x, int y);
     virtual void setX(int x);
     virtual void setY(int y);
@@ -62,7 +65,7 @@ public:
     virtual bool onMouseProcess(MouseCommand const& mouse) { return false; }
     virtual bool onKeyboardProcess(KeyboardCommand const& keyboard) { return false;}
 
-    bool isPointInner(Point const& point);
+    bool isPointInner(Point<sint32> const& point);
 
     void attachParent(ComponentPtr parent);
     void detachParent();
@@ -76,11 +79,12 @@ protected:
 
 protected:
     ComponentId                     m_id;
-    Rect                            location_;
+    Rect<sint32>                            location_;
     bool                            focused_;
+    bool                            m_enabled;
     ComponentPtr                    parent_;
 
-    Component() : focused_(false) {}
+    Component() : m_id(NonspecificId), m_enabled(true), focused_(false) {}
 
     friend ContextMenu;
     friend Container;

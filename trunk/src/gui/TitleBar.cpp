@@ -24,7 +24,7 @@ TitleBar::Ptr TitleBar::Create(
     titleBar->onMoving_ = false;
     titleBar->onClosing_ = false;
 
-    titleBar->setLocation(Rect(0, 0, 0, 14));
+    titleBar->setLocation(Rect<sint32>(0, 0, 0, 14));
 
     return TitleBar::Ptr(titleBar);
 }
@@ -44,7 +44,7 @@ std::string const& TitleBar::getCaption() const
 // ----------------------------------------------------------------------------
 void TitleBar::draw(Graphics& graphics)
 {
-    Rect caption = location_;
+    Rect<sint32> caption = location_;
     caption.bottom = caption.top + 14;
     graphics.setColor(0xff6666ff);
 
@@ -55,12 +55,12 @@ void TitleBar::draw(Graphics& graphics)
         graphics.setRectColor(0xff3333dd, 0xff333399, 0xff0000aa, 0xff000066);
     graphics.drawFillRect(caption);
 
-    Rect clip = location_;
+    Rect<sint32> clip = location_;
     clip.right -= 12;
-    graphics.drawText(Point(caption.left+1, caption.top+1), caption_, 0xffeeeeee, clip);
+    graphics.drawText(Point<sint32>(caption.left+1, caption.top+1), caption_, 0xffeeeeee, clip);
 
     // close button
-    Rect closeRegion = location_;
+    Rect<sint32> closeRegion = location_;
     closeRegion.right  -= 2;
     closeRegion.left    = closeRegion.right - 10;
     closeRegion.top    += 2;
@@ -70,16 +70,16 @@ void TitleBar::draw(Graphics& graphics)
     graphics.drawFillRect(closeRegion);
 
     graphics.setColor(0xff888888);
-    graphics.drawLine(Point(closeRegion.left, closeRegion.top), Point(closeRegion.right, closeRegion.top));
-    graphics.drawLine(Point(closeRegion.left, closeRegion.top), Point(closeRegion.left, closeRegion.bottom-1));
+    graphics.drawLine(Point<sint32>(closeRegion.left, closeRegion.top), Point<sint32>(closeRegion.right, closeRegion.top));
+    graphics.drawLine(Point<sint32>(closeRegion.left, closeRegion.top), Point<sint32>(closeRegion.left, closeRegion.bottom-1));
 
     graphics.setColor(0xff222222);
-    graphics.drawLine(Point(closeRegion.right, closeRegion.top+1), Point(closeRegion.right, closeRegion.bottom));
-    graphics.drawLine(Point(closeRegion.left, closeRegion.bottom), Point(closeRegion.right, closeRegion.bottom));
+    graphics.drawLine(Point<sint32>(closeRegion.right, closeRegion.top+1), Point<sint32>(closeRegion.right, closeRegion.bottom));
+    graphics.drawLine(Point<sint32>(closeRegion.left, closeRegion.bottom), Point<sint32>(closeRegion.right, closeRegion.bottom));
 
     graphics.setColor(0xffeeeeee);
-    graphics.drawLine(Point(closeRegion.left+2, closeRegion.top+2), Point(closeRegion.right-1, closeRegion.bottom-1));
-    graphics.drawLine(Point(closeRegion.left+2, closeRegion.bottom-2), Point(closeRegion.right-1, closeRegion.top+1));
+    graphics.drawLine(Point<sint32>(closeRegion.left+2, closeRegion.top+2), Point<sint32>(closeRegion.right-1, closeRegion.bottom-1));
+    graphics.drawLine(Point<sint32>(closeRegion.left+2, closeRegion.bottom-2), Point<sint32>(closeRegion.right-1, closeRegion.top+1));
 }
 
 // ----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ bool TitleBar::onMouseProcess(MouseCommand const& command)
     if (command.onPushLeft)
     {
         // in button region
-        Rect closeRegion = location_;
+        Rect<sint32> closeRegion = location_;
         closeRegion.right  -= 2;
         closeRegion.left    = closeRegion.right - 10;
         closeRegion.top    += 2;
@@ -112,7 +112,7 @@ bool TitleBar::onMouseProcess(MouseCommand const& command)
         if (onClosing_)
         {
             // in button region
-            Rect closeRegion = location_;
+            Rect<sint32> closeRegion = location_;
             closeRegion.right  -= 2;
             closeRegion.left    = closeRegion.right - 10;
             closeRegion.top    += 2;
@@ -136,7 +136,7 @@ bool TitleBar::onMouseProcess(MouseCommand const& command)
         if (onMoving_)
         {
             WindowManager& wm = WindowManager::GetInterface();
-            Rect const& client = wm.getClientRect();
+            Rect<sint32> const& client = wm.getClientRect();
 
             // X ï˚å¸ÇÃà⁄ìÆêßå¿
             sint32 moveX = command.moveX;

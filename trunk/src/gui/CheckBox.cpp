@@ -20,7 +20,7 @@ CheckBox::Ptr CheckBox::Create(
     p->text_        = text;
     p->m_checked    = check;
     p->m_id         = id;
-    p->setLocation(Rect(0, 0, 0, 16));
+    p->setLocation(Rect<sint32>(0, 0, 0, 16));
 
     return CheckBox::Ptr(p);
 }
@@ -28,7 +28,7 @@ CheckBox::Ptr CheckBox::Create(
 // ----------------------------------------------------------------------------
 void CheckBox::draw(Graphics& graphics)
 {
-    Rect box = location_;
+    Rect<sint32> box = location_;
     box.left += 2;
     box.top += 2;
     box.setWidth(12);
@@ -38,22 +38,22 @@ void CheckBox::draw(Graphics& graphics)
     graphics.drawFillRect(box);
 
     graphics.setColor(0xff222222);
-    graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-    graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+    graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.right, box.top));
+    graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.left, box.bottom-1));
 
     graphics.setColor(0xff888888);
-    graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-    graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+    graphics.drawLine(Point<sint32>(box.right, box.top+1), Point<sint32>(box.right, box.bottom));
+    graphics.drawLine(Point<sint32>(box.left, box.bottom), Point<sint32>(box.right, box.bottom));
 
-    Rect clip = location_;
+    Rect<sint32> clip = location_;
     clip.right -= 2;
-    graphics.drawText(Point(location_.left+17, location_.top+2), text_, 0xffeeeeee, clip);
+    graphics.drawText(Point<sint32>(location_.left+17, location_.top+2), text_, 0xffeeeeee, clip);
 
     if (m_checked)
     {
         graphics.setColor(0xffeeeeee);
-        graphics.drawLine(Point(box.left+2, box.top+2), Point(box.right-1, box.bottom-1));
-        graphics.drawLine(Point(box.left+2, box.bottom-2), Point(box.right-1, box.top+1));
+        graphics.drawLine(Point<sint32>(box.left+2, box.top+2), Point<sint32>(box.right-1, box.bottom-1));
+        graphics.drawLine(Point<sint32>(box.left+2, box.bottom-2), Point<sint32>(box.right-1, box.top+1));
     }
 }
 

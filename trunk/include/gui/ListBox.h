@@ -108,7 +108,7 @@ private:
     sint32 calcClientWidth() const;
 
     // scroll bar owner's implement
-    void getScrolledClientRect(Rect& rect) const;
+    void getScrolledClientRect(Rect<sint32>& rect) const;
     void getScrolledContentSize(Size& size) const;
     void getScrolledUnitInclementSize(Size& size) const;
     /*

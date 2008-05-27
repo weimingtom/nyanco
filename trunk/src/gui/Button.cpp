@@ -18,7 +18,7 @@ Button::Ptr Button::Create(
 
     button->m_id        = id;
     button->caption_    = caption;
-    button->setLocation(Rect(0, 0, 0, button->getHeight()));
+    button->setLocation(Rect<sint32>(0, 0, 0, button->getHeight()));
 
     return Button::Ptr(button);
 }
@@ -26,7 +26,7 @@ Button::Ptr Button::Create(
 // ----------------------------------------------------------------------------
 void Button::draw(Graphics& graphics)
 {
-    Rect box = location_;
+    Rect<sint32> box = location_;
     box.left    += 2;
     box.top     += 2;
     box.right   -= 2;
@@ -38,12 +38,12 @@ void Button::draw(Graphics& graphics)
         graphics.drawFillRect(box);
 
         graphics.setColor(0xff888888);
-        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.right, box.top));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.left, box.bottom-1));
 
         graphics.setColor(0xff222222);
-        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.right, box.top+1), Point<sint32>(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.left, box.bottom), Point<sint32>(box.right, box.bottom));
     }
     else
     {
@@ -51,27 +51,27 @@ void Button::draw(Graphics& graphics)
         graphics.drawFillRect(box);
 
         graphics.setColor(0xff222222);
-        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.right, box.top));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.left, box.bottom-1));
 
         graphics.setColor(0xff888888);
-        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.right, box.top+1), Point<sint32>(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.left, box.bottom), Point<sint32>(box.right, box.bottom));
     }
 
-    Rect clip = location_;
+    Rect<sint32> clip = location_;
     clip.left += 2; clip.right -= 2;
     sint32 textWidth = static_cast<sint32>(caption_.size()) * 6;
     sint32 left = (box.getWidth() - textWidth) / 2;
-    graphics.drawText(Point(box.left + left, box.top + 2), caption_, 0xffeeeeee, clip);
+    graphics.drawText(Point<sint32>(box.left + left, box.top + 2), caption_, 0xffeeeeee, clip);
 
     if (isFocused())
     {
         graphics.setColor(0xffaaaaaa);
-        graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-        graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
-        graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-        graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.right, box.top));
+        graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.left, box.bottom-1));
+        graphics.drawLine(Point<sint32>(box.right, box.top+1), Point<sint32>(box.right, box.bottom));
+        graphics.drawLine(Point<sint32>(box.left, box.bottom), Point<sint32>(box.right, box.bottom));
     }
 }
 

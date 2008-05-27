@@ -5,6 +5,9 @@
     @author dasyprocta
  */
 
+#pragma warning(disable: 4996)
+#pragma warning(disable: 4819)
+
 #include <boost/cstdint.hpp>
 #include <windows.h>
 

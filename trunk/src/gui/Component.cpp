@@ -22,7 +22,7 @@ sint32 Component::relocate(sint32 parentLeft, sint32 parentWidth, sint32 locatio
 // ----------------------------------------------------------------------------
 Component::Ptr Component::checkHit(int x, int y)
 {
-    return isPointInner(Point(x, y))? shared_from_this(): ComponentPtr();
+    return isPointInner(Point<sint32>(x, y))? shared_from_this(): ComponentPtr();
 }
 
 // ----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ Component::Ptr Component::searchById(sint32 id)
 }
 
 // ----------------------------------------------------------------------------
-bool Component::isPointInner(Point const& point)
+bool Component::isPointInner(Point<sint32> const& point)
 {
     if (location_.left <= point.x && point.x <= location_.right &&
         location_.top  <= point.y && point.y <= location_.bottom)
@@ -63,7 +63,7 @@ bool Component::isFocused() const
 }
 
 // ----------------------------------------------------------------------------
-void Component::setLocation(Rect const& location)
+void Component::setLocation(Rect<sint32> const& location)
 {
     location_ = location;
 }

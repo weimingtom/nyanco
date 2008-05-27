@@ -18,7 +18,7 @@ Rollup::Ptr Rollup::Create(
     ComponentId                         id)
 {
     Ptr p(new Rollup);
-    p->setMargin(Rect(4, 18, 4, 4));
+    p->setMargin(Rect<sint32>(4, 18, 4, 4));
     p->m_arg = arg;
     return p;
 }
@@ -26,7 +26,7 @@ Rollup::Ptr Rollup::Create(
 // ----------------------------------------------------------------------------
 void Rollup::draw(Graphics& graphics)
 {
-    Rect box = location_;
+    Rect<sint32> box = location_;
     box.left    += 6;
     box.right   -= 6;
     box.top     += 2;
@@ -40,18 +40,18 @@ void Rollup::draw(Graphics& graphics)
     graphics.drawFillRect(box);
 
     graphics.setColor(0xff888888);
-    graphics.drawLine(Point(box.left, box.top), Point(box.right, box.top));
-    graphics.drawLine(Point(box.left, box.top), Point(box.left, box.bottom-1));
+    graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.right, box.top));
+    graphics.drawLine(Point<sint32>(box.left, box.top), Point<sint32>(box.left, box.bottom-1));
 
     graphics.setColor(0xff222222);
-    graphics.drawLine(Point(box.right, box.top+1), Point(box.right, box.bottom));
-    graphics.drawLine(Point(box.left, box.bottom), Point(box.right, box.bottom));
+    graphics.drawLine(Point<sint32>(box.right, box.top+1), Point<sint32>(box.right, box.bottom));
+    graphics.drawLine(Point<sint32>(box.left, box.bottom), Point<sint32>(box.right, box.bottom));
 
-    Rect clip = location_;
+    Rect<sint32> clip = location_;
     clip.left += 2; clip.right -= 2;
     size_t textWidth = m_arg.m_label.size() * 6;
     size_t left = (box.getWidth() - textWidth) / 2;
-    graphics.drawText(Point(box.left + 2, box.top + 2), m_arg.m_label, 0xffeeeeee, clip);
+    graphics.drawText(Point<sint32>(box.left + 2, box.top + 2), m_arg.m_label, 0xffeeeeee, clip);
 
     impl::FontInfo const& font = dynamic_cast<impl::Graphics&>(graphics).getFontInfo();
     sint32 const labelWidth  = font.charaWidth * m_arg.m_label.size();
@@ -60,13 +60,13 @@ void Rollup::draw(Graphics& graphics)
 
     // top
     graphics.setColor(0xff888888);
-    graphics.drawLine(Point(box.left-4, box.top+2+labelHalfHeight), Point(box.left, box.top+2+labelHalfHeight));
-    graphics.drawLine(Point(box.right, box.top+2+labelHalfHeight), Point(box.right+4, box.top+2+labelHalfHeight));
+    graphics.drawLine(Point<sint32>(box.left-4, box.top+2+labelHalfHeight), Point<sint32>(box.left, box.top+2+labelHalfHeight));
+    graphics.drawLine(Point<sint32>(box.right, box.top+2+labelHalfHeight), Point<sint32>(box.right+4, box.top+2+labelHalfHeight));
     graphics.setColor(0xff222222);
-    graphics.drawLine(Point(box.left-6, box.top+labelHalfHeight), Point(box.left, box.top+labelHalfHeight));
-    graphics.drawLine(Point(box.right, box.top+labelHalfHeight), Point(box.right+6, box.top+labelHalfHeight));
+    graphics.drawLine(Point<sint32>(box.left-6, box.top+labelHalfHeight), Point<sint32>(box.left, box.top+labelHalfHeight));
+    graphics.drawLine(Point<sint32>(box.right, box.top+labelHalfHeight), Point<sint32>(box.right+6, box.top+labelHalfHeight));
 
-    Rect border = location_;
+    Rect<sint32> border = location_;
     border.top+=(2+labelHalfHeight); border.bottom-=2;
     if (!m_collapsed)
     {
@@ -77,19 +77,19 @@ void Rollup::draw(Graphics& graphics)
     }
     graphics.setColor(0xff888888);
     // left
-    graphics.drawLine(Point(border.left+2, border.top+2), Point(border.left+2, location_.bottom-1-2));
+    graphics.drawLine(Point<sint32>(border.left+2, border.top+2), Point<sint32>(border.left+2, location_.bottom-1-2));
     // right
-    graphics.drawLine(Point(border.right, border.top+1), Point(border.right, border.bottom));
+    graphics.drawLine(Point<sint32>(border.right, border.top+1), Point<sint32>(border.right, border.bottom));
     // bottom
-    graphics.drawLine(Point(border.left, border.bottom), Point(border.right, border.bottom));
+    graphics.drawLine(Point<sint32>(border.left, border.bottom), Point<sint32>(border.right, border.bottom));
 
     graphics.setColor(0xff222222);
     // left
-    graphics.drawLine(Point(border.left, border.top), Point(border.left, location_.bottom-1));
+    graphics.drawLine(Point<sint32>(border.left, border.top), Point<sint32>(border.left, location_.bottom-1));
     // right
-    graphics.drawLine(Point(border.right-2, border.top+1+2), Point(border.right-2, border.bottom-2));
+    graphics.drawLine(Point<sint32>(border.right-2, border.top+1+2), Point<sint32>(border.right-2, border.bottom-2));
     // bottom
-    graphics.drawLine(Point(border.left+2, border.bottom-2), Point(border.right, border.bottom-2));
+    graphics.drawLine(Point<sint32>(border.left+2, border.bottom-2), Point<sint32>(border.right, border.bottom-2));
 }
 
 // ----------------------------------------------------------------------------

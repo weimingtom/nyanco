@@ -20,7 +20,7 @@ void Container::attach(
     ComponentPtr                    componentPtr)
 {
     {
-        Rect childLocation;
+        Rect<sint32> childLocation;
         childLocation.left   = location_.left + margin_.left;
         childLocation.right  = location_.right - margin_.right;
         componentPtr->setX(childLocation.left);
@@ -73,7 +73,7 @@ void Container::move(int x, int y)
 }
 
 // ----------------------------------------------------------------------------
-void Container::setMargin(Rect const& margin)
+void Container::setMargin(Rect<sint32> const& margin)
 {
     margin_ = margin;
 }
@@ -81,7 +81,7 @@ void Container::setMargin(Rect const& margin)
 // ----------------------------------------------------------------------------
 Component::Ptr Container::checkHit(int x, int y)
 {
-    if (isPointInner(Point(x, y)))
+    if (isPointInner(Point<sint32>(x, y)))
     {
         foreach (Component::Ptr comp, componentList_)
         {

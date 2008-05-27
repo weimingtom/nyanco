@@ -63,10 +63,10 @@ void Graphics::setRectColor(
 
 // ------------------------------------------------------------------------
 void Graphics::drawText(
-    Point const&                    point,
+    Point<sint32> const&                    point,
     std::string const&              text,
     Color                           color,
-    Rect const&                     region)
+    Rect<sint32> const&                     region)
 {
     static float du = ((float)fontInfo_.charaWidth) / ((float)fontInfo_.texWidth);
     static float dv = ((float)fontInfo_.charaHeight) / ((float)fontInfo_.texHeight);
@@ -140,7 +140,7 @@ void Graphics::drawText(
         D3DPT_TRIANGLELIST,
         0,
         vsize,
-        text.size() * 2,
+        static_cast<uint32>(text.size()) * 2,
         indices,
         D3DFMT_INDEX16,
         v,
@@ -156,14 +156,15 @@ void Graphics::drawText(
 
 // ------------------------------------------------------------------------
 void Graphics::drawRect(
-    Rect const&                     rect)
+    Rect<sint32> const&                     rect)
 {
+    Rect<float32> frect = rect.to<float32>();
     GuiVertex v[4] =
     {
-        { rect.left,    rect.top,       0.f,    1.f },
-        { rect.right,   rect.top,       0.f,    1.f },
-        { rect.right,   rect.bottom,    0.f,    1.f },
-        { rect.left,    rect.bottom,    0.f,    1.f }
+        { frect.left,    frect.top,       0.f,    1.f },
+        { frect.right,   frect.top,       0.f,    1.f },
+        { frect.right,   frect.bottom,    0.f,    1.f },
+        { frect.left,    frect.bottom,    0.f,    1.f }
     };
 
     device_.SetFVF(GuiVertex::Fvf);
@@ -176,16 +177,17 @@ void Graphics::drawRect(
 
 // ------------------------------------------------------------------------
 void Graphics::drawFillRect(
-    Rect const&                     rect)
+    Rect<sint32> const&                     rect)
 {
+    Rect<float32> frect = rect.to<float32>();
     GuiVertex v[4] =
     {
-        { rect.left,    rect.top,       0.f,    1.f,    rectColor_[0] },
-        { rect.right,   rect.top,       0.f,    1.f,    rectColor_[1] },
-        { rect.right,   rect.bottom,    0.f,    1.f,    rectColor_[3] },
-        { rect.left,    rect.bottom,    0.f,    1.f,    rectColor_[2] }
+        { frect.left,    frect.top,       0.f,    1.f,    rectColor_[0] },
+        { frect.right,   frect.top,       0.f,    1.f,    rectColor_[1] },
+        { frect.right,   frect.bottom,    0.f,    1.f,    rectColor_[3] },
+        { frect.left,    frect.bottom,    0.f,    1.f,    rectColor_[2] }
     };
-device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     device_.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     device_.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     device_.SetFVF(GuiVertex::Fvf);
@@ -194,17 +196,18 @@ device_.SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
         2,
         v,
         sizeof(GuiVertex));
+    device_.SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 // ------------------------------------------------------------------------
 void Graphics::drawLine(
-    Point const&                    p1,
-    Point const&                    p2)
+    Point<sint32> const&                    p1,
+    Point<sint32> const&                    p2)
 {
     GuiVertex v[2] =
     {
-        { p1.x,     p1.y,   0.f,    1.f,    color_ },
-        { p2.x,   p2.y,   0.f,    1.f,    color_ },
+        { static_cast<float32>(p1.x),     static_cast<float32>(p1.y),   0.f,    1.f,    color_ },
+        { static_cast<float32>(p2.x),   static_cast<float32>(p2.y),   0.f,    1.f,    color_ },
     };
 
     device_.SetFVF(GuiVertex::Fvf);
@@ -217,22 +220,22 @@ void Graphics::drawLine(
 
 // ----------------------------------------------------------------------------
 void Graphics::drawIbeamCursor(
-    Point const&                    p)
+    Point<sint32> const&                    p)
 {
     
 }
 
 // ----------------------------------------------------------------------------
 void Graphics::drawTriangle(
-    Point const&                    p1,
-    Point const&                    p2,
-    Point const&                    p3)
+    Point<sint32> const&                    p1,
+    Point<sint32> const&                    p2,
+    Point<sint32> const&                    p3)
 {
     GuiVertex v[3] =
     {
-        { p1.x, p1.y, 0.f, 1.f, color_ },
-        { p2.x, p2.y, 0.f, 1.f, color_ },
-        { p3.x, p3.y, 0.f, 1.f, color_ },
+        { static_cast<float32>(p1.x), static_cast<float32>(p1.y), 0.f, 1.f, color_ },
+        { static_cast<float32>(p2.x), static_cast<float32>(p2.y), 0.f, 1.f, color_ },
+        { static_cast<float32>(p3.x), static_cast<float32>(p3.y), 0.f, 1.f, color_ },
     };
 
     device_.SetFVF(GuiVertex::Fvf);
@@ -267,9 +270,9 @@ END_NAMESPACE_NYANCO_GUI_IMPL
 BEGIN_NAMESPACE_NYANCO_GUI
 
 // ----------------------------------------------------------------------------
-void ComponentGraphics::drawEdit(Rect const& rect)
+void ComponentGraphics::drawEdit(Rect<sint32> const& rect)
 {
-    Rect a    = rect;
+    Rect<sint32> a    = rect;
     a.right  -= 1;
     a.bottom -= 1;
 
@@ -277,26 +280,26 @@ void ComponentGraphics::drawEdit(Rect const& rect)
     m_g.drawFillRect(a);
 
     m_g.setColor(0xff222222);
-    m_g.drawLine(Point(a.left, a.top), Point(a.left, a.bottom-1));
-    m_g.drawLine(Point(a.left, a.top), Point(a.right, a.top));
+    m_g.drawLine(Point<sint32>(a.left, a.top), Point<sint32>(a.left, a.bottom-1));
+    m_g.drawLine(Point<sint32>(a.left, a.top), Point<sint32>(a.right, a.top));
 
     m_g.setColor(0xff888888);
-    m_g.drawLine(Point(a.right, a.top+1), Point(a.right, a.bottom));
-    m_g.drawLine(Point(a.left, a.bottom), Point(a.right, a.bottom));
+    m_g.drawLine(Point<sint32>(a.right, a.top+1), Point<sint32>(a.right, a.bottom));
+    m_g.drawLine(Point<sint32>(a.left, a.bottom), Point<sint32>(a.right, a.bottom));
 }
 
 // ----------------------------------------------------------------------------
-void ComponentGraphics::drawButton(Rect const& rect, bool pushed)
+void ComponentGraphics::drawButton(Rect<sint32> const& rect, bool pushed)
 {
-    Rect a    = rect;
+    Rect<sint32> a    = rect;
     a.right  -= 1;
     a.bottom -= 1;
 }
 
 // ----------------------------------------------------------------------------
-void ComponentGraphics::drawFrame(Rect const& rect, bool rise, bool gradation)
+void ComponentGraphics::drawFrame(Rect<sint32> const& rect, bool rise, bool gradation)
 {
-    Rect a    = rect;
+    Rect<sint32> a    = rect;
     a.right  -= 1;
     a.bottom -= 1;
 
@@ -311,12 +314,12 @@ void ComponentGraphics::drawFrame(Rect const& rect, bool rise, bool gradation)
         ColorPair(0xff888888, 0xff222222): ColorPair(0xff222222, 0xff888888);
 
     m_g.setColor(col.first);
-    m_g.drawLine(Point(a.left, a.top), Point(a.left, a.bottom-1));
-    m_g.drawLine(Point(a.left, a.top), Point(a.right, a.top));
+    m_g.drawLine(Point<sint32>(a.left, a.top), Point<sint32>(a.left, a.bottom-1));
+    m_g.drawLine(Point<sint32>(a.left, a.top), Point<sint32>(a.right, a.top));
 
     m_g.setColor(col.second);
-    m_g.drawLine(Point(a.right, a.top+1), Point(a.right, a.bottom));
-    m_g.drawLine(Point(a.left, a.bottom), Point(a.right+1, a.bottom));
+    m_g.drawLine(Point<sint32>(a.right, a.top+1), Point<sint32>(a.right, a.bottom));
+    m_g.drawLine(Point<sint32>(a.left, a.bottom), Point<sint32>(a.right+1, a.bottom));
 }
 
 END_NAMESPACE_NYANCO_GUI

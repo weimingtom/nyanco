@@ -55,8 +55,8 @@ public:
     void detach(Component::Ptr component);
 
     // Dockable インターフェース実装
-    void getDockableRect(Rect& rect);
-    void setDockableRect(Rect const& rect);
+    void getDockableRect(Rect<sint32>& rect);
+    void setDockableRect(Rect<sint32> const& rect);
     void drawDockable(Graphics& graphics);
     void onDock();
     void onUndock();
@@ -70,8 +70,8 @@ private:
 protected:
     TitleBar::Ptr                       m_titleBar;
 
-    Rect                                margin_;
-    Rect                                m_prevLocation;
+    Rect<sint32>                                margin_;
+    Rect<sint32>                                m_prevLocation;
 
     friend impl::WindowManager;
 };

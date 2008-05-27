@@ -34,15 +34,15 @@ public:
 
     WindowId getId() const          { return m_id; }
 
-    bool isPointInner(Point const& point) const;
+    bool isPointInner(Point<sint32> const& point) const;
 
     void focusToNext();
 
 protected:
     Component::Ptr getNextComponent(Component::Ptr comp);
     void setId(WindowId id)         { m_id = id; }
-    Rect& getLocation()             { return m_location; }
-    Rect const& getLocation() const { return m_location; }
+    Rect<sint32>& getLocation()             { return m_location; }
+    Rect<sint32> const& getLocation() const { return m_location; }
 
     Container::Ptr getRootContainer() const { return m_panel; }
     //! ルートコンテナ
@@ -57,7 +57,7 @@ private:
     Component::WeakPtr                  m_prevFocused;
 
     WindowId                            m_id;
-    Rect                                m_location;
+    Rect<sint32>                                m_location;
 };
 
 class DockableWindow

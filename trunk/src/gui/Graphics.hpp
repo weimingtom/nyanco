@@ -29,28 +29,28 @@ public:
         Color                       rightBottom);
 
     virtual void drawText(
-        Point const&                point,
+        Point<sint32> const&                point,
         std::string const&          text,
         Color                       color,
-        Rect const&                 region);
+        Rect<sint32> const&                 region);
 
     virtual void drawRect(
-        Rect const&                 rect);
+        Rect<sint32> const&                 rect);
 
     virtual void drawFillRect(
-        Rect const&                 rect);
+        Rect<sint32> const&                 rect);
 
     virtual void drawLine(
-        Point const&                p1,
-        Point const&                p2);
+        Point<sint32> const&                p1,
+        Point<sint32> const&                p2);
 
     virtual void drawIbeamCursor(
-        Point const&                p);
+        Point<sint32> const&                p);
 
     virtual void drawTriangle(
-        Point const&                p1,
-        Point const&                p2,
-        Point const&                p3);
+        Point<sint32> const&                p1,
+        Point<sint32> const&                p2,
+        Point<sint32> const&                p3);
 
     FontInfo const& getFontInfo() const { return fontInfo_; }
 

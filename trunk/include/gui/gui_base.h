@@ -63,12 +63,21 @@ typedef sint32                      WindowId;
 sint32 const                        NonspecificId = -1;
 
 // ----------------------------------------------------------------------------
+template <typename T_>
 class Point
 {
 public:
-    sint32 x, y;
+    typedef T_ ValueType;
 
-    Point(sint32 x_, sint32 y_) : x(x_), y(y_) {}
+    ValueType x, y;
+
+    Point(ValueType x_, ValueType y_) : x(x_), y(y_) {}
+
+    template <typename Dest_>
+    Point<Dest_> to() const
+    {
+        return Point<Dest_>(static_cast<Dest_>(x), static_cast<Dest_>(y));
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -79,34 +88,43 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+template <typename T_>
 class Rect
 {
 public:
-    sint32 left, top, right, bottom;
+    typedef T_ ValueType;
+
+    ValueType left, top, right, bottom;
 
     Rect() {}
 
-    Rect(int left_, int top_, int right_, int bottom_)
+    Rect(ValueType left_, ValueType top_, ValueType right_, ValueType bottom_)
         : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
-    void setWidth(int width) { right = left + width; }
-    void setHeight(int height) { bottom = top + height; }
-    void setLeft(int left_) { right = left_ + getWidth(); left = left_; }
-    void setTop(int top_) { bottom = top_ + getHeight(); top = top_; }
+    void setWidth(ValueType width) { right = left + width; }
+    void setHeight(ValueType height) { bottom = top + height; }
+    void setLeft(ValueType left_) { right = left_ + getWidth(); left = left_; }
+    void setTop(ValueType top_) { bottom = top_ + getHeight(); top = top_; }
 
-    void extend(int size) { left -= size; top -= size; right += size; bottom += size; }
+    void extend(ValueType size) { left -= size; top -= size; right += size; bottom += size; }
 
-    int getWidth() const { return right - left; }
-    int getHeight() const { return bottom - top; }
+    ValueType getWidth() const { return right - left; }
+    ValueType getHeight() const { return bottom - top; }
     void getSize(Size& size) const { size.width = getWidth(); size.height = getHeight(); }
-    bool isInnerPoint(int x, int y)
+    bool isInnerPoint(ValueType x, ValueType y)
     {
         return (left <= x && x <= right && top  <= y && y <= bottom);
+    }
+
+    template <typename Dest_>
+    Rect<Dest_> to() const
+    {
+        return Rect<Dest_>(static_cast<Dest_>(left), static_cast<Dest_>(top), static_cast<Dest_>(right), static_cast<Dest_>(bottom));
     }
 };
 
 // ----------------------------------------------------------------------------
-class ColorRect : public Rect
+class ColorRect : public Rect<sint32>
 {
 public:
     Color leftColor, topColor, rightColor, bottomColor;

@@ -19,7 +19,7 @@ class WindowManager
 {
 public:
     virtual void drawText(
-        Point const&                point,
+        Point<sint32> const&                point,
         std::string const&          text,
         Color                       color) = 0;
 
@@ -43,7 +43,7 @@ public:
     virtual ContextMenu::Ptr getContextMenu() const = 0;
     virtual void setContextMenu(ContextMenu::Ptr menu) = 0;
 
-    virtual Rect const& getClientRect() const = 0;
+    virtual Rect<sint32> const& getClientRect() const = 0;
 
     virtual Dock::Ptr getRootDock() const = 0;
 
